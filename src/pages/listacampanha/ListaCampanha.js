@@ -69,7 +69,7 @@ const ListaCampanha = () =>{
   const arrecadadoMeta = (arrecadado, meta)=>{
     const percentual = arrecadado/meta;
 
-    if(percentual>=1){
+    if(percentual>0.8){
       return 'green';
     }
     else if(percentual >=0.3){
