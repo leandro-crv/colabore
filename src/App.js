@@ -1,10 +1,20 @@
 import './App.css';
 import Routers from './routers';
+import Header from './components/header'; 
+import Footer from './components/footer';
+import { ProviderOpenMenu } from './services/context';
+import { BrowserRouter } from 'react-router-dom';
+
 function App() {
   return (
-    <div className="App">
-      <Routers/>
-    </div>
+    <BrowserRouter>
+      <ProviderOpenMenu>
+        <Header />
+        <Routers/>
+        <Footer/>
+      </ProviderOpenMenu>
+    </BrowserRouter>  
+  
   );
 }
 
