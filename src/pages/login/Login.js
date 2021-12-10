@@ -49,6 +49,15 @@ const Login = () => {
         </Form>
       </Formik>
       <a href='/cadastrousuario'>Criar conta</a>
+      <nav>
+        <ul>
+          <li><a href='/cadastrousuario'>Cadastro usuário</a> </li>
+          <li><a href='/cadastrocampanha'>Cadastro campanha</a></li>
+          <li><a href='/listacampanha'>Lista campanha </a></li>
+          <li><a href='/detalhecampanha'>Detalhe campanha</a></li>
+          <li><a href='/minhascontribuicoes'>Minhas contribuições </a></li>
+          </ul>
+      </nav>
     </div>
   );
 };

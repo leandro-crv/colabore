@@ -12,6 +12,7 @@ const AuthProvider= ({children}) =>{
     nome:''
   }
   const [auth, setAuth] = useState(false);
+  const [user, setUser] = useState(initialUser)
   
 
 
@@ -39,6 +40,7 @@ const AuthProvider= ({children}) =>{
       handleLogout,
       auth,
       setAuth,
+      user
     }}>
       {children}
     </AuthContext.Provider>

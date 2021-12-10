@@ -14,6 +14,8 @@ import CadastroCampanha from "./pages/cadastrocampanha/CadastroCampanha";
 import ListaCampanha from "./pages/listacampanha/ListaCampanha";
 import api from "./api";
 import { AuthContext } from "./context/AuthContext";
+import DetalheCampanha from "./pages/detalhecampanha/DetalheCampanha";
+import MinhasContribuicoes from "./pages/minhascontribuicoes/MinhasContribuicoes";
 
 const Routers = () => {
   const {auth, setAuth} = useContext(AuthContext);
@@ -40,7 +42,9 @@ const Routers = () => {
           <Route path="/" element={<Login />} />
           <Route path='/cadastrousuario' element={<CadastroUsuario/>} />
           <Route path='/cadastrocampanha' element={<CadastroCampanha/>}/>
-          <Route path='/listacampanha' element={<ListaCampanha/>} />     
+          <Route path='/listacampanha' element={<ListaCampanha/>} />
+          <Route path='/detalhecampanha' element={<DetalheCampanha/>}/>
+          <Route path='/minhascontribuicoes' element={<MinhasContribuicoes/>} />     
           <Route path="*" element={<NotFound/>} />
         </Routes>
         </div>
@@ -48,5 +52,7 @@ const Routers = () => {
     </BrowserRouter>
   )
 }
+
+
 
 export default Routers;
