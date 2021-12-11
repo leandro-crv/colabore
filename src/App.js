@@ -2,7 +2,7 @@ import './App.css';
 import Routers from './routers';
 import Header from './components/header'; 
 import Footer from './components/footer';
-import MenuProvider from './context/context';
+import MenuProvider from './context/context'
 import { BrowserRouter } from 'react-router-dom';
 
 function App() {
@@ -10,9 +10,7 @@ function App() {
     <BrowserRouter>
       <MenuProvider>
         <Header />
-        <main>
-          <Routers/>
-        </main>
+        <Routers/>
         <Footer/>
       </MenuProvider>
     </BrowserRouter>  

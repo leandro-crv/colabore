@@ -1,10 +1,10 @@
 import React from 'react'
 import NavLinks from './styles'
 import { Link } from 'react-router-dom'
-import { useMenuContext } from '../../../../context/context'
+import { UseOpenMenu } from '../../../../services/context/'
 
 const Navigation = () => {
-  const { setNameLogo } = useMenuContext()
+  const { setNameLogo } = UseOpenMenu()
   
   return (
     <NavLinks className="navigation">
