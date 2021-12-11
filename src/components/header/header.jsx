@@ -2,11 +2,11 @@ import React from 'react'
 import { HeaderDiv, HeaderDivBackground } from './styles'
 import MenuBar from './menuBar'
 import MenuOpc from './menuOpc'
-import { UseOpenMenu } from '../../services/context' 
+import { useMenuContext } from '../../context/context'
 
 
 const Header = () => {
-  const { openMenu } = UseOpenMenu()
+  const { openMenu } = useMenuContext()
 
   return (
     <HeaderDivBackground id="header">

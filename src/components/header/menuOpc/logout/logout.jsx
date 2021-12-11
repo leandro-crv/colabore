@@ -1,9 +1,9 @@
 import React from 'react'
 import { DivUlLi } from './styles'
 import { Link } from 'react-router-dom'
-import { UseOpenMenu } from '../../../../services/context/'
+import { useMenuContext } from '../../../../context/context'
 const Logout = () => {
-  const { setNameLogo } = UseOpenMenu()
+  const { setNameLogo } = useMenuContext()
 
     return (
     <DivUlLi className="navigation">

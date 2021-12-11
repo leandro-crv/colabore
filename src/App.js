@@ -2,17 +2,19 @@ import './App.css';
 import Routers from './routers';
 import Header from './components/header'; 
 import Footer from './components/footer';
-import { ProviderOpenMenu } from './services/context';
+import MenuProvider from './context/context';
 import { BrowserRouter } from 'react-router-dom';
 
 function App() {
   return (
     <BrowserRouter>
-      <ProviderOpenMenu>
+      <MenuProvider>
         <Header />
-        <Routers/>
+        <main>
+          <Routers/>
+        </main>
         <Footer/>
-      </ProviderOpenMenu>
+      </MenuProvider>
     </BrowserRouter>  
   
   );

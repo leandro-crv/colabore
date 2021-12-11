@@ -1,14 +1,13 @@
 import React from 'react'
 import {ImUsers, ImMenu} from 'react-icons/im'
 import { MenuBarDiv, MenuBarDivPrincipal } from './styles'
-import { UseOpenMenu } from '../../../services/context'
+import { useMenuContext } from '../../../context/context'
 import darkMode from '../../../services/functions/darkMode'
 import UseSwitchesCustom from '../../switch'
 
 
 const MenuBar = () => {
-  const { openMenu, setOpenMenu } = UseOpenMenu()
-  const { nameLogo } = UseOpenMenu()
+  const { openMenu, setOpenMenu, nameLogo } = useMenuContext()
 
   return (
     <MenuBarDivPrincipal>
