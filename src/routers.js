@@ -1,19 +1,15 @@
 import { useState, useEffect, useContext } from "react";
 import {
-  BrowserRouter,
   Routes,
   Route
 } from "react-router-dom";
 
-import Header from "./components/header/Header";
-import Footer from "./components/footer/Footer";
 import NotFound from "./components/notFound/NotFound"; 
 import Login from "./pages/login/Login";
 import CadastroUsuario from "./pages/cadastrousuario/CadastroUsuario";
 import CadastroCampanha from "./pages/cadastrocampanha/CadastroCampanha";
 import ListaCampanha from "./pages/listacampanha/ListaCampanha";
 import api from "./api";
-import { AuthContext } from "./context/AuthContext";
 
 const Routers = () => {
   const {auth, setAuth} = useContext(AuthContext);
@@ -33,8 +29,6 @@ const Routers = () => {
     return (<h1>Loading</h1>)
   }
   return (
-    <BrowserRouter>
-      <Header />
       <div className='container'>
         <Routes>
           <Route path="/" element={<Login />} />
@@ -43,10 +37,7 @@ const Routers = () => {
           <Route path='/listacampanha' element={<ListaCampanha/>} />     
           <Route path="*" element={<NotFound/>} />
         </Routes>
-        </div>
-      <Footer />
-    </BrowserRouter>
-  )
+       </div>
 }
 
 export default Routers;
