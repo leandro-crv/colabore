@@ -8,11 +8,11 @@ export default function MenuProvider({ children }) {
   const [nameLogo, setNameLogo] = useState('Login');
   const [auth, setAuth] = useState(false);
 
-  const initialUser = {
-    fotoPerfil:'',
-    idUsuario:0,
-    nome:''
-  }
+  // const initialUser = {
+  //   fotoPerfil:'',
+  //   idUsuario:0,
+  //   nome:''
+  // }
 
   const handleLogin = async (login) => {
     (async ()=>{
