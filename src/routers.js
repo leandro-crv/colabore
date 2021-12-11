@@ -1,18 +1,15 @@
-import { useState, useEffect, useContext } from "react";
-import {
-  Routes,
-  Route
-} from "react-router-dom";
-
+import { useState, useEffect } from "react";
+import { Routes, Route } from "react-router-dom";
 import NotFound from "./components/notFound/NotFound"; 
 import Login from "./pages/login/Login";
 import CadastroUsuario from "./pages/cadastrousuario/CadastroUsuario";
 import CadastroCampanha from "./pages/cadastrocampanha/CadastroCampanha";
 import ListaCampanha from "./pages/listacampanha/ListaCampanha";
 import api from "./api";
+import { useMenuContext } from "./context/context";
 
 const Routers = () => {
-  const {auth, setAuth} = useContext(AuthContext);
+  const {auth, setAuth} = useMenuContext();
   const [loading, setLoading] = useState(true);
 
   useEffect(()=>{
@@ -38,6 +35,7 @@ const Routers = () => {
           <Route path="*" element={<NotFound/>} />
         </Routes>
        </div>
+  )
 }
 
 export default Routers;
