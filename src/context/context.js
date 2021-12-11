@@ -8,18 +8,18 @@ export default function MenuProvider({ children }) {
   const [nameLogo, setNameLogo] = useState('Login');
   const [auth, setAuth] = useState(false);
 
-  // const initialUser = {
-  //   fotoPerfil:'',
-  //   idUsuario:0,
-  //   nome:''
-  // }
+  const initialUser = {
+    fotoPerfil:'',
+    idUsuario:0,
+    nome:''
+  }
 
   const handleLogin = async (login) => {
     (async ()=>{
       const {data} = await api.post('login',login)
       localStorage.setItem('token',data);
       api.defaults.headers.common['Authorization'] = data;
-      window.location.href='/pessoa'
+      // window.location.href='/pessoa'
       setAuth(true);
     })()
   }

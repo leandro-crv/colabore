@@ -3,12 +3,27 @@ import { useNavigate, Link } from 'react-router-dom';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import styles from './Login.module.css';
 import { useMenuContext } from '../../context/context';
+import api from '../../api'
 
 
 const Login = () => {
   const [senhaErrada, setSenhaErrada] = useState(false);
   const navigate = useNavigate();
-  const { setNameLogo } = useMenuContext()
+  const { setNameLogo, setAuth, auth } = useMenuContext()
+
+  console.log(auth)
+
+  const handleLogin = async (login) => {
+    // (async ()=>{
+    //   const {data} = await api.post('login',login)
+    //   localStorage.setItem('token',data);
+    //   api.defaults.headers.common['Authorization'] = data;
+    //   // window.location.href='/pessoa'
+      
+    // })()
+    setAuth(true);
+      console.log(auth)
+  }
 
   useEffect(() => {
     setNameLogo('Login')
@@ -37,6 +52,7 @@ const Login = () => {
         validate={validate}
         onSubmit={async (values) => {
           console.log(values)
+          handleLogin(values)
         }}
       >
         <Form className='form-usuario'>
@@ -55,7 +71,7 @@ const Login = () => {
         </Form>
       </Formik>
 
-      <Link to='/cadastrousuario' onClick={() => setNameLogo('Criar conta')}>Criar conta</Link>
+      <Link to='/cadastrousuario' onClick={() => setNameLogo('Cadastro Usuario')}>Criar conta</Link>
     </div>
   );
 };

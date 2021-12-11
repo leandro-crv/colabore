@@ -7,6 +7,7 @@ import CadastroCampanha from "./pages/cadastrocampanha/CadastroCampanha";
 import ListaCampanha from "./pages/listacampanha/ListaCampanha";
 import api from "./api";
 import { useMenuContext } from "./context/context";
+import Loading from "./components/loading";
 
 const Routers = () => {
   const {auth, setAuth} = useMenuContext();
@@ -23,7 +24,7 @@ const Routers = () => {
   })
 
   if(loading){
-    return (<h1>Loading</h1>)
+    return (<Loading />)
   }
   return (
       

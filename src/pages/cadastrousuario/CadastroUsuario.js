@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
-// import ReactPasswordStrength  from 'react-password-strength';
+import PasswordStrength from '../../components/PasswordStrength';
 
 const CadastroUsuario = () => {
   const [foto, setFoto] = useState(false);
+  const [valueSenha, setValueSenha] = useState('')
+
   const initialValues = {
     nome: 'leandro',
     email: 'leandro@dbccompany.com.br',
@@ -32,14 +34,14 @@ const CadastroUsuario = () => {
 
     if (!values.email) {
       errors.email = 'Email é um campo obrigatório';
-    } else if (!/^[A-Z0-9._%+-]+@dbccompany.com.br$/i.test(values.email)) {
+    } else if (!/^[A-Z0-9\S._%+-]+@dbccompany.com.br$/i.test(values.email)) {
       errors.email = 'Email inválido';
     }
 
     if (!values.senha) {
       errors.senha = "Senha é um campo obrigatório"
     }
-
+  
     if (values.senha2 !== values.senha) {
       errors.senha2 = "As senhas não são iguais";
     }
@@ -64,7 +66,7 @@ const CadastroUsuario = () => {
       <Form>
         <div>
           <label htmlFor="nome">Nome:</label>
-          <Field id="nome" name="nome" placeholder="Digite seu nome" maxlength="30" />
+          <Field id="nome" name="nome" placeholder="Digite seu nome" maxLength="30" />
           <ErrorMessage name='nome' render={msg => <div className='error'>{msg}</div>} />
         </div>
         <div>
@@ -75,13 +77,21 @@ const CadastroUsuario = () => {
             name="email"
             placeholder="Digite seu email"
             type="email"
-            maxlength="30"
+            maxLength="30"
           />
           <ErrorMessage name='email' render={msg => <div className='error' >{msg}</div>} />
         </div>
         <div>
           <label htmlFor="senha">Senha:</label>
-          <Field id="senha" name="senha" placeholder="insira sua senha" type="password" />
+          <Field 
+            id="senha" name="senha" 
+            placeholder="insira sua senha" 
+            type="password" 
+            minLength={8}
+            value={valueSenha}
+            onChange={(e) => setValueSenha(e.target.value)}          
+          />
+          <PasswordStrength password={valueSenha}/>
           <ErrorMessage name='senha' render={msg => <div className='error'>{msg}</div>} />
         </div>
         <div>
