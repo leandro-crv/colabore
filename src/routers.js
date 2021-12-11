@@ -18,15 +18,14 @@ import DetalheCampanha from "./pages/detalhecampanha/DetalheCampanha";
 import MinhasContribuicoes from "./pages/minhascontribuicoes/MinhasContribuicoes";
 
 const Routers = () => {
-  const {auth, setAuth} = useContext(AuthContext);
+  const {auth, setAuth, autenticar} = useContext(AuthContext);
   const [loading, setLoading] = useState(true);
 
   useEffect(()=>{
     const token = localStorage.getItem('token');
     const idUsuario = localStorage.getItem('idUsuario');
     if(token){
-      api.defaults.headers.common['Authorization'] = token;
-      setAuth(true);
+      autenticar(token)
     }
     setLoading(false);
   })

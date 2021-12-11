@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const api = axios.create({
-  baseURL: 'https://colabore-api-dbc.herokuapp.com/swagger-ui/'
+  baseURL: 'https://colabore-api-dbc.herokuapp.com/'
 });
 
 export default api

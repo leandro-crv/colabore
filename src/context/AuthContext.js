@@ -14,7 +14,11 @@ const AuthProvider= ({children}) =>{
   const [auth, setAuth] = useState(false);
   const [user, setUser] = useState(initialUser)
   
-
+  const autenticar = (token) =>{
+    localStorage.setItem('token',token);
+    api.defaults.headers.common['Authorization'] = token;
+    setAuth(true);
+  }
 
   const handleLogin = async (login) => {
     (async ()=>{
@@ -29,7 +33,7 @@ const AuthProvider= ({children}) =>{
   const handleLogout = () =>{
     localStorage.removeItem('token');
     api.defaults.headers.common['Authorization'] = '';
-    window.location.href = '/login';
+    window.location.href = '/';
     setAuth(false);
   }
 
@@ -40,7 +44,8 @@ const AuthProvider= ({children}) =>{
       handleLogout,
       auth,
       setAuth,
-      user
+      user,
+      autenticar
     }}>
       {children}
     </AuthContext.Provider>
