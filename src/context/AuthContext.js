@@ -1,19 +1,18 @@
-import React, { useState, useEffect, createContext } from 'react';
+import React, { createContext, useState, useContext } from "react";
 import api from '../api';
 
+const MenuContext = createContext();
 
-const AuthContext = createContext({});
+export default function MenuProvider({ children }) {
+  const [openMenu, setOpenMenu] = useState('50px');
+  const [nameLogo, setNameLogo] = useState('Login');
+  const [auth, setAuth] = useState(false);
 
-const AuthProvider= ({children}) =>{
-  
   const initialUser = {
     fotoPerfil:'',
     idUsuario:0,
     nome:''
   }
-  const [auth, setAuth] = useState(false);
-  
-
 
   const handleLogin = async (login) => {
     (async ()=>{
@@ -32,17 +31,39 @@ const AuthProvider= ({children}) =>{
     setAuth(false);
   }
 
-  
-  return(
-    <AuthContext.Provider value={{
-      handleLogin,
-      handleLogout,
-      auth,
-      setAuth,
-    }}>
+  return (
+    <MenuContext.Provider
+      value={{
+        openMenu, setOpenMenu,
+        nameLogo, setNameLogo,
+        handleLogin,
+        handleLogout,
+        auth,
+        setAuth,
+      }}
+    >
       {children}
-    </AuthContext.Provider>
+    </MenuContext.Provider>
   );
 }
 
-export {AuthContext, AuthProvider};
+export function useMenuContext() {
+  const context = useContext(MenuContext);
+  if (!context) throw new Error("useMenuContext must be used within a MenuProvider");
+  const { 
+    openMenu, nameLogo, 
+    setOpenMenu, setNameLogo, 
+    handleLogin,
+    handleLogout,
+    auth,
+    setAuth,
+  } = context;
+  return { 
+    openMenu, nameLogo, 
+    setOpenMenu, setNameLogo,
+    handleLogin,
+    handleLogout,
+    auth,
+    setAuth,
+  };
+}
