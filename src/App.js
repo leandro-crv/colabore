@@ -1,15 +1,22 @@
 import './App.css';
 import Routers from './routers';
-import { AuthProvider } from './context/AuthContext';
+import Header from './components/header'; 
+import Footer from './components/footer';
+import { ProviderOpenMenu } from './services/context';
+import { BrowserRouter } from 'react-router-dom';
 
 function App() {
   return (
-    <div className="App">
-      <AuthProvider>
+    <BrowserRouter>
+      <ProviderOpenMenu>
+        <Header />
         <Routers/>
-      </AuthProvider>
-    </div>
+        <Footer/>
+      </ProviderOpenMenu>
+    </BrowserRouter>  
+  
   );
 }
 
 export default App;
+
