@@ -6,8 +6,6 @@ import { useSwitch } from '@mui/base/SwitchUnstyled';
 function MUISwitch({onClick, ...props}) {
   const { getInputProps, checked, disabled, focusVisible } = useSwitch(props);
 
-  console.log(onClick)
-
   const stateClasses = {
     checked,
     disabled,
