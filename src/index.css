@@ -1,15 +1,80 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+
+:root {
+  --main-color: white;
+  --second-color: #212121;
+  --text-color: black;
+  --text-color2: white;
+  --hover-color: white;
+  --gradient-color: linear-gradient(to right, #659f68, #32669d);
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+.darkMode:root {
+  --main-color: black;
+  --text-color: white;
+  --hover-color: black;
+  --gradient-color: linear-gradient(to left, #659f68, #32669d);
+}
+
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+#root {
+  display: grid;
+  grid-template-columns: 100vw;
+  grid-template-rows: 200px 1fr 200px;
+  align-items: center;
+  justify-items: center;
+}
+
+main {
+  margin-top: 250px;
+  min-height: 100%;
+}
+
+
+html {
+  font: 400 14px roboto;
+  color: var(--text-color);
+  background-color: var(--main-color)
+}
+
+@media (min-width: 750px ) {
+  html {
+    font: 400 16px roboto;
+  }
+}
+
+@media (min-width: 1000px ) {
+  html {
+    font: 400 18px roboto;
+  }
+}
+
+h1 {
+  font-size: 1.8rem
+}
+
+h2 {
+  font-size: 1.4rem
+}
+
+p, a, li, span, h3 {
+  font-size: 1rem
+}
+
+a {
+  color: var(--text-color);
+  text-decoration: none;
+
+}
+
+a:hover {
+  color: var(--hover-color);
+  transform: scale(1.1);
 }
 
 .green{

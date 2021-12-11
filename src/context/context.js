@@ -1,5 +1,5 @@
 import React, { createContext, useState, useContext } from "react";
-import api from '../api';
+import api from '../api'
 
 const MenuContext = createContext();
 

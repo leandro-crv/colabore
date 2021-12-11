@@ -1,12 +1,18 @@
-import {useState} from 'react';
-import { useNavigate } from 'react-router-dom';
+import {useState, useEffect} from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import styles from './Login.module.css';
+import { useMenuContext } from '../../context/context';
 
 
 const Login = () => {
   const [senhaErrada, setSenhaErrada] = useState(false);
   const navigate = useNavigate();
+  const { setNameLogo } = useMenuContext()
+
+  useEffect(() => {
+    setNameLogo('Login')
+  })
 
   const validate = (values)=>{
     const errors = {};
@@ -48,7 +54,8 @@ const Login = () => {
           <button type="submit" className='botao1'>Entrar</button>
         </Form>
       </Formik>
-      <a href='/cadastrousuario'>Criar conta</a>
+
+      <Link to='/cadastrousuario' onClick={() => setNameLogo('Criar conta')}>Criar conta</Link>
     </div>
   );
 };

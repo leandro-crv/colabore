@@ -2,9 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 // import ReactPasswordStrength  from 'react-password-strength';
 
-
-
-
 const CadastroUsuario = () => {
   const [foto, setFoto] = useState(false);
   const initialValues = {
@@ -84,12 +81,12 @@ const CadastroUsuario = () => {
         </div>
         <div>
           <label htmlFor="senha">Senha:</label>
-          <Field id="senha" name="senha" placeholder="insira sua senha" />
+          <Field id="senha" name="senha" placeholder="insira sua senha" type="password" />
           <ErrorMessage name='senha' render={msg => <div className='error'>{msg}</div>} />
         </div>
         <div>
           <label htmlFor="senha2">Confirme sua senha:</label>
-          <Field id="senha2" name="senha2" placeholder="Repita sua senha" />
+          <Field id="senha2" name="senha2" placeholder="Repita sua senha" type="password"/>
           <ErrorMessage name='senha2' render={msg => <div className='error'>{msg}</div>} />
         </div>
         <div>
