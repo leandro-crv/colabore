@@ -7,20 +7,20 @@ export default function MenuProvider({ children }) {
   const [openMenu, setOpenMenu] = useState('50px');
   const [nameLogo, setNameLogo] = useState('Login');
   const [auth, setAuth] = useState(false);
-
   const initialUser = {
     fotoPerfil:'',
     idUsuario:0,
     nome:''
   }
+  const [user, setUser] = useState(initialUser);
+
+  
 
   const handleLogin = async (login) => {
     (async ()=>{
-      const {data} = await api.post('login',login)
-      localStorage.setItem('token',data);
-      api.defaults.headers.common['Authorization'] = data;
-      // window.location.href='/pessoa'
-      setAuth(true);
+      const {data} = await api.post('login',login);
+      autenticate(data);
+      window.location.href='/listacampanha';
     })()
   }
 
@@ -29,6 +29,12 @@ export default function MenuProvider({ children }) {
     api.defaults.headers.common['Authorization'] = '';
     window.location.href = '/login';
     setAuth(false);
+  }
+
+  const autenticate = (token) =>{
+    localStorage.setItem('token',token);
+    api.defaults.headers.common['Authorization'] = token;
+    setAuth(true);
   }
 
   return (
@@ -40,6 +46,8 @@ export default function MenuProvider({ children }) {
         handleLogout,
         auth,
         setAuth,
+        autenticate,
+        user
       }}
     >
       {children}
@@ -57,6 +65,8 @@ export function useMenuContext() {
     handleLogout,
     auth,
     setAuth,
+    autenticate,
+    user
   } = context;
   return { 
     openMenu, nameLogo, 
@@ -65,5 +75,7 @@ export function useMenuContext() {
     handleLogout,
     auth,
     setAuth,
+    autenticate,
+    user
   };
 }

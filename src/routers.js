@@ -8,17 +8,16 @@ import ListaCampanha from "./pages/listacampanha/ListaCampanha";
 import api from "./api";
 import { useMenuContext } from "./context/context";
 import Loading from "./components/loading";
+import DetalheCampanha from "./pages/detalhecampanha/DetalheCampanha";
 
 const Routers = () => {
-  const {auth, setAuth} = useMenuContext();
+  const {auth, setAuth, autenticate} = useMenuContext();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
-    // const idUsuario = localStorage.getItem('idUsuario');
     if(token){
-      api.defaults.headers.common['Authorization'] = token;
-      setAuth(true);
+      autenticate(token);
     }
     setLoading(false);
   })
@@ -33,7 +32,8 @@ const Routers = () => {
           <Route path="/" element={<Login />} />
           <Route path='/cadastrousuario' element={<CadastroUsuario/>} />
           <Route path='/cadastrocampanha' element={<CadastroCampanha/>}/>
-          <Route path='/listacampanha' element={<ListaCampanha/>} />     
+          <Route path='/listacampanha' element={<ListaCampanha/>} />
+          <Route path='/detalhecampanha' element={<DetalheCampanha/>} />     
           <Route path="*" element={<NotFound/>} />
         </Routes>
     </main>  
