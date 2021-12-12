@@ -9,7 +9,7 @@ import api from '../../api'
 const Login = () => {
   const [senhaErrada, setSenhaErrada] = useState(false);
   const navigate = useNavigate();
-  const { setNameLogo, setAuth, auth, handleLogin } = useMenuContext()
+  const { setNameLogo, setAuth, auth, handleLogin, handleLogout } = useMenuContext()
 
   useEffect(() => {
     setNameLogo('Login')
@@ -29,6 +29,8 @@ const Login = () => {
 
   return (
     <div className={styles.login}>
+      {auth ? (<button onClick={()=>handleLogout()}>Sair</button>): null}
+      
       <h1 className={styles.titulo}>Entrar</h1>
       <Formik
         initialValues={{

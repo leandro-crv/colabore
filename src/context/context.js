@@ -31,7 +31,7 @@ export default function MenuProvider({ children }) {
   const handleLogout = () =>{
     localStorage.removeItem('token');
     api.defaults.headers.common['Authorization'] = '';
-    window.location.href = '/login';
+    window.location.href = '/';
     setAuth(false);
   }
 

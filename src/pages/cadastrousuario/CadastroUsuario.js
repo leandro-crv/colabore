@@ -42,7 +42,7 @@ const CadastroUsuario = () => {
       errors.senha = "Senha é um campo obrigatório"
     }
   
-    if (values.senha2 !== values.senha) {
+    if (values.senha2 !== valueSenha) {
       errors.senha2 = "As senhas não são iguais";
     }
 
@@ -60,6 +60,7 @@ const CadastroUsuario = () => {
       onSubmit={async (values) => {
         delete values.senha2;
         values.foto = foto;
+        values.senha = valueSenha
         console.log('POST cadastro usuário: ',values)
       }}
     >
@@ -86,7 +87,7 @@ const CadastroUsuario = () => {
           <Field 
             id="senha" name="senha" 
             placeholder="insira sua senha" 
-            type="password" 
+            type="text" 
             minLength={8}
             value={valueSenha}
             onChange={(e) => setValueSenha(e.target.value)}          
@@ -96,7 +97,7 @@ const CadastroUsuario = () => {
         </div>
         <div>
           <label htmlFor="senha2">Confirme sua senha:</label>
-          <Field id="senha2" name="senha2" placeholder="Repita sua senha" type="password"/>
+          <Field id="senha2" name="senha2" placeholder="Repita sua senha" type="text"/>
           <ErrorMessage name='senha2' render={msg => <div className='error'>{msg}</div>} />
         </div>
         <div>
