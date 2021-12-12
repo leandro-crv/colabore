@@ -9,21 +9,7 @@ import api from '../../api'
 const Login = () => {
   const [senhaErrada, setSenhaErrada] = useState(false);
   const navigate = useNavigate();
-  const { setNameLogo, setAuth, auth } = useMenuContext()
-
-  console.log(auth)
-
-  const handleLogin = async (login) => {
-    // (async ()=>{
-    //   const {data} = await api.post('login',login)
-    //   localStorage.setItem('token',data);
-    //   api.defaults.headers.common['Authorization'] = data;
-    //   // window.location.href='/pessoa'
-      
-    // })()
-    setAuth(true);
-      console.log(auth)
-  }
+  const { setNameLogo, setAuth, auth, handleLogin } = useMenuContext()
 
   useEffect(() => {
     setNameLogo('Login')
@@ -31,8 +17,8 @@ const Login = () => {
 
   const validate = (values)=>{
     const errors = {};
-    if(!values.usuario){
-      errors.usuario = "Usuário é um campo obrigatório";
+    if(!values.login){
+      errors.login = "Usuário é um campo obrigatório";
     }
 
     if(!values.senha){
@@ -46,20 +32,26 @@ const Login = () => {
       <h1 className={styles.titulo}>Entrar</h1>
       <Formik
         initialValues={{
-          usuario: '',
+          login: '',
           senha: '',
         }}
         validate={validate}
         onSubmit={async (values) => {
-          console.log(values)
-          handleLogin(values)
+          console.log('POST login: ', values);
+          try{
+            const {data} = await api.post('login',values);
+            handleLogin(values)
+            setSenhaErrada(false);
+          } catch (error) {
+            setSenhaErrada(true);
+          }
         }}
       >
         <Form className='form-usuario'>
           <div>
-            <label htmlFor="usuario">Usuário</label>
-            <Field id="usuario" name="usuario" placeholder="usuário" />
-            <ErrorMessage name='usuario' render={msg => <div className='error'>{msg}</div>} />
+            <label htmlFor="login">Usuário</label>
+            <Field id="login" name="login" placeholder="usuário" />
+            <ErrorMessage name='login' render={msg => <div className='error'>{msg}</div>} />
           </div>
           <div>
             <label htmlFor="senha">Senha</label>
