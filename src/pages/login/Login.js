@@ -37,12 +37,12 @@ const Login = () => {
         }}
         validate={validate}
         onSubmit={async (values) => {
-          console.log('POST login: ', values);
-          try{
-            const {data} = await api.post('login',values);
-            handleLogin(values)
+          const loginSuccess = await handleLogin(values)
+          if(loginSuccess){
             setSenhaErrada(false);
-          } catch (error) {
+            navigate('/listacampanha');
+          }
+          else{
             setSenhaErrada(true);
           }
         }}

@@ -27,6 +27,8 @@ const ListaCampanha = () =>{
       {listCampanhas.map((c,index) => (
         <li key={index} onClick={()=>irParaDetalheCampanha(index)}>
           <h1>{c.titulo}</h1>
+          {c.concluido ? (<h3>Visível</h3>): (<h3>Invisível</h3>)}
+          <p>Data limite para doações: {moment(c.dataLimite).format('DD/MM/YYYY')}</p>
           <img src={c.foto} alt={c.titulo} width='200px'/>
           <p >Meta: {c.meta}</p>
           <p className={c.classe}>Arrecadado: {c.arrecadado}</p>
@@ -37,6 +39,7 @@ const ListaCampanha = () =>{
             ))}
           </ul>
           <p>Última atualização {moment(c.ultimaAlteracao).format('DD/MM/YYYY')}</p>
+          <br></br>
         </li>
       ))}
       </ul>

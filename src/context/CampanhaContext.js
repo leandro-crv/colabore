@@ -1,6 +1,7 @@
 import React, { useState, useEffect, createContext } from 'react';
 import api from '../api';
 import moment from 'moment';
+import { useMenuContext } from './context';
 
 // importar imagens teste initialCampanhas
 import natal from '../images/natal.jfif';
@@ -8,92 +9,135 @@ import pascoa from '../images/pascoa.png';
 import agasalho from '../images/agasalho.jfif';
 import criancas from '../images/criancas.jfif';
 import pais from '../images/pais.jfif';
+import computadores from '../images/computadores.jfif';
 
 const CampanhaContext = createContext({});
 
 const CampanhaProvider= ({children}) =>{
+  const {user} = useMenuContext();
   const initialCampanhas = [
     {
+      idCampanha:1,
       titulo:'Campanha de Natal',
       foto: natal,
       meta: 15000,
       arrecadado: 12800,
       criador: 'Leandro Carvalho',
       categorias:['doacoes','roupas'],
-      ultimaAlteracao: '2021-12-10' 
+      ultimaAlteracao: '2021-12-10',
+      dataLimite: '2021-12-23' 
     },
     {
+      idCampanha:2,
       titulo:'Dia das crianças',
       foto: criancas,
       meta: 10000,
       arrecadado:10000,
       criador:'Bianca',
       categorias:['doacoes','rifas'],
-      ultimaAlteracao: '2021-10-05'
+      ultimaAlteracao: '2021-10-05',
+      dataLimite: '2021-10-10' 
     },
     {
+      idCampanha:3,
       titulo:'Páscoa solidária',
       foto: pascoa,
       meta:7000,
       arrecadado:3500,
       criador:'Thiago Coelho',
       categorias:['doeacoes'],
-      ultimaAlteracao: '2021-04-03'
+      ultimaAlteracao: '2021-04-03',
+      dataLimite: '2021-04-03'
     },
     {
+      idCampanha:4,
       titulo:'Campanha do Agasalho',
       foto: agasalho,
       meta:5000,
       arrecadado:8000,
       criador:'Thiago Marchi',
       categorias:['roupas'],
-      ultimaAlteracao: '2021-06-05'
+      ultimaAlteracao: '2021-06-05',
+      dataLimite: '2021-06-10'
     },
     {
+      idCampanha:5,
       titulo:'Dia dos pais',
       foto: pais,
       meta:1000,
       arrecadado:50,
       criador:'qualquer um',
       categorias:['roupas','rifas'],
-      ultimaAlteracao: '2021-08-22'
+      ultimaAlteracao: '2021-08-22',
+      dataLimite: '2021-08-30'
+    },
+    {
+      idCampanha:6,
+      titulo:'Doação de computadores',
+      foto: computadores,
+      meta:15000,
+      arrecadado:3500,
+      criador:'dbc',
+      categorias:['doacoes'],
+      ultimaAlteracao: '2021-12-12',
+      dataLimite: '2022-03-10'
     }
   ];
 
   const initialDetalheCampanha = {
+    idCampanha:1,
     titulo: 'Natal solidário',
-    arrecadado: 15000,
+    arrecadado: 12800,
+    meta: 15000,
     descricao: 'Doações para o lar Santo Antônio de Porto Alegre',
     foto: natal,
     categorias: ['doações','roupas','rifas'],
-    criadorCampanhaId: 0,
+    criadorCampanhaId: 1,
+    encerra:'sim',
     usuarios: [
-      {
-        nome:'user1',
-        foto:'user1'
-      },
+      // {
+      //   nome:'user1',
+      //   idUsuario:1,
+      //   foto:'user1'
+      // },
       {
         nome:'user2',
+        idUsuario:2,
         foto:'user2'
       },
       {
         nome:'user3',
+        idUsuario:3,
         foto:'user3'
       },
       {
         nome:'user4',
+        idUsuario:4,
         foto:'user4'
       },
       {
         nome:'user5',
+        idUsuario:5,
         foto:'user5'
       },
     ]
   }
 
-  const [listCampanhas,setListCampanhas] = useState(initialCampanhas);
-  const [detalheCampanha, setDetalheCampanha] = useState(initialDetalheCampanha)
+  const initialCadastro = {
+    titulo:'',
+    meta:'',
+    encerra:'',
+    descricao:'',
+    capa:'',
+    categorias:[],
+  }
 
+  const [listCampanhas,setListCampanhas] = useState(initialCampanhas);
+  const [detalheCampanha, setDetalheCampanha] = useState(initialDetalheCampanha);
+  const [criador, setCriador] = useState(false);
+  const [contribuiu, setContribuiu] = useState(false);
+  const [cadastro, setCadastro] = useState(initialCadastro);
+  const [edit, setEdit] = useState(false);
 
   const getCampanhas = ()=>{
     // quando tiver funcionando API
@@ -102,13 +146,22 @@ const CampanhaProvider= ({children}) =>{
     //   data.map(campanha => {
     //     campanha.classe = arrecadadoMeta(campanha.arrecadado,campanha.meta)
     //   })
-    //   setListCampanhas(data.sort((a,b) => moment(a.ultimaAlteracao).isAfter(b.ultimaAlteracao) ? -1 : 1));
+    //   setListCampanhas(data.sort((a,b) => moment(a.dataLimite).isAfter(b.dataLimite) ? -1 : 1));
     // })()
     
-    listCampanhas.map(campanha => campanha.classe = arrecadadoMeta(campanha.arrecadado,campanha.meta));
-    setListCampanhas(listCampanhas.sort((a,b) => moment(a.ultimaAlteracao).isAfter(b.ultimaAlteracao) ? -1 : 1));
+    // (async ()=>{
+    //   const {data} = await api.get('campanha');
+    //   console.log('campanhas: ', data);
+    // })()
+
+    listCampanhas.map(campanha => {
+      campanha.classe = arrecadadoMeta(campanha.arrecadado,campanha.meta);
+      campanha.concluido = moment().isBefore(campanha.dataLimite);
+    });
+    setListCampanhas(listCampanhas.sort((a,b) => moment(a.dataLimite).isAfter(b.dataLimite) ? -1 : 1));
   }
   
+
 
   const arrecadadoMeta = (arrecadado, meta)=>{
     const percentual = arrecadado/meta;
@@ -129,16 +182,62 @@ const CampanhaProvider= ({children}) =>{
     // (async ()=>{
     //   const {data} = api.get('/campanha/id');
     //   setDetalheCampanha(data);
-    // })()
+    // })();
+
+    if(user.idUsuario===detalheCampanha.criadorCampanhaId){
+      setCriador(true);
+    }
+    else{
+      setCriador(false);
+      let contribuiu = detalheCampanha.usuarios.find(usuario => usuario.idUsuario===user.idUsuario)!==undefined;
+      setContribuiu(contribuiu);
+    }
 
   }
+
+  const prepararEdicao = (id) => {
+    console.log('id no preparar Edição', id)
+    const campanha = {
+      titulo: detalheCampanha.titulo,
+      descricao: detalheCampanha.descricao,
+      meta: detalheCampanha.meta,
+      categorias:detalheCampanha.categorias,
+      encerra: detalheCampanha.encerra,
+      foto: detalheCampanha.foto
+    }
+    setCadastro(campanha);
+    setEdit(true);
+  }
+
+  const cancelarEdicao = ()=>{
+    setCadastro(initialCadastro);
+    setEdit(false);
+  }
+  // Métodos de contribuição
+
+  // const contribuir = async(idCampanha, idUsuario, valor) =>{
+  //   const {data} = await api.post('campanha/idCampanha/idUsuario',valor)
+  // }
+
+  // const retirarContribuicao = async (idCampanha, idUsuario) =>{
+  //   const {data} = await api.delete('campanha/idCampanha/idUsuario')
+  // }
+
+  // const prepareEditionCampanha = (camapnha) =>{
+  //   console.log('prepare edition')
+  // }
 
   return(
     <CampanhaContext.Provider value={{
       getCampanhas,
       listCampanhas,
       detalharCampanha,
-      detalheCampanha
+      detalheCampanha,
+      criador,
+      cadastro,
+      prepararEdicao,
+      edit,
+      cancelarEdicao
     }}>
       {children}
     </CampanhaContext.Provider>

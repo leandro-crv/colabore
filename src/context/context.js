@@ -17,11 +17,15 @@ export default function MenuProvider({ children }) {
   
 
   const handleLogin = async (login) => {
-    (async ()=>{
+    try{
       const {data} = await api.post('login',login);
       autenticate(data);
-      window.location.href='/listacampanha';
-    })()
+      return true;
+    } catch(error){
+      return false;
+    }
+    
+    
   }
 
   const handleLogout = () =>{
@@ -35,6 +39,19 @@ export default function MenuProvider({ children }) {
     localStorage.setItem('token',token);
     api.defaults.headers.common['Authorization'] = token;
     setAuth(true);
+    getUser();
+  }
+
+  const getUser = () =>{
+    (async ()=>{
+      const {data} = await api.get('usuario');
+      console.log('usuário é: ', data);
+      setUser({
+        nome: data.nome,
+        idUsuario: data.idUsuario,
+        fotoPerfil:''
+      });
+    })()
   }
 
   return (

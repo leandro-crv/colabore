@@ -13,7 +13,7 @@ function App() {
       <BrowserRouter>
         <Header />
         <Routers />
-        <Footer />
+        {/* <Footer /> */}
       </BrowserRouter>
       </CampanhaProvider>
     </MenuProvider>

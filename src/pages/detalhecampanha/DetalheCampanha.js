@@ -2,20 +2,25 @@ import { useState, useContext, useEffect } from "react";
 import {FaUserAlt} from 'react-icons/fa'
 import { useMenuContext } from '../../context/context';
 import { CampanhaContext } from "../../context/CampanhaContext";
+import { useNavigate } from "react-router-dom";
 
 
 const DetalheCampanha = () => {
+  const navigate = useNavigate();
   const { user } = useMenuContext();
-  const {detalheCampanha} = useContext(CampanhaContext);
-  const [criador, setCriador] = useState(false);
-  const [contribuiu, setContribuiu] = useState(false);
+  const {detalheCampanha, criador, contribuiu, prepararEdicao} = useContext(CampanhaContext);
+ 
+  const irParaEdicao = (id)=>{
+    prepararEdicao(id);
+    navigate('/cadastrocampanha')
+  }
 
   const abrirCaixaDeContribuicao = ()=>{
     var contribuicao = prompt("Digite quanto você quer doar");
     var verificacao = window.confirm(`Você confirma a doação de R$ ${contribuicao}`);
     if(verificacao){
       console.log('fez a doação');
-      setContribuiu(true)
+      
     }
     else{
       console.log('não fez a doação')
@@ -24,20 +29,14 @@ const DetalheCampanha = () => {
 
   const retirarContribuicao = () =>{
     console.log('contribuição retirada');
-    setContribuiu(false);
   }
 
-  useEffect(()=>{
-    if(user.idUsuario===detalheCampanha.criadorCampanhaId){
-      setCriador(true);
-    }
-  })
+  
 
   return (
     <>
     <div>
       <p>Informações para teste</p>
-      <p>Id usuário: {user.idUsuario}</p>
       <p>Id criador da campanha: {detalheCampanha.criadorCampanhaId} </p>
     </div>
       <h1>Detalhe da campanha</h1>
@@ -63,7 +62,7 @@ const DetalheCampanha = () => {
           </ul>
         </div>
       </div>
-      {criador ? (<button>Editar campanha</button>): !contribuiu ? (
+      {criador ? (<button onClick={()=>irParaEdicao(detalheCampanha.idCampanha)}>Editar campanha</button>): !contribuiu ? (
         <button onClick={()=> abrirCaixaDeContribuicao()}>Contribuir</button>
       ): (
         <button onClick={()=> retirarContribuicao()}>Retirar contribuição</button>
