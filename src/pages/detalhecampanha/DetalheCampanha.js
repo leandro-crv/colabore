@@ -1,11 +1,12 @@
 import { useState, useContext, useEffect } from "react";
-import natal from '../../images/natal.jfif';
 import {FaUserAlt} from 'react-icons/fa'
 import { useMenuContext } from '../../context/context';
+import { CampanhaContext } from "../../context/CampanhaContext";
 
 
 const DetalheCampanha = () => {
-  const { user } = useMenuContext()
+  const { user } = useMenuContext();
+  const {detalheCampanha} = useContext(CampanhaContext);
   const [criador, setCriador] = useState(false);
   const [contribuiu, setContribuiu] = useState(false);
 
@@ -27,60 +28,33 @@ const DetalheCampanha = () => {
   }
 
   useEffect(()=>{
-    if(user.idUsuario===campanha.criadorCampanhaId){
+    if(user.idUsuario===detalheCampanha.criadorCampanhaId){
       setCriador(true);
     }
   })
 
-  const campanha = {
-    titulo: 'Natal solidário',
-    arrecadado: 15000,
-    descricao: 'Doações para o lar Santo Antônio de Porto Alegre',
-    foto: natal,
-    categorias: ['doações','roupas','rifas'],
-    criadorCampanhaId: 0,
-    usuarios: [
-      {
-        nome:'user1',
-        foto:'user1'
-      },
-      {
-        nome:'user2',
-        foto:'user2'
-      },
-      {
-        nome:'user3',
-        foto:'user3'
-      },
-      {
-        nome:'user4',
-        foto:'user4'
-      },
-      {
-        nome:'user5',
-        foto:'user5'
-      },
-    ]
-  }
-
-
   return (
     <>
+    <div>
+      <p>Informações para teste</p>
+      <p>Id usuário: {user.idUsuario}</p>
+      <p>Id criador da campanha: {detalheCampanha.criadorCampanhaId} </p>
+    </div>
       <h1>Detalhe da campanha</h1>
       <div className="detalhe-campanha">
-        <h2>{campanha.titulo}</h2>
-        <p>Total arrecadado: R$ {campanha.arrecadado}</p>
-        <p>Descrição: {campanha.descricao}</p>
-        <img src={campanha.foto} width='200px' alt={campanha.titulo}/>
+        <h2>{detalheCampanha.titulo}</h2>
+        <p>Total arrecadado: R$ {detalheCampanha.arrecadado}</p>
+        <p>Descrição: {detalheCampanha.descricao}</p>
+        <img src={detalheCampanha.foto} width='200px' alt={detalheCampanha.titulo}/>
         <ul> Categorias: 
-          {campanha.categorias.map(categoria => (
+          {detalheCampanha.categorias.map(categoria => (
             <li>{categoria}</li>
           ))}
         </ul>
         <div>
           <ul>
-            Contribuições ({campanha.usuarios.length})
-            {campanha.usuarios.map(usuario => (
+            Contribuições ({detalheCampanha.usuarios.length})
+            {detalheCampanha.usuarios.map(usuario => (
               <li>
               <FaUserAlt/>
               <span>{usuario.nome}</span>
