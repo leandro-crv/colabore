@@ -71,7 +71,6 @@ const CadastroCampanha = () => {
     } else{
       const regex = new RegExp(`^${value}`, 'gi');
       const sugestao = listCategoriasBD.filter(c=> c.nome.match(regex));
-      console.log('sugestão é: ', sugestao)
       if(sugestao.length){
         setSugestoes(sugestao);
       }
@@ -100,14 +99,27 @@ const CadastroCampanha = () => {
         onSubmit={async (values) => {
           //values.capa = foto;
           values.foto = 'https://www.fmo.org.br/images/campanha-solidaria/logo.jpg';
-          const novas = listCategoriasAtuais.filter(categoria => categoria.id===undefined);
-          for(let i=0;i<novas.length;i++){
-            postCampanhaCategoria(novas[i].nome);
-          }
+          var idsPraCadastrar = [];
+          var semId = [];
+          console.log('categoriasBD',listCategoriasBD)
+          console.log('categorias atuais',listCategoriasAtuais)
+          listCategoriasAtuais.map(categoria => {
+            let id = listCategoriasBD.find(cat => cat.nome === categoria);
+            if(id===undefined){
+              semId.push(categoria);
+            }
+            else{
+              idsPraCadastrar.push(id.idCategoria);
+            }
+          })
+          setCategoriasACadastrar([...categoriasACadastrar,idsPraCadastrar]);
 
-          const existentes = listCategoriasAtuais.filter(categoria => categoria.id !==undefined);
-          existentes.map(categoria => setListCategoriasAtuais([...categoriasACadastrar,categoria.id]))
-          values.categorias = listCategoriasAtuais;
+          //  for(let i=0;i<semId.length;i++){
+          //    postCampanhaCategoria(semId[i]);
+          // }
+
+         console.log('sem id',semId,'id pra cadastrar',idsPraCadastrar)
+          values.categorias = categoriasACadastrar;
           console.log(values)
         }}
       >
@@ -184,9 +196,6 @@ const CadastroCampanha = () => {
     </>
   );
 }
-
-
-
 
 export default CadastroCampanha;
 
