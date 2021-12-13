@@ -7,18 +7,21 @@ import {GrFormClose} from 'react-icons/gr';
 
 const CadastroCampanha = () => {
   const navigate = useNavigate();
-  const { cadastro, edit, cancelarEdicao } = useContext(CampanhaContext);
+  const { cadastro, edit, cancelarEdicao, listCategoriasBD, getCampanhasCategorias, postCampanhaCategoria, categoriasACadastrar, setCategoriasACadastrar } = useContext(CampanhaContext);
   const [foto, setFoto] = useState(false);
-  const initialCat = ['roupas', 'livros', 'alimentos', 'remédios', 'brinquedos']
   const [listCategoriasAtuais, setListCategoriasAtuais] = useState([])
   const [inputCategoria, setInputCategoria] = useState("");
   const [sugestoes, setSugestoes] = useState([]);
 
+  useEffect(()=>{
+    getCampanhasCategorias();
+  },[])
+  
   const prepararCancelarEdicao = () => {
     cancelarEdicao();
     navigate('/detalhecampanha');
   }
-  console.log('cadastro é: ', cadastro)
+  
   const validate = (values) => {
     const errors = {};
     if (!values.titulo) {
@@ -67,19 +70,20 @@ const CadastroCampanha = () => {
       setSugestoes([]);
     } else{
       const regex = new RegExp(`^${value}`, 'gi');
-      const sugestao = initialCat.filter(c=> c.match(regex));
+      const sugestao = listCategoriasBD.filter(c=> c.nome.match(regex));
+      console.log('sugestão é: ', sugestao)
       if(sugestao.length){
         setSugestoes(sugestao);
       }
       else{
-        setSugestoes([value])
+        setSugestoes([{nome:value}])
       }
     }
 
   }
 
   const excluirCategoria = (nome) =>{
-    setListCategoriasAtuais(listCategoriasAtuais.filter(categoria=>categoria!==nome))
+    setListCategoriasAtuais(listCategoriasAtuais.filter(categoria=> categoria!==nome))
   }
   const inserirCategoria = (nome) =>{
     setListCategoriasAtuais([...listCategoriasAtuais,nome]);
@@ -94,7 +98,15 @@ const CadastroCampanha = () => {
         validate={validate}
         enableReinitialize={true}
         onSubmit={async (values) => {
-          values.capa = foto;
+          //values.capa = foto;
+          values.foto = 'https://www.fmo.org.br/images/campanha-solidaria/logo.jpg';
+          const novas = listCategoriasAtuais.filter(categoria => categoria.id===undefined);
+          for(let i=0;i<novas.length;i++){
+            postCampanhaCategoria(novas[i].nome);
+          }
+
+          const existentes = listCategoriasAtuais.filter(categoria => categoria.id !==undefined);
+          existentes.map(categoria => setListCategoriasAtuais([...categoriasACadastrar,categoria.id]))
           values.categorias = listCategoriasAtuais;
           console.log(values)
         }}
@@ -144,7 +156,7 @@ const CadastroCampanha = () => {
           <input type='text' value={inputCategoria} onChange={(e) => handleInputCategoria(e.target.value)} placeholder='Insira uma categoria' />
           <ul>
             {sugestoes.map(sugestao => (
-              <li><button onClick={()=>inserirCategoria(sugestao)}>{sugestao}</button></li>
+              <li><button onClick={()=>inserirCategoria(sugestao.nome)}>{sugestao.nome}</button></li>
             ))}
           </ul>
           <div>

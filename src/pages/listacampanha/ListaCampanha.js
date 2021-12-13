@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import {CampanhaContext} from '../../context/CampanhaContext'
 import styles from './ListaCampanha.module.css';
 import { useNavigate } from "react-router-dom";
+import perfil from '../../images/perfil.jpg';
 
 const ListaCampanha = () =>{
   const {getCampanhas,listCampanhas,detalharCampanha} = useContext(CampanhaContext);
@@ -11,6 +12,7 @@ const ListaCampanha = () =>{
 
   useEffect(()=>{
     getCampanhas();
+    console.log('listCampanhas',listCampanhas)
   },[])
 
   const irParaDetalheCampanha = (id)=>{
@@ -23,26 +25,22 @@ const ListaCampanha = () =>{
   return(
     <div>
       <h1>Campanhas</h1>
-      <ul>
-      {listCampanhas.map((c,index) => (
-        <li key={index} onClick={()=>irParaDetalheCampanha(index)}>
-          <h1>{c.titulo}</h1>
-          {c.concluido ? (<h3>Visível</h3>): (<h3>Invisível</h3>)}
-          <p>Data limite para doações: {moment(c.dataLimite).format('DD/MM/YYYY')}</p>
-          <img src={c.foto} alt={c.titulo} width='200px'/>
-          <p >Meta: {c.meta}</p>
-          <p className={c.classe}>Arrecadado: {c.arrecadado}</p>
-          <p>Criador: {c.criador} </p>
-          <ul> Categorias: 
-            {c.categorias.map((categoria,index)=> (
-              <li>{categoria}</li>
-            ))}
-          </ul>
-          <p>Última atualização {moment(c.ultimaAlteracao).format('DD/MM/YYYY')}</p>
-          <br></br>
-        </li>
-      ))}
+      <ul className="listaCampanhas">
+        {listCampanhas.map(campanha => (
+          <li class='campanha'>
+            <h3>{campanha.tituloCampanha}</h3>
+            {campanha.metaAtingida && (<p>Meta atingida</p>)}
+            <img src={campanha.foto==='string' ? perfil : campanha.foto} alt={campanha.titutloCampanha} width='100px'/>
+            <p>Data de encerramento {moment(campanha.dataLimiteContribuicao).format('DD/MM/YYYY')}</p>
+            <h5>Meta de arrecadação: R$ {campanha.metaArrecadacao}</h5>
+            <h5 className={campanha.cor}>Total arrecadado: R$ {campanha.totalArrecadado}</h5>
+            <p>Criador {campanha.criadorCampanha}</p>
+            <p>Atualizado em {moment(campanha.ultimaAlteracao).format('DD/MM/YYYY hh:mm')}</p>
+          </li>
+        ))}
+
       </ul>
+
     </div>
   );
 }

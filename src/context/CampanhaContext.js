@@ -124,56 +124,70 @@ const CampanhaProvider= ({children}) =>{
   }
 
   const initialCadastro = {
-    titulo:'',
-    meta:'',
-    encerra:'',
-    descricao:'',
-    capa:'',
+    concluiCampanhaAutomaticamente:'',
+    dataLimiteContribuicao:'',
+    descricaoCampanha:'',
+    foto:'',
+    metaArrecadacao:'',
+    tituloCampanha:'',
     categorias:[],
   }
 
-  const [listCampanhas,setListCampanhas] = useState(initialCampanhas);
+  const [listCampanhas,setListCampanhas] = useState([]);
   const [detalheCampanha, setDetalheCampanha] = useState(initialDetalheCampanha);
   const [criador, setCriador] = useState(false);
   const [contribuiu, setContribuiu] = useState(false);
   const [cadastro, setCadastro] = useState(initialCadastro);
   const [edit, setEdit] = useState(false);
+  const [listCategoriasBD, setListCategoriasBD] = useState([]);
+  const [categoriasACadastrar, setCategoriasACadastrar] = useState([]);
 
   const getCampanhas = ()=>{
-    // quando tiver funcionando API
-    // (async ()=>{
-    //   const {data} = await api.get('campanha');
-    //   data.map(campanha => {
-    //     campanha.classe = arrecadadoMeta(campanha.arrecadado,campanha.meta)
-    //   })
-    //   setListCampanhas(data.sort((a,b) => moment(a.dataLimite).isAfter(b.dataLimite) ? -1 : 1));
-    // })()
-    
-    // (async ()=>{
-    //   const {data} = await api.get('campanha');
-    //   console.log('campanhas: ', data);
-    // })()
-
-    listCampanhas.map(campanha => {
-      campanha.classe = arrecadadoMeta(campanha.arrecadado,campanha.meta);
-      campanha.concluido = moment().isBefore(campanha.dataLimite);
-    });
-    setListCampanhas(listCampanhas.sort((a,b) => moment(a.dataLimite).isAfter(b.dataLimite) ? -1 : 1));
+    (async ()=>{
+      const {data} = await api.get('campanha');
+      data.map(campanha => {
+        const {cor,metaAtingida} = arrecadadoMeta(campanha.totalArrecadado,campanha.metaArrecadacao)
+        campanha.metaAtingida = metaAtingida
+        campanha.cor = cor
+      })
+      setListCampanhas(data.sort((a,b) => moment(a.dataLimiteContribuicao).isAfter(b.dataLimiteContribuicao) ? -1 : 1));
+    })()
   }
   
+  const getCampanhasCategorias = () =>{
+    (async ()=>{
+      const {data} = await api.get('categoria');
+      setListCategoriasBD(data);
+    })()
+  }
 
+  const postCampanhaCategoria = async(value) =>{
+    const {data} = await api.post('categoria', value);
+    setCategoriasACadastrar([...categoriasACadastrar,data.idCategoria]);
+  }
 
   const arrecadadoMeta = (arrecadado, meta)=>{
     const percentual = arrecadado/meta;
-
-    if(percentual>0.8){
-      return 'green';
-    }
-    else if(percentual >=0.3){
-      return 'orange';
-    }
-    else{
-      return 'red';
+    if(percentual >=1){
+      return {
+        metaAtingida:true,
+        cor: 'green'
+      }
+    } else if(percentual > 0.8){
+      return {
+        metaAtingida:false,
+        cor: 'green'
+      }
+    } else if(percentual >=0.3){
+      return {
+        metaAtingida:false,
+        cor:'orange',
+      } 
+    } else{
+      return{
+        metaAtingida:false,
+        cor:'red'
+      } 
     }
   }
 
@@ -237,7 +251,11 @@ const CampanhaProvider= ({children}) =>{
       cadastro,
       prepararEdicao,
       edit,
-      cancelarEdicao
+      cancelarEdicao,
+      listCategoriasBD,
+      getCampanhasCategorias,
+      postCampanhaCategoria,
+      categoriasACadastrar, setCategoriasACadastrar
     }}>
       {children}
     </CampanhaContext.Provider>
