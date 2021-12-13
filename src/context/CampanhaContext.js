@@ -85,7 +85,7 @@ const CampanhaProvider= ({children}) =>{
   ];
 
   const initialDetalheCampanha = {
-    idCampanha:1,
+    idCampanha:0,
     titulo: 'Natal solidário',
     arrecadado: 12800,
     meta: 15000,

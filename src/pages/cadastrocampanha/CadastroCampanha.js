@@ -3,13 +3,16 @@ import { Formik, Field, Form, ErrorMessage } from 'formik';
 import NumberFormat from 'react-number-format';
 import { CampanhaContext } from '../../context/CampanhaContext';
 import { useNavigate } from 'react-router-dom';
-
-
+import {GrFormClose} from 'react-icons/gr';
 
 const CadastroCampanha = () => {
   const navigate = useNavigate();
   const { cadastro, edit, cancelarEdicao } = useContext(CampanhaContext);
   const [foto, setFoto] = useState(false);
+  const initialCat = ['roupas', 'livros', 'alimentos', 'remédios', 'brinquedos']
+  const [listCategoriasAtuais, setListCategoriasAtuais] = useState([])
+  const [inputCategoria, setInputCategoria] = useState("");
+  const [sugestoes, setSugestoes] = useState([]);
 
   const prepararCancelarEdicao = () => {
     cancelarEdicao();
@@ -35,12 +38,13 @@ const CadastroCampanha = () => {
       errors.descricao = "Descrição é um campo obrigatório";
     }
 
-    if (!values.categorias.length) {
-      errors.categorias = "É necessário cadastrar ao menos uma categoria";
+
+    if (!foto) {
+      errors.capa = "É obrigatório uma foto de capa"
     }
 
-    if(!foto){
-      errors.capa = "É obrigatório uma foto de capa"
+    if(!listCategoriasAtuais.length){
+      errors.categorias = "É obrigatório ao menos uma categoria para a campanha";
     }
 
     return errors;
@@ -57,6 +61,31 @@ const CadastroCampanha = () => {
     setFoto(img);
   }
 
+  const handleInputCategoria = (value) => {
+    setInputCategoria(value);
+    if(!value.length){
+      setSugestoes([]);
+    } else{
+      const regex = new RegExp(`^${value}`, 'gi');
+      const sugestao = initialCat.filter(c=> c.match(regex));
+      if(sugestao.length){
+        setSugestoes(sugestao);
+      }
+      else{
+        setSugestoes([value])
+      }
+    }
+
+  }
+
+  const excluirCategoria = (nome) =>{
+    setListCategoriasAtuais(listCategoriasAtuais.filter(categoria=>categoria!==nome))
+  }
+  const inserirCategoria = (nome) =>{
+    setListCategoriasAtuais([...listCategoriasAtuais,nome]);
+    handleInputCategoria('');
+  }
+
   return (
     <>
       {!edit ? (<h1>Cadastrar nova camapnha</h1>) : (<h1>Editar campanha</h1>)}
@@ -66,6 +95,7 @@ const CadastroCampanha = () => {
         enableReinitialize={true}
         onSubmit={async (values) => {
           values.capa = foto;
+          values.categorias = listCategoriasAtuais;
           console.log(values)
         }}
       >
@@ -75,14 +105,17 @@ const CadastroCampanha = () => {
             <Field id="titulo" name="titulo" placeholder="Digite o título da campanha" />
             <ErrorMessage name='titulo' render={msg => <div className='error'>{msg}</div>} />
           </div>
-          <label>
-            <Field type="radio" name="encerra" value='sim' />
-            Sim
-          </label>
-          <label>
-            <Field type="radio" name="encerra" value='nao' />
-            Não
-          </label>
+          <div>
+            <label>Encerrar ao atingir a meta? </label>
+            <label>
+              <Field type="radio" name="encerra" value='sim' />
+              Sim
+            </label>
+            <label>
+              <Field type="radio" name="encerra" value='nao' />
+              Não
+            </label>
+          </div>
           <div>
             <label htmlFor="meta">Meta de arrecadação:</label>
             <Field id="meta" name="meta" placeholder="meta de arrecadação" type='number' />
@@ -95,35 +128,34 @@ const CadastroCampanha = () => {
           </div>
           {edit ? (
             <>
-            <img src={cadastro.foto} width='200px' />
-            <label htmlFor="capa">Trocar imagem:</label>
-            <input name='capa' type='file' accept='image/png, image/jpeg' onChange={(e) => changeInputFoto(e.target)} />
-            <ErrorMessage name='capa' render={msg => <div className='error'>{msg}</div>} />
+              <img src={cadastro.foto} width='200px' />
+              <label htmlFor="capa">Trocar imagem:</label>
+              <input name='capa' type='file' accept='image/png, image/jpeg' onChange={(e) => changeInputFoto(e.target)} />
+              <ErrorMessage name='capa' render={msg => <div className='error'>{msg}</div>} />
             </>
-          ): (
+          ) : (
             <div>
-            <label htmlFor="capa">Capa:</label>
-            <input name='capa' type='file' accept='image/png, image/jpeg' onChange={(e) => changeInputFoto(e.target)} />
-            <ErrorMessage name='capa' render={msg => <div className='error'>{msg}</div>} />
-          </div>
+              <label htmlFor="capa">Capa:</label>
+              <input name='capa' type='file' accept='image/png, image/jpeg' onChange={(e) => changeInputFoto(e.target)} />
+              <ErrorMessage name='capa' render={msg => <div className='error'>{msg}</div>} />
+            </div>
           )}
-          <div >Categoria:</div>
-          <label>
-            <Field type="checkbox" name="categorias" value="rifas" />
-            Rifas
-          </label>
-          <label>
-            <Field type="checkbox" name="categorias" value="doacoes" />
-            Doações
-          </label>
-          <label>
-            <Field type="checkbox" name="categorias" value="livros" />
-            Livros
-          </label>
-          <label>
-            <Field type="checkbox" name="categorias" value="roupas" />
-            Roupas
-          </label>
+          <div >Categorias:</div>
+          <input type='text' value={inputCategoria} onChange={(e) => handleInputCategoria(e.target.value)} placeholder='Insira uma categoria' />
+          <ul>
+            {sugestoes.map(sugestao => (
+              <li><button onClick={()=>inserirCategoria(sugestao)}>{sugestao}</button></li>
+            ))}
+          </ul>
+          <div>
+            Categorias salvas:
+            <ul>
+              {listCategoriasAtuais.map(categoria => (
+                <li>{categoria} <GrFormClose onClick={()=>excluirCategoria(categoria)}/></li>
+              ))}
+            </ul>
+            <ErrorMessage name='categorias' render={msg => <div className='error'>{msg}</div>} />
+          </div>
           {!edit ? (
             <div>
               <button type="submit" className='botao1'>Cadastrar</button>
