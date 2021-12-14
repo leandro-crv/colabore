@@ -3,6 +3,7 @@ import { Formik, Field, Form, ErrorMessage } from 'formik';
 import NumberFormat from 'react-number-format';
 import { CampanhaContext } from '../../context/CampanhaContext';
 import { useNavigate } from 'react-router-dom';
+import { useMenuContext } from '../../context/context';
 
 
 
@@ -56,6 +57,12 @@ const CadastroCampanha = () => {
     }
     setFoto(img);
   }
+
+  const {setNameLogo} = useMenuContext();
+
+  useEffect(() => {
+    setNameLogo("Cadastro Campanha")
+  },[])
 
   return (
     <>

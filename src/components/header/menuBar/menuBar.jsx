@@ -4,30 +4,40 @@ import { MenuBarDiv, MenuBarDivPrincipal } from './styles'
 import { useMenuContext } from '../../../context/context'
 import darkMode from '../../../services/functions/darkMode'
 import UseSwitchesCustom from '../../switch'
-
+import User from '../../user/User'
+import Navigation from './navigation'
 
 const MenuBar = () => {
-  const { openMenu, setOpenMenu, nameLogo } = useMenuContext()
+  const { openMenu, setOpenMenu, user, nameLogo } = useMenuContext()
 
   return (
     <MenuBarDivPrincipal>
       <MenuBarDiv>
-        <div className="imMenu">
-          <ImMenu onClick={() => setOpenMenu(openMenu === '50px' ? '250px' : '50px')}/>
-        </div>
-        
-        <div className="imUsers">
-          <ImUsers />
-        </div>
-        
-        <h1> 
+        <div className="menu-left">
+          <div className="imMenu">
+            <ImMenu onClick={() => setOpenMenu(openMenu === '60px' ? '250px' : '60px')}/>
+          </div>
+          
+          <div className="imUsers">
+            <ImUsers />
+          </div>
+          
+          <h1>
+            {
+              nameLogo
+            }
+          </h1>
+
+          <UseSwitchesCustom onClick={() => darkMode()} />
+
+
+        </div> 
         {
-          nameLogo
+          user.nome && <Navigation />
+        }
+        {
+          user && <User />
         } 
-        </h1>
-
-        <UseSwitchesCustom onClick={() => darkMode()} />
-
       </MenuBarDiv>
     </MenuBarDivPrincipal>
   )

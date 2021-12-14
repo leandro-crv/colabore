@@ -3,7 +3,7 @@ import styled from "styled-components";
 export const MenuBarDivPrincipal = styled.div`
   display: flex;
   justify-content: space-between;
-  height: 50px;
+  height: 60px;
   align-items: center;
   width: 100%;
 
@@ -18,10 +18,17 @@ export const MenuBarDivPrincipal = styled.div`
 export const MenuBarDiv = styled.div`
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-around;
+  width: 100vw;
   gap: 1rem;
-  height: 50px;
- 
+  height: 60px;
+
+  .menu-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
   svg {
     font-size: 1.3rem;
   }

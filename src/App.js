@@ -12,8 +12,10 @@ function App() {
       <CampanhaProvider>
       <BrowserRouter>
         <Header />
-        <Routers />
-        {/* <Footer /> */}
+        <div className='body-content'>
+          <Routers />
+        </div>
+        <Footer />
       </BrowserRouter>
       </CampanhaProvider>
     </MenuProvider>

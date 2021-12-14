@@ -21,7 +21,6 @@ export const HeaderDiv = styled.div`
   flex-direction: column;
   align-items: flex-start;
   width: 100%;
-  max-width: 1200px;
   transition: 0.7s;
   overflow: hidden;
   padding: 0 1rem;

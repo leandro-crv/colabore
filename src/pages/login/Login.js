@@ -13,7 +13,11 @@ const Login = () => {
 
   useEffect(() => {
     setNameLogo('Login')
-  })
+    if(localStorage.getItem('token')){
+      navigate('/listacampanha')
+      setNameLogo('Lista Campanha')
+    }
+  },[])
 
   const validate = (values)=>{
     const errors = {};
@@ -29,7 +33,6 @@ const Login = () => {
 
   return (
     <div className={styles.login}>
-      {auth ? (<button onClick={()=>handleLogout()}>Sair</button>): null}
       
       <h1 className={styles.titulo}>Entrar</h1>
       <Formik
@@ -66,6 +69,7 @@ const Login = () => {
       </Formik>
 
       <Link to='/cadastrousuario' onClick={() => setNameLogo('Cadastro Usuario')}>Criar conta</Link>
+      
     </div>
   );
 };

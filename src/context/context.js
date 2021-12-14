@@ -4,7 +4,7 @@ import api from '../api'
 const MenuContext = createContext();
 
 export default function MenuProvider({ children }) {
-  const [openMenu, setOpenMenu] = useState('50px');
+  const [openMenu, setOpenMenu] = useState('60px');
   const [nameLogo, setNameLogo] = useState('Login');
   const [auth, setAuth] = useState(false);
   const initialUser = {

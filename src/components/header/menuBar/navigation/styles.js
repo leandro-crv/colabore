@@ -1,10 +1,27 @@
 import styled from 'styled-components'
-import { DivUlLi } from '../logout/styles'
+
+const DivUlLi = styled.div`
+  margin-top: 40px;
+
+  ul {
+    list-style: none;
+    display: flex;
+    
+    li {
+      cursor: pointer;
+      }
+    }
+  }
+
+  @media(min-width: 650px) {
+    margin-top: 0px;
+  }
+`
 
 const NavLinks = styled(DivUlLi)`
   margin-top: 10px;
-  display: none;
-   
+  /* display: none; */
+  
   ul {
       display: flex;
       flex-direction: column;

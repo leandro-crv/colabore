@@ -10,7 +10,7 @@ const Navigation = () => {
     <NavLinks className="navigation">
       <ul>
 
-        <Link to="/colabore" onClick={() => setNameLogo('Colabore')}> 
+        <Link to="/listacampanha"> 
           <li>Colabore</li>
         </Link>
 

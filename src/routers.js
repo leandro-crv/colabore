@@ -28,7 +28,6 @@ const Routers = () => {
   }
   return (
       <main className='container'>
-        {auth ? (<User/>):null}
         <Routes>
           <Route path="/" element={<Login />} />
           <Route path='/cadastrousuario' element={<CadastroUsuario/>} />

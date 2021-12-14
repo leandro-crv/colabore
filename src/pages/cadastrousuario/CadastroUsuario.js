@@ -3,7 +3,7 @@ import { Formik, Field, Form, ErrorMessage } from 'formik';
 import PasswordStrength from '../../components/PasswordStrength';
 
 const CadastroUsuario = () => {
-  const [foto, setFoto] = useState(false);
+  const [foto, setFoto] = useState({});
   const [valueSenha, setValueSenha] = useState('')
 
   const initialValues = {
@@ -16,14 +16,20 @@ const CadastroUsuario = () => {
 
   const changeInputFoto = (e) => {
     console.log('input: ', e)
+  
     const img = {
       fileDowloandUri: e.value,
       fileName: e.files[0].name,
       fileType: e.files[0].type,
       size: e.files[0].size
     }
-    setFoto(img);
+    setFoto(img);  
+    getBase64(e.files[0])
   }
+
+  useEffect(() => {
+    console.log(foto)
+  },[foto])
 
 
   const validate = (values) => {
@@ -53,13 +59,24 @@ const CadastroUsuario = () => {
     return errors;
   }
 
+  function getBase64(file) {
+    var reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = function() {
+        setFoto((prevState) => ({ ...prevState, base64: reader.result }))
+    };
+    reader.onerror = function(error) {
+        console.log('Error: ', error);
+    };
+  }
+
   return (
     <Formik
       initialValues={initialValues}
       validate={validate}
       onSubmit={async (values) => {
         delete values.senha2;
-        values.foto = foto;
+        values.foto = foto
         values.senha = valueSenha
         console.log('POST cadastro usuário: ',values)
       }}

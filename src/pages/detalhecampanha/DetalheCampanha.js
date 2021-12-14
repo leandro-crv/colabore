@@ -1,19 +1,25 @@
-import { useState, useContext, useEffect } from "react";
+import { useContext, useEffect } from "react";
 import {FaUserAlt} from 'react-icons/fa'
 import { useMenuContext } from '../../context/context';
 import { CampanhaContext } from "../../context/CampanhaContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom"; 
 
 
 const DetalheCampanha = () => {
   const navigate = useNavigate();
-  const { user } = useMenuContext();
+  const { user, setNameLogo } = useMenuContext();
   const {detalheCampanha, criador, contribuiu, prepararEdicao} = useContext(CampanhaContext);
- 
+
   const irParaEdicao = (id)=>{
     prepararEdicao(id);
     navigate('/cadastrocampanha')
   }
+
+  useEffect(()=>{
+    setNameLogo("Detalhe Campanha");
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[])
+
 
   const abrirCaixaDeContribuicao = ()=>{
     var contribuicao = prompt("Digite quanto você quer doar");
@@ -42,7 +48,12 @@ const DetalheCampanha = () => {
       <h1>Detalhe da campanha</h1>
       <div className="detalhe-campanha">
         <h2>{detalheCampanha.titulo}</h2>
-        <p>Total arrecadado: R$ {detalheCampanha.arrecadado}</p>
+        <p>Total arrecadado: 
+          {detalheCampanha.arrecadado.toLocaleString('pt-BR', {
+            style: 'currency',
+            currency: 'BRL' 
+          })}
+        </p>
         <p>Descrição: {detalheCampanha.descricao}</p>
         <img src={detalheCampanha.foto} width='200px' alt={detalheCampanha.titulo}/>
         <ul> Categorias: 

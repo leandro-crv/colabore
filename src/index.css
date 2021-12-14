@@ -22,24 +22,10 @@
   box-sizing: border-box;
 }
 
-/* #root {
-  display: grid;
-  grid-template-columns: 100vw;
-  grid-template-rows: 200px 1fr 200px;
-  align-items: center;
-  justify-items: center;
-} */
-
 main {
   margin-top: 250px;
   min-height: 100%;
 }
-
-/* .container{
-  max-width: 1200px;
-  margin: 0 auto;
-  min-height: calc(100vh - 126px);
-} */
 
 html {
   font: 400 14px roboto;
@@ -92,4 +78,8 @@ a:hover {
 
 .red{
   background-color: red;
+}
+
+.body-content {
+  padding-bottom: 70px;
 }
