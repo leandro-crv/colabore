@@ -15,77 +15,10 @@ const CampanhaContext = createContext({});
 
 const CampanhaProvider= ({children}) =>{
   const {user} = useMenuContext();
-  const initialCampanhas = [
-    {
-      idCampanha:1,
-      titulo:'Campanha de Natal',
-      foto: natal,
-      meta: 15000,
-      arrecadado: 12800,
-      criador: 'Leandro Carvalho',
-      categorias:['doacoes','roupas'],
-      ultimaAlteracao: '2021-12-10',
-      dataLimite: '2021-12-23' 
-    },
-    {
-      idCampanha:2,
-      titulo:'Dia das crianças',
-      foto: criancas,
-      meta: 10000,
-      arrecadado:10000,
-      criador:'Bianca',
-      categorias:['doacoes','rifas'],
-      ultimaAlteracao: '2021-10-05',
-      dataLimite: '2021-10-10' 
-    },
-    {
-      idCampanha:3,
-      titulo:'Páscoa solidária',
-      foto: pascoa,
-      meta:7000,
-      arrecadado:3500,
-      criador:'Thiago Coelho',
-      categorias:['doeacoes'],
-      ultimaAlteracao: '2021-04-03',
-      dataLimite: '2021-04-03'
-    },
-    {
-      idCampanha:4,
-      titulo:'Campanha do Agasalho',
-      foto: agasalho,
-      meta:5000,
-      arrecadado:8000,
-      criador:'Thiago Marchi',
-      categorias:['roupas'],
-      ultimaAlteracao: '2021-06-05',
-      dataLimite: '2021-06-10'
-    },
-    {
-      idCampanha:5,
-      titulo:'Dia dos pais',
-      foto: pais,
-      meta:1000,
-      arrecadado:50,
-      criador:'qualquer um',
-      categorias:['roupas','rifas'],
-      ultimaAlteracao: '2021-08-22',
-      dataLimite: '2021-08-30'
-    },
-    {
-      idCampanha:6,
-      titulo:'Doação de computadores',
-      foto: computadores,
-      meta:15000,
-      arrecadado:3500,
-      criador:'dbc',
-      categorias:['doacoes'],
-      ultimaAlteracao: '2021-12-12',
-      dataLimite: '2022-03-10'
-    }
-  ];
+  
 
   const initialDetalheCampanha = {
-    idCampanha:1,
+    idCampanha:0,
     titulo: 'Natal solidário',
     arrecadado: 12800,
     meta: 15000,
@@ -124,56 +57,70 @@ const CampanhaProvider= ({children}) =>{
   }
 
   const initialCadastro = {
-    titulo:'',
-    meta:'',
-    encerra:'',
-    descricao:'',
-    capa:'',
+    concluiCampanhaAutomaticamente:'',
+    dataLimiteContribuicao:'',
+    descricaoCampanha:'',
+    foto:'',
+    metaArrecadacao:'',
+    tituloCampanha:'',
     categorias:[],
   }
 
-  const [listCampanhas,setListCampanhas] = useState(initialCampanhas);
+  const [listCampanhas,setListCampanhas] = useState([]);
   const [detalheCampanha, setDetalheCampanha] = useState(initialDetalheCampanha);
   const [criador, setCriador] = useState(false);
   const [contribuiu, setContribuiu] = useState(false);
   const [cadastro, setCadastro] = useState(initialCadastro);
   const [edit, setEdit] = useState(false);
+  const [listCategoriasBD, setListCategoriasBD] = useState([]);
+  const [categoriasACadastrar, setCategoriasACadastrar] = useState([]);
 
   const getCampanhas = ()=>{
-    // quando tiver funcionando API
-    // (async ()=>{
-    //   const {data} = await api.get('campanha');
-    //   data.map(campanha => {
-    //     campanha.classe = arrecadadoMeta(campanha.arrecadado,campanha.meta)
-    //   })
-    //   setListCampanhas(data.sort((a,b) => moment(a.dataLimite).isAfter(b.dataLimite) ? -1 : 1));
-    // })()
-    
-    // (async ()=>{
-    //   const {data} = await api.get('campanha');
-    //   console.log('campanhas: ', data);
-    // })()
-
-    listCampanhas.map(campanha => {
-      campanha.classe = arrecadadoMeta(campanha.arrecadado,campanha.meta);
-      campanha.concluido = moment().isBefore(campanha.dataLimite);
-    });
-    setListCampanhas(listCampanhas.sort((a,b) => moment(a.dataLimite).isAfter(b.dataLimite) ? -1 : 1));
+    (async ()=>{
+      const {data} = await api.get('campanha');
+      data.map(campanha => {
+        const {cor,metaAtingida} = arrecadadoMeta(campanha.totalArrecadado,campanha.metaArrecadacao)
+        campanha.metaAtingida = metaAtingida
+        campanha.cor = cor
+      })
+      setListCampanhas(data.sort((a,b) => moment(a.dataLimiteContribuicao).isAfter(b.dataLimiteContribuicao) ? -1 : 1));
+    })()
   }
   
+  const getCampanhasCategorias = () =>{
+    (async ()=>{
+      const {data} = await api.get('categoria');
+      setListCategoriasBD(data);
+    })()
+  }
 
+  const postCampanhaCategoria = async(value) =>{
+    const {data} = await api.post('categoria', value);
+    setCategoriasACadastrar([...categoriasACadastrar,data.idCategoria]);
+  }
 
   const arrecadadoMeta = (arrecadado, meta)=>{
     const percentual = arrecadado/meta;
-
-    if(percentual>0.8){
-      return 'green';
-    }
-    else if(percentual >=0.3){
-      return 'orange';
-    }
-    else{
-      return 'red';
+    if(percentual >=1){
+      return {
+        metaAtingida:true,
+        cor: 'green'
+      }
+    } else if(percentual > 0.8){
+      return {
+        metaAtingida:false,
+        cor: 'green'
+      }
+    } else if(percentual >=0.3){
+      return {
+        metaAtingida:false,
+        cor:'orange',
+      } 
+    } else{
+      return{
+        metaAtingida:false,
+        cor:'red'
+      } 
     }
   }
 
@@ -237,7 +184,11 @@ const CampanhaProvider= ({children}) =>{
       cadastro,
       prepararEdicao,
       edit,
-      cancelarEdicao
+      cancelarEdicao,
+      listCategoriasBD,
+      getCampanhasCategorias,
+      postCampanhaCategoria,
+      categoriasACadastrar, setCategoriasACadastrar
     }}>
       {children}
     </CampanhaContext.Provider>

@@ -6,49 +6,56 @@ import { useNavigate } from 'react-router-dom';
 import { useMenuContext } from '../../context/context';
 
 
+import {GrFormClose} from 'react-icons/gr';
 
 const CadastroCampanha = () => {
   const navigate = useNavigate();
-  const { cadastro, edit, cancelarEdicao } = useContext(CampanhaContext);
+  const { cadastro, edit, cancelarEdicao, listCategoriasBD, getCampanhasCategorias, postCampanhaCategoria, categoriasACadastrar, setCategoriasACadastrar } = useContext(CampanhaContext);
   const [foto, setFoto] = useState(false);
+  const [listCategoriasAtuais, setListCategoriasAtuais] = useState([])
+  const [inputCategoria, setInputCategoria] = useState("");
+  const [sugestoes, setSugestoes] = useState([]);
 
+  useEffect(()=>{
+    getCampanhasCategorias();
+  },[])
+  
   const prepararCancelarEdicao = () => {
     cancelarEdicao();
     navigate('/detalhecampanha');
   }
-  console.log('cadastro é: ', cadastro)
+  
   const validate = (values) => {
     const errors = {};
-    if (!values.titulo) {
-      errors.titulo = 'Nome é obrigatório';
+    if (!values.tituloCampanha) {
+      errors.tituloCampanha = 'Nome é obrigatório';
     }
 
-    if (!values.encerra) {
-      errors.encerra = 'Indique se a campanha encerra após atingir a meta';
+    if (!values.concluiCampanhaAutomaticamente) {
+      errors.concluiCampanhaAutomaticamente = 'Indique se a campanha encerra após atingir a meta';
     }
 
-    if (!values.meta) {
-      errors.meta = "Insira uma meta de arrecadação";
-    } else if (values.meta <= 0) {
-      errors.meta = "A meta deve ser maior que zero";
+    if (!values.metaArrecadacao) {
+      errors.metaArrecadacao = "Insira uma meta de arrecadação";
+    } else if (values.metaArrecadacao <= 0) {
+      errors.metaArrecadacao = "A meta deve ser maior que zero";
     }
-    if (!values.descricao) {
-      errors.descricao = "Descrição é um campo obrigatório";
-    }
-
-    if (!values.categorias.length) {
-      errors.categorias = "É necessário cadastrar ao menos uma categoria";
+    if (!values.descricaoCampanha) {
+      errors.descricaoCampanha = "Descrição é um campo obrigatório";
     }
 
-    if(!foto){
+    if (!foto) {
       errors.capa = "É obrigatório uma foto de capa"
+    }
+
+    if(!listCategoriasAtuais.length){
+      errors.categorias = "É obrigatório ao menos uma categoria para a campanha";
     }
 
     return errors;
   }
 
   const changeInputFoto = (e) => {
-    console.log('input: ', e)
     const img = {
       fileDowloandUri: e.value,
       fileName: e.files[0].name,
@@ -62,7 +69,32 @@ const CadastroCampanha = () => {
 
   useEffect(() => {
     setNameLogo("Cadastro Campanha")
-  },[])
+  },[]);
+
+  const handleInputCategoria = (value) => {
+    setInputCategoria(value);
+    if(!value.length){
+      setSugestoes([]);
+    } else{
+      const regex = new RegExp(`^${value}`, 'gi');
+      const sugestao = listCategoriasBD.filter(c=> c.nome.match(regex));
+      if(sugestao.length){
+        setSugestoes(sugestao);
+      }
+      else{
+        setSugestoes([{nome:value}])
+      }
+    }
+
+  }
+
+  const excluirCategoria = (nome) =>{
+    setListCategoriasAtuais(listCategoriasAtuais.filter(categoria=> categoria!==nome))
+  }
+  const inserirCategoria = (nome) =>{
+    setListCategoriasAtuais([...listCategoriasAtuais,nome]);
+    handleInputCategoria('');
+  }
 
   return (
     <>
@@ -72,65 +104,93 @@ const CadastroCampanha = () => {
         validate={validate}
         enableReinitialize={true}
         onSubmit={async (values) => {
-          values.capa = foto;
-          console.log(values)
+          //values.capa = foto;
+          values.foto = 'https://www.fmo.org.br/images/campanha-solidaria/logo.jpg';
+          var idsPraCadastrar = [];
+          var semId = [];
+          console.log('categoriasBD',listCategoriasBD)
+          console.log('categorias atuais',listCategoriasAtuais)
+          listCategoriasAtuais.map(categoria => {
+            let id = listCategoriasBD.find(cat => cat.nome === categoria);
+            if(id===undefined){
+              semId.push(categoria);
+            }
+            else{
+              idsPraCadastrar.push(id.idCategoria);
+            }
+          })
+          setCategoriasACadastrar([...categoriasACadastrar,idsPraCadastrar]);
+
+          //  for(let i=0;i<semId.length;i++){
+          //    postCampanhaCategoria(semId[i]);
+          // }
+
+         console.log('sem id',semId,'id pra cadastrar',idsPraCadastrar)
+         values.concluiCampanhaAutomaticamente = values.concluiCampanhaAutomaticamente ==='sim'; 
+          values.categorias = idsPraCadastrar;
+          console.log('POST CAMPANHA',values)
         }}
       >
         <Form>
           <div>
-            <label htmlFor="titulo">Título:</label>
-            <Field id="titulo" name="titulo" placeholder="Digite o título da campanha" />
-            <ErrorMessage name='titulo' render={msg => <div className='error'>{msg}</div>} />
-          </div>
-          <label>
-            <Field type="radio" name="encerra" value='sim' />
-            Sim
-          </label>
-          <label>
-            <Field type="radio" name="encerra" value='nao' />
-            Não
-          </label>
-          <div>
-            <label htmlFor="meta">Meta de arrecadação:</label>
-            <Field id="meta" name="meta" placeholder="meta de arrecadação" type='number' />
-            <ErrorMessage name='meta' render={msg => <div className='error'>{msg}</div>} />
+            <label htmlFor="tituloCampanha">Título:</label>
+            <Field id="tituloCampanha" name="tituloCampanha" placeholder="Digite o título da campanha" />
+            <ErrorMessage name='tituloCampanha' render={msg => <div className='error'>{msg}</div>} />
           </div>
           <div>
-            <label htmlFor="descricao">Descrição:</label>
-            <Field id="descricao" name="descricao" placeholder="Descrição" />
-            <ErrorMessage name='descricao' render={msg => <div className='error'>{msg}</div>} />
+            <p>Data limite: </p>
+          </div>
+          <div>
+            <label>Encerrar ao atingir a meta? </label>
+            <label>
+              <Field type="radio" name="concluiCampanhaAutomaticamente" value='sim' />
+              Sim
+            </label>
+            <label>
+              <Field type="radio" name="concluiCampanhaAutomaticamente" value='nao' />
+              Não
+            </label>
+          </div>
+          <div>
+            <label htmlFor="metaArrecadacao">Meta de arrecadação:</label>
+            <Field id="metaArrecadacao" name="metaArrecadacao" placeholder="meta de arrecadacao de arrecadação" type='number' />
+            <ErrorMessage name='metaArrecadacao' render={msg => <div className='error'>{msg}</div>} />
+          </div>
+          <div>
+            <label htmlFor="descricaoCampanha">Descrição:</label>
+            <Field id="descricaoCampanha" name="descricaoCampanha" placeholder="Descrição" />
+            <ErrorMessage name='descricaoCampanha' render={msg => <div className='error'>{msg}</div>} />
           </div>
           {edit ? (
             <>
-            <img src={cadastro.foto} width='200px' />
-            <label htmlFor="capa">Trocar imagem:</label>
-            <input name='capa' type='file' accept='image/png, image/jpeg' onChange={(e) => changeInputFoto(e.target)} />
-            <ErrorMessage name='capa' render={msg => <div className='error'>{msg}</div>} />
+              <img src={cadastro.foto} width='200px' />
+              <label htmlFor="capa">Trocar imagem:</label>
+              <input name='capa' type='file' accept='image/png, image/jpeg' onChange={(e) => changeInputFoto(e.target)} />
+              <ErrorMessage name='capa' render={msg => <div className='error'>{msg}</div>} />
             </>
-          ): (
+          ) : (
             <div>
-            <label htmlFor="capa">Capa:</label>
-            <input name='capa' type='file' accept='image/png, image/jpeg' onChange={(e) => changeInputFoto(e.target)} />
-            <ErrorMessage name='capa' render={msg => <div className='error'>{msg}</div>} />
-          </div>
+              <label htmlFor="capa">Capa:</label>
+              <input name='capa' type='file' accept='image/png, image/jpeg' onChange={(e) => changeInputFoto(e.target)} />
+              <ErrorMessage name='capa' render={msg => <div className='error'>{msg}</div>} />
+            </div>
           )}
-          <div >Categoria:</div>
-          <label>
-            <Field type="checkbox" name="categorias" value="rifas" />
-            Rifas
-          </label>
-          <label>
-            <Field type="checkbox" name="categorias" value="doacoes" />
-            Doações
-          </label>
-          <label>
-            <Field type="checkbox" name="categorias" value="livros" />
-            Livros
-          </label>
-          <label>
-            <Field type="checkbox" name="categorias" value="roupas" />
-            Roupas
-          </label>
+          <div >Categorias:</div>
+          <input type='text' value={inputCategoria} onChange={(e) => handleInputCategoria(e.target.value)} placeholder='Insira uma categoria' />
+          <ul>
+            {sugestoes.map(sugestao => (
+              <li><button onClick={()=>inserirCategoria(sugestao.nome)}>{sugestao.nome}</button></li>
+            ))}
+          </ul>
+          <div>
+            Categorias salvas:
+            <ul>
+              {listCategoriasAtuais.map(categoria => (
+                <li>{categoria} <GrFormClose onClick={()=>excluirCategoria(categoria)}/></li>
+              ))}
+            </ul>
+            <ErrorMessage name='categorias' render={msg => <div className='error'>{msg}</div>} />
+          </div>
           {!edit ? (
             <div>
               <button type="submit" className='botao1'>Cadastrar</button>
@@ -147,9 +207,6 @@ const CadastroCampanha = () => {
     </>
   );
 }
-
-
-
 
 export default CadastroCampanha;
 
