@@ -95,8 +95,20 @@ const CampanhaProvider= ({children}) =>{
   }
 
   const postCampanhaCategoria = async(value) =>{
-    const {data} = await api.post('categoria', value);
+    const {data} = await api.post('categoria', {nome:value});
+    console.log('data retorno post categoria',data)
     setCategoriasACadastrar([...categoriasACadastrar,data.idCategoria]);
+  }
+
+  const postCampanha = async(campanha) =>{
+    try{
+      const {data} = await api.post('campanha',campanha);
+      console.log('campanha cadastrada',data);
+      window.location.href = '/listacampanha'
+    }
+    catch(error){
+      console.log('erro no post Campanha',error)
+    }
   }
 
   const arrecadadoMeta = (arrecadado, meta)=>{
@@ -188,7 +200,8 @@ const CampanhaProvider= ({children}) =>{
       listCategoriasBD,
       getCampanhasCategorias,
       postCampanhaCategoria,
-      categoriasACadastrar, setCategoriasACadastrar
+      categoriasACadastrar, setCategoriasACadastrar,
+      postCampanha
     }}>
       {children}
     </CampanhaContext.Provider>

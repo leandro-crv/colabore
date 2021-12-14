@@ -1,0 +1,18 @@
+.containerLista{
+  display: flex;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.containerLista >div{
+  width: 50%;
+  padding: 16px;
+}
+
+.campanha{
+  background-color: aqua;
+}
+
+.none{
+  display: none;
+}

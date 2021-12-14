@@ -4,13 +4,16 @@ import NumberFormat from 'react-number-format';
 import { CampanhaContext } from '../../context/CampanhaContext';
 import { useNavigate } from 'react-router-dom';
 import { useMenuContext } from '../../context/context';
+import InputMask from 'react-input-mask'
 
 
 import {GrFormClose} from 'react-icons/gr';
+import moment from 'moment';
+import api from '../../api';
 
 const CadastroCampanha = () => {
   const navigate = useNavigate();
-  const { cadastro, edit, cancelarEdicao, listCategoriasBD, getCampanhasCategorias, postCampanhaCategoria, categoriasACadastrar, setCategoriasACadastrar } = useContext(CampanhaContext);
+  const { cadastro, edit, cancelarEdicao, listCategoriasBD, getCampanhasCategorias, postCampanhaCategoria, categoriasACadastrar, setCategoriasACadastrar, postCampanha } = useContext(CampanhaContext);
   const [foto, setFoto] = useState(false);
   const [listCategoriasAtuais, setListCategoriasAtuais] = useState([])
   const [inputCategoria, setInputCategoria] = useState("");
@@ -30,6 +33,15 @@ const CadastroCampanha = () => {
     if (!values.tituloCampanha) {
       errors.tituloCampanha = 'Nome é obrigatório';
     }
+
+    if(!values.dataLimiteContribuicao){
+      errors.dataLimiteContribuicao = "É obrigatório inserir uma data limite para contribuições";
+    } else if(!moment(values.dataLimiteContribuicao,'DD/MM/YYYY').isValid()){
+      errors.dataLimiteContribuicao = "Data inválida";
+    } else if(moment().isAfter(values.dataLimiteContribuicao)){
+      errors.dataLimiteContribuicao = "A data limite não pode ser inferior a hoje";
+    }
+
 
     if (!values.concluiCampanhaAutomaticamente) {
       errors.concluiCampanhaAutomaticamente = 'Indique se a campanha encerra após atingir a meta';
@@ -117,18 +129,21 @@ const CadastroCampanha = () => {
             }
             else{
               idsPraCadastrar.push(id.idCategoria);
+              setCategoriasACadastrar(categoriasACadastrar.push({idCategoria:id.idCategoria}))
             }
           })
-          setCategoriasACadastrar([...categoriasACadastrar,idsPraCadastrar]);
-
-          //  for(let i=0;i<semId.length;i++){
-          //    postCampanhaCategoria(semId[i]);
-          // }
+        
+          for(let i=0;i<semId.length;i++){
+            const {data} = await api.post ('categoria',{nome:semId[i]});
+            setCategoriasACadastrar(categoriasACadastrar.push({idCategoria:data.idCategoria}))
+          }
 
          console.log('sem id',semId,'id pra cadastrar',idsPraCadastrar)
          values.concluiCampanhaAutomaticamente = values.concluiCampanhaAutomaticamente ==='sim'; 
-          values.categorias = idsPraCadastrar;
+          values.categorias = categoriasACadastrar;
+          values.dataLimiteContribuicao = moment(values.dataLimiteContribuicao,'DD/MM/YYYY').format('YYYY-MM-DD');
           console.log('POST CAMPANHA',values)
+          postCampanha(values)
         }}
       >
         <Form>
@@ -138,7 +153,11 @@ const CadastroCampanha = () => {
             <ErrorMessage name='tituloCampanha' render={msg => <div className='error'>{msg}</div>} />
           </div>
           <div>
-            <p>Data limite: </p>
+            <label htmlFor="dataLimiteContribuicao">Data limite para contribuição</label>
+            <Field id="dataLimiteContribuicao" name="dataLimiteContribuicao" render={({ field }) => (
+              <InputMask {...field} mask={`99/99/9999`} />
+            )} />
+            <ErrorMessage name='dataLimiteContribuicao' render={msg => <div className='error'>{msg}</div>} />
           </div>
           <div>
             <label>Encerrar ao atingir a meta? </label>
