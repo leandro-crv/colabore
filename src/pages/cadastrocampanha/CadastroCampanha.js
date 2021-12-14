@@ -18,6 +18,8 @@ const CadastroCampanha = () => {
   const [listCategoriasAtuais, setListCategoriasAtuais] = useState([])
   const [inputCategoria, setInputCategoria] = useState("");
   const [sugestoes, setSugestoes] = useState([]);
+  const [mascaraMoeda, setMascaraMoeda] = useState('');
+  
 
   useEffect(()=>{
     getCampanhasCategorias();
@@ -30,6 +32,7 @@ const CadastroCampanha = () => {
   
   const validate = (values) => {
     const errors = {};
+    console.log(values.metaArrecadacao)
     if (!values.tituloCampanha) {
       errors.tituloCampanha = 'Nome é obrigatório';
     }
@@ -47,11 +50,6 @@ const CadastroCampanha = () => {
       errors.concluiCampanhaAutomaticamente = 'Indique se a campanha encerra após atingir a meta';
     }
 
-    if (!values.metaArrecadacao) {
-      errors.metaArrecadacao = "Insira uma meta de arrecadação";
-    } else if (values.metaArrecadacao <= 0) {
-      errors.metaArrecadacao = "A meta deve ser maior que zero";
-    }
     if (!values.descricaoCampanha) {
       errors.descricaoCampanha = "Descrição é um campo obrigatório";
     }
@@ -108,6 +106,23 @@ const CadastroCampanha = () => {
     handleInputCategoria('');
   }
 
+  const handleMascaraMoeda = (valor) => {
+    valor = valor.replace(/\D/g, "");
+    valor = valor.replace(/(\d)(\d{2})$/, "$1,$2");
+    valor = valor.replace(/(?=(\d{3})+(\D))\B/g, ".");
+    setMascaraMoeda('R$' + valor);
+  }
+
+  
+
+  const removerMascaraMoeda = (mascara) => {
+    mascara = mascara.replace('R$','');
+    mascara = mascara.replace(/\./g,'');
+    mascara = mascara.replace(',','.');
+      
+    return mascara;
+  }
+  
   return (
     <>
       {!edit ? (<h1>Cadastrar nova camapnha</h1>) : (<h1>Editar campanha</h1>)}
@@ -142,6 +157,7 @@ const CadastroCampanha = () => {
          values.concluiCampanhaAutomaticamente = values.concluiCampanhaAutomaticamente ==='sim'; 
           values.categorias = categoriasACadastrar;
           values.dataLimiteContribuicao = moment(values.dataLimiteContribuicao,'DD/MM/YYYY').format('YYYY-MM-DD');
+          values.metaArrecadacao = removerMascaraMoeda(values.metaArrecadacao);
           console.log('POST CAMPANHA',values)
           postCampanha(values)
         }}
@@ -172,8 +188,7 @@ const CadastroCampanha = () => {
           </div>
           <div>
             <label htmlFor="metaArrecadacao">Meta de arrecadação:</label>
-            <Field id="metaArrecadacao" name="metaArrecadacao" placeholder="meta de arrecadacao de arrecadação" type='number' />
-            <ErrorMessage name='metaArrecadacao' render={msg => <div className='error'>{msg}</div>} />
+            <input value={mascaraMoeda} name="metaArrecadacao" onChange={(e)=> handleMascaraMoeda(e.target.value)}/>
           </div>
           <div>
             <label htmlFor="descricaoCampanha">Descrição:</label>
