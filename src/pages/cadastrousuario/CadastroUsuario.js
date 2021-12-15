@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import PasswordStrength from '../../components/PasswordStrength';
+import { useMenuContext } from "../../context/context";
 
 const CadastroUsuario = () => {
   const [foto, setFoto] = useState({});
   const [valueSenha, setValueSenha] = useState('')
-
+  const {postFotoUsuario, user} = useMenuContext();
   const initialValues = {
     nome: 'leandro',
     email: 'leandro@dbccompany.com.br',
@@ -70,7 +71,24 @@ const CadastroUsuario = () => {
     };
   }
 
+  const changeTeste = (e) =>{
+    console.log('e',e)
+    const img = {
+      fileDowloandUri: e.value,
+      fileName: e.files[0].name,
+      fileType: e.files[0].type,
+      size: e.files[0].size
+    }
+    console.log('img',img)
+    postFotoUsuario(12,img)
+  }
+
   return (
+    <>
+    <div>
+      <h1>Teste upload foto</h1>
+      <input type='file'  accept='image/png, image/jpeg' onChange={(e) => changeTeste(e.target)} />
+    </div>
     <Formik
       initialValues={initialValues}
       validate={validate}
@@ -126,6 +144,7 @@ const CadastroUsuario = () => {
 
       </Form>
     </Formik>
+    </>
   );
 }
 

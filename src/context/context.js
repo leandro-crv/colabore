@@ -28,6 +28,11 @@ export default function MenuProvider({ children }) {
     
   }
 
+  const postFotoUsuario = async(id,foto) =>{
+    const {data} = await api.post(`usuario/uploadFotoPerfil?idUsuario=${id}`,foto);
+    console.log('data postFotoUsuario', data);
+  }
+
   const handleLogout = () =>{
     localStorage.removeItem('token');
     api.defaults.headers.common['Authorization'] = '';
@@ -45,6 +50,8 @@ export default function MenuProvider({ children }) {
   const getUser = () =>{
     (async ()=>{
       const {data} = await api.get('usuario');
+      const response = await api.get(`usuario/downloadFotoPerfil/${data.idUsuario}`);
+      console.log('foto do perfil',response)
       console.log('usuário é: ', data);
       setUser({
         nome: data.nome,
@@ -64,7 +71,9 @@ export default function MenuProvider({ children }) {
         auth,
         setAuth,
         autenticate,
-        user
+        user,
+        postFotoUsuario,
+        
       }}
     >
       {children}
@@ -83,7 +92,8 @@ export function useMenuContext() {
     auth,
     setAuth,
     autenticate,
-    user
+    user,
+    postFotoUsuario
   } = context;
   return { 
     openMenu, nameLogo, 
@@ -93,6 +103,7 @@ export function useMenuContext() {
     auth,
     setAuth,
     autenticate,
-    user
+    user,
+    postFotoUsuario
   };
 }

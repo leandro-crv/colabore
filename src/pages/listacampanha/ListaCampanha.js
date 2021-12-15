@@ -6,115 +6,183 @@ import styles from './ListaCampanha.module.css';
 import { useNavigate } from "react-router-dom";
 import { useMenuContext } from "../../context/context";
 import perfil from '../../images/perfil.jpg';
+import Loading from "../../components/loading";
 
 const ListaCampanha = () =>{
-  const {getCampanhas,listCampanhas,detalharCampanha,getCampanhasCategorias,listCategoriasBD} = useContext(CampanhaContext);
-  const [filtroCriador, setFiltroCriador] = useState([]);
-  const [filtroCategorias, setFiltroCategorias] = useState([]);
-  const [filtroMeta,setFiltroMeta] = useState([]);
-  const [idFiltro, setIdFiltro] = useState([]);
+  const {getCampanhas,
+        listCampanhas,
+        getMinhasCampanhas,
+        listMinhasCampanhas,
+        detalharCampanha,
+        getCampanhasCategorias,
+        listCategoriasBD,
+        getMetaAtingida,
+        listMetaAtingida
+      } = useContext(CampanhaContext);
+  
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  
+  const [filtroCategorias, setFiltroCategorias] = useState([]);
+  const [filtroMeta,setFiltroMeta] = useState(false);
+  
+ 
+  
   const {setNameLogo, user} = useMenuContext();
 
+  const [listaSemFiltro, setListaSemFiltro] = useState([]);
+
+  const [campanhasNaPagina, setCampanhasNaPagina] = useState([]);
+  
+
   useEffect(()=>{
-    getCampanhas();
-    getCampanhasCategorias();
-    setNameLogo("Lista Campanha");
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-    console.log('listCampanhas',listCampanhas)
+    (async ()=>{
+      getCampanhas();
+      getCampanhasCategorias();
+      setNameLogo('Lista Campanha');
+      setListaSemFiltro(listCampanhas);
+      setLoading(false)
+    })();   
   },[])
 
-  
+  useEffect(()=>{
+    const categorias = [];
+    listCategoriasBD.map(categoria => categorias.push(categoria.nome));
+    setFiltroCategorias(categorias);
+  },[listCategoriasBD]);
+
+  useEffect(()=>{
+    setListaSemFiltro(listMinhasCampanhas);
+    setLoading(false)
+    // atualizarFiltro();
+  },[listMinhasCampanhas])
+
+  useEffect(()=>{
+    atualizarFiltro();
+  },[filtroCategorias])
+
+  const atualizarFiltro = ()=>{
+    console.log('FILTRO DE META',filtroMeta);
+    console.log('FILTRO DE CATEGORIA', filtroCategorias)  
+    var filtroFinal = listaSemFiltro;
+    console.log('lista sem filtro no atualizar filtro', listaSemFiltro)
+    if(!filtroMeta){
+      filtroFinal = listaSemFiltro.filter(campanha => campanha.categorias.some(element => filtroCategorias.includes(element.nome)));
+    }
+    else{
+      filtroFinal = listaSemFiltro.filter(campanha => campanha.categorias.some(element => filtroCategorias.includes(element.nome) && listMetaAtingida.includes(campanha.idCampanha)));
+    }
+    console.log('filtro final',filtroFinal);
+    setCampanhasNaPagina(filtroFinal);
+  }
+ 
+
   const irParaDetalheCampanha = (id)=>{
     detalharCampanha(id);
     navigate('/detalhecampanha')
   }
 
-  const handleFiltroCriacao = (valor)=>{
-    if(valor==='todas'){
-      let ids = [];
-      listCampanhas.map(campanha => ids.push(campanha.idCampanha));
-      setFiltroCriador(ids)
+  const handleFiltroCriacao = async (valor)=>{
+    if(valor==='outrasCampanhas'){
+      await getCampanhas();
+     setListaSemFiltro(listCampanhas); 
     }
     else{
-      let ids = []
-      listCampanhas.filter(campanha => campanha.criadorCampanha.idUsuario === user.idUsuario).map(id => ids.push(id));
-      setFiltroCriador(ids);
+      await getMinhasCampanhas();
+      setListaSemFiltro(listMinhasCampanhas);
     }
-    atualizarFiltro()
+    atualizarFiltro();
   }
 
-  const handleFiltroCategorias = (valor, check)=>{
+  const handleFiltroCategorias =  (valor, check)=>{
     if(check){
-      setFiltroCategorias([...filtroCategorias,valor])
+    setFiltroCategorias([...filtroCategorias,valor])
     }
     else{
       setFiltroCategorias([...filtroCategorias.filter(categoria => categoria!==valor)])
     }
-    atualizarFiltro()
+   
   }
 
-  const handleFiltroMeta = (valor)=>{
+  const handleFiltroMeta = async (valor)=>{
+    //setLoading(true);
     if(valor==='todas'){
-      setFiltroMeta([])
-    } else if(valor==='sim'){
-      let filtro = listCampanhas.filter(campanha => campanha.metaAtingida===false);
-      let filtroId = [];
-      filtro.map(campanha => filtroId.push(campanha.idCampanha));
-      setFiltroMeta(filtroId);
-    }else{
-      let filtro = listCampanhas.filter(campanha => campanha.metaAtingida);
-      let filtroId = [];
-      filtro.map(campanha => filtroId.push(campanha.idCampanha));
-      setFiltroMeta(filtroId);
+      setFiltroMeta(false);
+    }else if(valor==='sim'){
+      await getMetaAtingida(true);
+      setFiltroMeta(true);
+      atualizarFiltro();
+    } else if(valor==='nao'){
+      await getMetaAtingida(false);
+      setFiltroMeta(true);
+      atualizarFiltro();
     }
-    atualizarFiltro()
   }
 
-  console.log('filtro categorias: ',filtroCategorias)
-
-  const atualizarFiltro = ()=>{
-    console.log('filtro meta', filtroMeta)
-    const esconder = filtroMeta.concat(filtroCriador);
-    console.log('id a esconder',esconder)
+  
+  const selecionarTodasCategorias = (selecionar) =>{
+    if(selecionar){
+      const categorias = [];
+      listCategoriasBD.map(categoria => categorias.push(categoria.nome));
+      setFiltroCategorias(categorias);
+    }
+    else{
+      setFiltroCategorias([]);
+    }
   }
- 
+  
   return(
     <div>
       <h1>Campanhas</h1>
+      {loading && (<Loading/>)}
       <div className={styles.containerLista}>
       <div className={styles.filtros}>
         <div>
-          <h5>Criação da campanha</h5>
-          <input type='radio' name='criacaoCampanha' value='todas' checked onChange={(e)=> handleFiltroCriacao(e.target.value)} />
-          <label> Todas campanhas</label>
-          <input type='radio' name='criacaoCampanha' value='minhas' onChange={(e)=> handleFiltroCriacao(e.target.value)} />
-          <label>Apenas as minhas</label>
+          <h3 className={styles.tituloFiltro}>Criação da campanha</h3>
+          <div>
+            <input name='criacaoCampanha' type='radio' onClick={()=> handleFiltroCriacao('outrasCampanhas')} checked/>
+            <label>Campanhas para doar</label>
+          </div>
+          <div>
+          <input name='criacaoCampanha' type='radio' onClick={()=> handleFiltroCriacao('minhasCampanhas')} />
+          <label>Minhas Campanhas</label>
+          </div>
         </div>
         <div>
-          <h5>Meta atingida</h5>
-          <input type='radio' name='metaAtingida' value='todas' checked onChange={(e)=> handleFiltroMeta(e.target.value)}/>
-          <label> Todas campanhas</label>
-          <input type='radio' name='metaAtingida' value='sim' onChange={(e)=> handleFiltroMeta(e.target.value)} />
-          <label> Apenas as que atingiram a meta</label>
-          <input type='radio' name='metaAtingida' value='nao' onChange={(e)=> handleFiltroMeta(e.target.value)} />
-          <label> Apenas as que não atingiram a meta</label>
+          <h3 className={styles.tituloFiltro}>Meta atingida</h3>
+          <div>
+            <input type='radio' name='metaAtingida' value='todas' onChange={()=> handleFiltroMeta('todas')} checked />
+            <label>Mostrar todas campanhas</label>
+          </div>
+          <div>
+            <input type='radio' name='metaAtingida' value='sim' onChange={()=> handleFiltroMeta('sim')}/>
+            <label>Meta atingida</label>
+          </div>
+          <div>
+            <input type='radio' name='metaAtingida' value='nao' onChange={()=> handleFiltroMeta('nao')}/>
+            <label>Meta não atingida</label>
+          </div>
         </div>
         <div>
-          <h5>Categorias da campanha</h5>
+          <h3 className={styles.tituloFiltro}>Categorias da campanha</h3>
+          <input type='checkbox' onChange={(e) => selecionarTodasCategorias(e.target.checked)} defaultChecked={true}/>
+          <label>Selecionar todas</label>
+          <div className={styles.categorias}>
           {listCategoriasBD.map(categoria => (
-            <>
-            <input type='checkbox' value={categoria.nome} onChange={(e)=>handleFiltroCategorias(e.target.value,e.target.checked)} />
-            <label>{categoria.nome}</label>
-            </>
+            <div className={styles.categoria}>
+              <input type='checkbox' name='checkboxCategoria' value={categoria.nome} onChange={(e)=>handleFiltroCategorias(e.target.value,e.target.checked)} checked={filtroCategorias.find(cat=> cat===categoria.nome)!==undefined} />
+              <label>{categoria.nome}</label>
+            </div>
           ))}
+          </div>
         </div>
       </div>
       <div>
       <ul className="listaCampanhas">
-        {listCampanhas.map(campanha => (
-          <li className={idFiltro.find(id => id===campanha.idCampanha)!==undefined ? styles.none : styles.campanha} key={campanha.idCampanha}>
+        {campanhasNaPagina.map(campanha => (
+          <li>
             <h3>{campanha.tituloCampanha}</h3>
+            <h1>ID: {campanha.idCampanha}</h1>
             {campanha.metaAtingida && (<p>Meta atingida</p>)}
             <img src={campanha.foto==='string' ? perfil : campanha.foto} alt={campanha.titutloCampanha} width='100px'/>
             <p>Data de encerramento {moment(campanha.dataLimiteContribuicao).format('DD/MM/YYYY')}</p>

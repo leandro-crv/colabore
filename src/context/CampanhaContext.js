@@ -21,7 +21,7 @@ const CampanhaProvider= ({children}) =>{
 
   const [listCampanhas,setListCampanhas] = useState([]);
   const [listMinhasCampanhas,setListMinhasCampanhas] = useState([]);
-  const [listOutrasCampanhas, setListOutrasCampanhas] = useState([]);
+  
 
   const [detalheCampanha, setDetalheCampanha] = useState('');
   const [criador, setCriador] = useState(false);
@@ -30,34 +30,51 @@ const CampanhaProvider= ({children}) =>{
   const [edit, setEdit] = useState(false);
   const [listCategoriasBD, setListCategoriasBD] = useState([]);
   const [categoriasACadastrar, setCategoriasACadastrar] = useState([]);
+  const [listMetaAtingida,setListMetaAtingida] = useState([]);
 
   const getCampanhas = async () =>{
-    console.log('No momento o id do usuário é: ', user.idUsuario)
       const {data} = await api.get('campanha');
       data.map(campanha => {
         const {cor,metaAtingida} = arrecadadoMeta(campanha.totalArrecadado,campanha.metaArrecadacao)
         campanha.metaAtingida = metaAtingida
         campanha.cor = cor
-      setListOutrasCampanhas(data.sort((a,b) => moment(a.dataLimiteContribuicao).isAfter(b.dataLimiteContribuicao) ? -1 : 1));
+      setListCampanhas(data.sort((a,b) => moment(a.dataLimiteContribuicao).isAfter(b.dataLimiteContribuicao) ? -1 : 1));
       })
-      
-      const response = await api.get(`campanha/lista-as-campanhas-criadas-pelo-usuario-logado?idUsuario=${user.idUsuario}`);
-      response.data.map(campanha => {
-        const {cor,metaAtingida} = arrecadadoMeta(campanha.totalArrecadado,campanha.metaArrecadacao)
-        campanha.metaAtingida = metaAtingida
-        campanha.cor = cor
-      setListMinhasCampanhas(data.sort((a,b) => moment(a.dataLimiteContribuicao).isAfter(b.dataLimiteContribuicao) ? -1 : 1));
-      })
-
-      const listaCompleta = listOutrasCampanhas.concat(listMinhasCampanhas);
-      setListCampanhas(listaCompleta.sort((a,b) => moment(a.dataLimiteContribuicao).isAfter(b.dataLimiteContribuicao) ? -1 : 1))
-      
+           
   }
   
+  const getMinhasCampanhas = async() =>{
+    const {data} = await api.get(`campanha/lista-as-campanhas-criadas-pelo-usuario-logado`);
+      data.map(campanha => {
+      const {cor,metaAtingida} = arrecadadoMeta(campanha.totalArrecadado,campanha.metaArrecadacao)
+      campanha.metaAtingida = metaAtingida
+      campanha.cor = cor
+    setListMinhasCampanhas(data.sort((a,b) => moment(a.dataLimiteContribuicao).isAfter(b.dataLimiteContribuicao) ? -1 : 1));
+    })
+  }
+
+  const getMetaAtingida = async(metaAtingida)=>{
+    const ids = [];
+    if(metaAtingida){
+      const {data} = await api.get('campanha/filtra-por-meta-atingida-ou-não-atingida?meta=meta-atingida');
+      console.log('data meta atingida',data)
+      data.map(campanha => ids.push(campanha.idCampanha));
+      setListMetaAtingida(ids);
+    }
+    else{
+      const {data} = await api.get('campanha/filtra-por-meta-atingida-ou-não-atingida');
+      console.log('data meta não atingida',data)
+      data.map(campanha => ids.push(campanha.idCampanha));
+      setListMetaAtingida(ids);
+    }
+    
+  }
+
   const getCampanhasCategorias = () =>{
     (async ()=>{
       const {data} = await api.get('categoria');
-      setListCategoriasBD(data);
+      const categorias = data.sort((a,b) => a.nome > b.nome ? 1 : -1)
+      setListCategoriasBD(categorias);
     })()
   }
 
@@ -145,7 +162,7 @@ const CampanhaProvider= ({children}) =>{
   return(
     <CampanhaContext.Provider value={{
       getCampanhas,
-      listCampanhas,
+      listCampanhas, listMinhasCampanhas,
       detalharCampanha,
       detalheCampanha,
       criador,
@@ -154,10 +171,12 @@ const CampanhaProvider= ({children}) =>{
       edit,
       cancelarEdicao,
       listCategoriasBD,
-      getCampanhasCategorias,
+      getCampanhasCategorias, getMinhasCampanhas,
       postCampanhaCategoria,
       categoriasACadastrar, setCategoriasACadastrar,
-      postCampanha
+      postCampanha,
+      getMetaAtingida,
+      listMetaAtingida
     }}>
       {children}
     </CampanhaContext.Provider>
