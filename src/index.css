@@ -46,7 +46,7 @@ html {
 }
 
 h1 {
-  font-size: 1.8rem
+  font-size: 1.5rem
 }
 
 h2 {
@@ -82,4 +82,8 @@ a:hover {
 
 .body-content {
   padding-bottom: 70px;
+}
+
+.container {
+  margin-top: 150px;
 }

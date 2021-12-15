@@ -13,7 +13,7 @@ export default function MenuProvider({ children }) {
     nome:''
   }
   const [user, setUser] = useState(initialUser);
-
+  const [ loading, setLoading] = useState(false)
   
 
   const handleLogin = async (login) => {
@@ -24,8 +24,6 @@ export default function MenuProvider({ children }) {
     } catch(error){
       return false;
     }
-    
-    
   }
 
   const handleLogout = () =>{
@@ -59,6 +57,7 @@ export default function MenuProvider({ children }) {
       value={{
         openMenu, setOpenMenu,
         nameLogo, setNameLogo,
+        loading, setLoading,
         handleLogin,
         handleLogout,
         auth,
@@ -78,6 +77,7 @@ export function useMenuContext() {
   const { 
     openMenu, nameLogo, 
     setOpenMenu, setNameLogo, 
+    loading, setLoading,
     handleLogin,
     handleLogout,
     auth,
@@ -88,6 +88,7 @@ export function useMenuContext() {
   return { 
     openMenu, nameLogo, 
     setOpenMenu, setNameLogo,
+    loading, setLoading,
     handleLogin,
     handleLogout,
     auth,

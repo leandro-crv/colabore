@@ -5,7 +5,6 @@ import { CampanhaContext } from '../../context/CampanhaContext';
 import { useNavigate } from 'react-router-dom';
 import { useMenuContext } from '../../context/context';
 
-
 import {GrFormClose} from 'react-icons/gr';
 
 const CadastroCampanha = () => {
@@ -15,6 +14,10 @@ const CadastroCampanha = () => {
   const [listCategoriasAtuais, setListCategoriasAtuais] = useState([])
   const [inputCategoria, setInputCategoria] = useState("");
   const [sugestoes, setSugestoes] = useState([]);
+
+  
+  const {setNameLogo} = useMenuContext();
+
 
   useEffect(()=>{
     getCampanhasCategorias();
@@ -65,8 +68,6 @@ const CadastroCampanha = () => {
     setFoto(img);
   }
 
-  const {setNameLogo} = useMenuContext();
-
   useEffect(() => {
     setNameLogo("Cadastro Campanha")
   },[]);
@@ -98,7 +99,7 @@ const CadastroCampanha = () => {
 
   return (
     <>
-      {!edit ? (<h1>Cadastrar nova camapnha</h1>) : (<h1>Editar campanha</h1>)}
+      {!edit ? (<h1>Cadastrar nova campanha</h1>) : (<h1>Editar campanha</h1>)}
       <Formik
         initialValues={cadastro}
         validate={validate}

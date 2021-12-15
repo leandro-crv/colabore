@@ -14,6 +14,10 @@ const Navigation = () => {
           <li>Colabore</li>
         </Link>
 
+        <Link to="/cadastrocampanha">
+          <li>Cadastrar Campanha</li>
+        </Link>
+
         <Link to="/perfil" onClick={() => setNameLogo('Perfil')}> 
           <li>Perfil</li>
         </Link>

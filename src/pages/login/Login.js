@@ -1,23 +1,22 @@
 import {useState, useEffect} from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
-import styles from './Login.module.css';
+import { Div } from './styles'
 import { useMenuContext } from '../../context/context';
-import api from '../../api'
 
 
 const Login = () => {
   const [senhaErrada, setSenhaErrada] = useState(false);
   const navigate = useNavigate();
-  const { setNameLogo, setAuth, auth, handleLogin, handleLogout } = useMenuContext()
+  const { setNameLogo, handleLogin, user, setLoading } = useMenuContext()
 
   useEffect(() => {
     setNameLogo('Login')
-    if(localStorage.getItem('token')){
+    if(user.nome){
       navigate('/listacampanha')
       setNameLogo('Lista Campanha')
     }
-  },[])
+  },[user])
 
   const validate = (values)=>{
     const errors = {};
@@ -32,9 +31,9 @@ const Login = () => {
   }
 
   return (
-    <div className={styles.login}>
+    <Div>
       
-      <h1 className={styles.titulo}>Entrar</h1>
+      <h1 >Entrar</h1>
       <Formik
         initialValues={{
           login: '',
@@ -42,12 +41,15 @@ const Login = () => {
         }}
         validate={validate}
         onSubmit={async (values) => {
+          setLoading(true)
           const loginSuccess = await handleLogin(values)
           if(loginSuccess){
             setSenhaErrada(false);
+            setTimeout(() => setLoading(false), 1000)
             navigate('/listacampanha');
           }
           else{
+            setTimeout(() => setLoading(false), 1000)
             setSenhaErrada(true);
           }
         }}
@@ -55,12 +57,12 @@ const Login = () => {
         <Form className='form-usuario'>
           <div>
             <label htmlFor="login">Usuário</label>
-            <Field id="login" name="login" placeholder="usuário" />
+            <Field id="login" name="login" placeholder="Digite o usuário..." />
             <ErrorMessage name='login' render={msg => <div className='error'>{msg}</div>} />
           </div>
           <div>
             <label htmlFor="senha">Senha</label>
-            <Field id="senha" type='password' name="senha" placeholder="senha" />
+            <Field id="senha" type='password' name="senha" placeholder="Digite a senha...." />
             <ErrorMessage name='senha' render={msg => <div className='error'>{msg}</div>} />
           </div>
           {senhaErrada ? (<div>Usuário ou senha incorretos</div>):null}
@@ -70,7 +72,7 @@ const Login = () => {
 
       <Link to='/cadastrousuario' onClick={() => setNameLogo('Cadastro Usuario')}>Criar conta</Link>
       
-    </div>
+    </Div>
   );
 };
 
