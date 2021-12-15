@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { useMenuContext } from "../../context/context";
 import perfil from '../../images/perfil.jpg';
 import Loading from '../../components/loading'
+import Redirecionamento from "../../services/functions/redirecionamento";
 
 const ListaCampanha = () =>{
   const {getCampanhas,listCampanhas,detalharCampanha} = useContext(CampanhaContext);
@@ -28,8 +29,7 @@ const ListaCampanha = () =>{
   useEffect(()=>{
     setNameLogo("Lista Campanha");
     if (!user.nome) {
-      navigate("/")
-      setNameLogo("Login")
+      Redirecionamento("/")
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   },[user])

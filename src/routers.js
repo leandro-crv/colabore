@@ -1,7 +1,7 @@
 import {Routes,Route} from "react-router-dom";
 import { useState, useEffect } from 'react'
 import NotFound from "./components/notFound/NotFound"; 
-import Login from "./pages/login/Login";
+import Login from "./pages/login";
 import CadastroUsuario from "./pages/cadastrousuario/CadastroUsuario";
 import CadastroCampanha from "./pages/cadastrocampanha/CadastroCampanha";
 import ListaCampanha from "./pages/listacampanha/ListaCampanha";
@@ -11,9 +11,10 @@ import DetalheCampanha from "./pages/detalhecampanha/DetalheCampanha";
 import Perfil from "./pages/perfil";
 
 const Routers = () => {
-  const {autenticate, loading} = useMenuContext();
+  const {autenticate, loading, auth} = useMenuContext();
 
   useEffect(() => {
+    
     const token = localStorage.getItem('token');
     if(token){
       autenticate(token);
@@ -25,7 +26,7 @@ const Routers = () => {
     return (<Loading />)
   }
   return (
-    <main className='container'>
+    <>
         <Routes>
           <Route exact path="/" element={<Login />} />
           <Route exact path='/cadastrousuario' element={<CadastroUsuario/>} />
@@ -38,7 +39,7 @@ const Routers = () => {
         {
           loading && <Loading />
         }
-    </main>  
+    </>  
   )
 }
 

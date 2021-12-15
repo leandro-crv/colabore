@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import PasswordStrength from '../../components/PasswordStrength';
+import { FormCadastro, Password, ContainerBotoes, BordaCadastro } from './styles'
+import { useMenuContext } from '../../context/context';
+import { Link } from 'react-router-dom'; 
 
 const CadastroUsuario = () => {
   const [foto, setFoto] = useState({});
   const [valueSenha, setValueSenha] = useState('')
+  const {setNameLogo} = useMenuContext();
 
   const initialValues = {
     nome: 'leandro',
@@ -28,8 +32,8 @@ const CadastroUsuario = () => {
   }
 
   useEffect(() => {
-    console.log(foto)
-  },[foto])
+    setNameLogo("Cadastro Usuário")
+  },[])
 
 
   const validate = (values) => {
@@ -81,50 +85,59 @@ const CadastroUsuario = () => {
         console.log('POST cadastro usuário: ',values)
       }}
     >
-      <Form>
-        <div>
-          <label htmlFor="nome">Nome:</label>
-          <Field id="nome" name="nome" placeholder="Digite seu nome" maxLength="30" />
-          <ErrorMessage name='nome' render={msg => <div className='error'>{msg}</div>} />
-        </div>
-        <div>
+      <FormCadastro>
+        
+        <h1>Cadastro</h1>
 
-          <label htmlFor="email">Email:</label>
-          <Field
-            id="email"
-            name="email"
-            placeholder="Digite seu email"
-            type="email"
-            maxLength="30"
-          />
-          <ErrorMessage name='email' render={msg => <div className='error' >{msg}</div>} />
-        </div>
-        <div>
-          <label htmlFor="senha">Senha:</label>
-          <Field 
-            id="senha" name="senha" 
-            placeholder="insira sua senha" 
-            type="text" 
-            minLength={8}
-            value={valueSenha}
-            onChange={(e) => setValueSenha(e.target.value)}          
-          />
-          <PasswordStrength password={valueSenha}/>
-          <ErrorMessage name='senha' render={msg => <div className='error'>{msg}</div>} />
-        </div>
-        <div>
-          <label htmlFor="senha2">Confirme sua senha:</label>
-          <Field id="senha2" name="senha2" placeholder="Repita sua senha" type="text"/>
-          <ErrorMessage name='senha2' render={msg => <div className='error'>{msg}</div>} />
-        </div>
-        <div>
-          <label htmlFor="foto">Foto:</label>
-          <input name='foto' type='file' accept='image/png, image/jpeg' onChange={(e) => changeInputFoto(e.target)} />
-          <ErrorMessage name='foto' render={msg => <div className='error'>{msg}</div>} />
-        </div>
-        <button type="submit" className='botao1'>Cadastrar</button>
+        <BordaCadastro>
+          <div>
+            <label htmlFor="nome">Nome:</label>
+            <Field id="nome" name="nome" placeholder="Digite seu nome" maxLength="30" />
+            <ErrorMessage name='nome' render={msg => <div className='error'>{msg}</div>} />
+          </div>
+          <div>
+            <label htmlFor="email">Email:</label>
+            <Field
+              id="email"
+              name="email"
+              placeholder="Digite seu email"
+              type="email"
+              maxLength="30"
+            />
+            <ErrorMessage name='email' render={msg => <div className='error' >{msg}</div>} />
+          </div>
+          <Password>
+            <label htmlFor="senha">Senha:</label>
+            <Field
+              id="senha" name="senha"
+              placeholder="insira sua senha"
+              type="text"
+              minLength={8}
+              value={valueSenha}
+              onChange={(e) => setValueSenha(e.target.value)}
+            />
+            <PasswordStrength password={valueSenha}/>
+            <ErrorMessage name='senha' render={msg => <div className='error'>{msg}</div>} />
+          </Password>
+          <div>
+            <label htmlFor="senha2">Confirme sua senha:</label>
+            <Field id="senha2" name="senha2" placeholder="Repita sua senha" type="text"/>
+            <ErrorMessage name='senha2' render={msg => <div className='error'>{msg}</div>} />
+          </div>
+          <div>
+            <label htmlFor="foto">Foto:</label>
+            <input className="botãoFoto" name='foto' type='file' accept='image/png, image/jpeg' onChange={(e) => changeInputFoto(e.target)} />
+            <ErrorMessage name='foto' render={msg => <div className='error'>{msg}</div>} />
+          </div>
+          <ContainerBotoes>
+            <button type="submit">Cadastrar</button>
+            <button type="submit">
+              <Link to="/" className='botao2'>Voltar</Link>
+            </button>
+          </ContainerBotoes>
+        </BordaCadastro>
 
-      </Form>
+      </FormCadastro>
     </Formik>
   );
 }

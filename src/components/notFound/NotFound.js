@@ -1,23 +1,18 @@
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import { useMenuContext } from "../../context/context";
 import { Div } from './styles'
+import Redirecionamento from "../../services/functions/redirecionamento";
 
 const NotFound = () =>{
 
-  const navigate = useNavigate()
   const {user, setNameLogo} = useMenuContext();
 
   useEffect(() => {
     setNameLogo("")
     if(user.name) {
-    setTimeout(() => {
-      navigate('/listacampanha')
-    }, 4000)
+      Redirecionamento('/listacampanha')
   } else {
-    setTimeout(() => {
-      navigate('/')
-    }, 4000)
+    Redirecionamento("/")
   }}, [])
 
   

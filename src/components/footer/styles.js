@@ -8,8 +8,6 @@ export const DivFooter = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  position: fixed;
-  bottom: 0;
   
     .titulo {
     background: linear-gradient(45deg, #659f68, #32669d, #32669d, #659f68);

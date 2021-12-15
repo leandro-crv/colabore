@@ -18,7 +18,7 @@ export default function MenuProvider({ children }) {
 
   const handleLogin = async (login) => {
     try{
-      const {data} = await api.post('login',login);
+      const {data} = await api.post('login', login);
       autenticate(data);
       return true;
     } catch(error){

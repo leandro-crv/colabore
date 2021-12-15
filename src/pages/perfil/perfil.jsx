@@ -1,29 +1,35 @@
 import React, {useEffect} from 'react'
 import { useMenuContext } from '../../context/context';
-import { useNavigate } from 'react-router-dom';
+import NaoEstaLogado from '../../components/naoEstaLogado/naoEstaLogado';
+import Redirecionamento from '../../services/functions/redirecionamento';
 
 export default function Perfil() {
 
-  const navigate = useNavigate();
   const { user } = useMenuContext();
 
   useEffect(() => {
     if (!user.nome) {
-      setTimeout(() => {
-        navigate("/")
-      }, 4000)
+      Redirecionamento("/")
     }
   }, [])
 
   if (user.nome) {
     return (
+    
+    <>
     <div>
       <h1>Perfil do Usuário</h1>
     </div>
+    <div>
+      
+
+    </div>
+    </>
+
   )
   } else {
     return (
-      <h1>Você não está logado, você será redirecionado(a) para o Login</h1>
+      <NaoEstaLogado/>
     )
   }
 

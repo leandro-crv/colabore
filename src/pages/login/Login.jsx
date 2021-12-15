@@ -1,20 +1,20 @@
 import {useState, useEffect} from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
-import { Div } from './styles'
+import { Div, BordaLogin } from './styles'
 import { useMenuContext } from '../../context/context';
+import Redirecionamento from '../../services/functions/redirecionamento';
 
 
 const Login = () => {
   const [senhaErrada, setSenhaErrada] = useState(false);
   const navigate = useNavigate();
-  const { setNameLogo, handleLogin, user, setLoading } = useMenuContext()
+  const { setNameLogo, handleLogin, user, setLoading, autenticate } = useMenuContext()
 
   useEffect(() => {
     setNameLogo('Login')
     if(user.nome){
-      navigate('/listacampanha')
-      setNameLogo('Lista Campanha')
+      Redirecionamento('/listacampanha')
     }
   },[user])
 
@@ -43,6 +43,7 @@ const Login = () => {
         onSubmit={async (values) => {
           setLoading(true)
           const loginSuccess = await handleLogin(values)
+          autenticate('Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJjb2xhYm9yZS1hcGkiLCJwZXJtaXNzb2VzIjpbXSwic3ViIjoiOSIsImlhdCI6MTYzOTUyMzkwNCwiZXhwIjoxNjM5NjEwMzA0fQ.VjPUa-XFRYKIQzjt_7ib445zHs6yJQwLh7UkWuzipKg')
           if(loginSuccess){
             setSenhaErrada(false);
             setTimeout(() => setLoading(false), 1000)
@@ -54,7 +55,7 @@ const Login = () => {
           }
         }}
       >
-        <Form className='form-usuario'>
+        <BordaLogin>
           <div>
             <label htmlFor="login">Usuário</label>
             <Field id="login" name="login" placeholder="Digite o usuário..." />
@@ -66,11 +67,11 @@ const Login = () => {
             <ErrorMessage name='senha' render={msg => <div className='error'>{msg}</div>} />
           </div>
           {senhaErrada ? (<div>Usuário ou senha incorretos</div>):null}
-          <button type="submit" className='botao1'>Entrar</button>
-        </Form>
+          <button type="submit">Entrar</button>
+        </BordaLogin>
       </Formik>
 
-      <Link to='/cadastrousuario' onClick={() => setNameLogo('Cadastro Usuario')}>Criar conta</Link>
+      <Link to='/cadastrousuario' >Criar conta</Link>
       
     </Div>
   );
