@@ -3,58 +3,11 @@ import api from '../api';
 import moment from 'moment';
 import { useMenuContext } from './context';
 
-// importar imagens teste initialCampanhas
-import natal from '../images/natal.jfif';
-import pascoa from '../images/pascoa.png';
-import agasalho from '../images/agasalho.jfif';
-import criancas from '../images/criancas.jfif';
-import pais from '../images/pais.jfif';
-import computadores from '../images/computadores.jfif';
 
 const CampanhaContext = createContext({});
 
 const CampanhaProvider= ({children}) =>{
   const {user} = useMenuContext();
-  
-
-  const initialDetalheCampanha = {
-    idCampanha:0,
-    titulo: 'Natal solidário',
-    arrecadado: 12800,
-    meta: 15000,
-    descricao: 'Doações para o lar Santo Antônio de Porto Alegre',
-    foto: natal,
-    categorias: ['doações','roupas','rifas'],
-    criadorCampanhaId: 1,
-    encerra:'sim',
-    usuarios: [
-      // {
-      //   nome:'user1',
-      //   idUsuario:1,
-      //   foto:'user1'
-      // },
-      {
-        nome:'user2',
-        idUsuario:2,
-        foto:'user2'
-      },
-      {
-        nome:'user3',
-        idUsuario:3,
-        foto:'user3'
-      },
-      {
-        nome:'user4',
-        idUsuario:4,
-        foto:'user4'
-      },
-      {
-        nome:'user5',
-        idUsuario:5,
-        foto:'user5'
-      },
-    ]
-  }
 
   const initialCadastro = {
     concluiCampanhaAutomaticamente:'',
@@ -67,7 +20,10 @@ const CampanhaProvider= ({children}) =>{
   }
 
   const [listCampanhas,setListCampanhas] = useState([]);
-  const [detalheCampanha, setDetalheCampanha] = useState(initialDetalheCampanha);
+  const [listMinhasCampanhas,setListMinhasCampanhas] = useState([]);
+  const [listOutrasCampanhas, setListOutrasCampanhas] = useState([]);
+
+  const [detalheCampanha, setDetalheCampanha] = useState('');
   const [criador, setCriador] = useState(false);
   const [contribuiu, setContribuiu] = useState(false);
   const [cadastro, setCadastro] = useState(initialCadastro);
@@ -75,16 +31,27 @@ const CampanhaProvider= ({children}) =>{
   const [listCategoriasBD, setListCategoriasBD] = useState([]);
   const [categoriasACadastrar, setCategoriasACadastrar] = useState([]);
 
-  const getCampanhas = ()=>{
-    (async ()=>{
+  const getCampanhas = async () =>{
+    console.log('No momento o id do usuário é: ', user.idUsuario)
       const {data} = await api.get('campanha');
       data.map(campanha => {
         const {cor,metaAtingida} = arrecadadoMeta(campanha.totalArrecadado,campanha.metaArrecadacao)
         campanha.metaAtingida = metaAtingida
         campanha.cor = cor
+      setListOutrasCampanhas(data.sort((a,b) => moment(a.dataLimiteContribuicao).isAfter(b.dataLimiteContribuicao) ? -1 : 1));
       })
-      setListCampanhas(data.sort((a,b) => moment(a.dataLimiteContribuicao).isAfter(b.dataLimiteContribuicao) ? -1 : 1));
-    })()
+      
+      const response = await api.get(`campanha/lista-as-campanhas-criadas-pelo-usuario-logado?idUsuario=${user.idUsuario}`);
+      response.data.map(campanha => {
+        const {cor,metaAtingida} = arrecadadoMeta(campanha.totalArrecadado,campanha.metaArrecadacao)
+        campanha.metaAtingida = metaAtingida
+        campanha.cor = cor
+      setListMinhasCampanhas(data.sort((a,b) => moment(a.dataLimiteContribuicao).isAfter(b.dataLimiteContribuicao) ? -1 : 1));
+      })
+
+      const listaCompleta = listOutrasCampanhas.concat(listMinhasCampanhas);
+      setListCampanhas(listaCompleta.sort((a,b) => moment(a.dataLimiteContribuicao).isAfter(b.dataLimiteContribuicao) ? -1 : 1))
+      
   }
   
   const getCampanhasCategorias = () =>{
@@ -172,19 +139,8 @@ const CampanhaProvider= ({children}) =>{
     setCadastro(initialCadastro);
     setEdit(false);
   }
-  // Métodos de contribuição
+  
 
-  // const contribuir = async(idCampanha, idUsuario, valor) =>{
-  //   const {data} = await api.post('campanha/idCampanha/idUsuario',valor)
-  // }
-
-  // const retirarContribuicao = async (idCampanha, idUsuario) =>{
-  //   const {data} = await api.delete('campanha/idCampanha/idUsuario')
-  // }
-
-  // const prepareEditionCampanha = (camapnha) =>{
-  //   console.log('prepare edition')
-  // }
 
   return(
     <CampanhaContext.Provider value={{

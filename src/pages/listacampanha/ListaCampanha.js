@@ -13,7 +13,6 @@ const ListaCampanha = () =>{
   const [filtroCategorias, setFiltroCategorias] = useState([]);
   const [filtroMeta,setFiltroMeta] = useState([]);
   const [idFiltro, setIdFiltro] = useState([]);
-
   const navigate = useNavigate();
   const {setNameLogo, user} = useMenuContext();
 
@@ -25,6 +24,7 @@ const ListaCampanha = () =>{
     console.log('listCampanhas',listCampanhas)
   },[])
 
+  
   const irParaDetalheCampanha = (id)=>{
     detalharCampanha(id);
     navigate('/detalhecampanha')
@@ -32,10 +32,14 @@ const ListaCampanha = () =>{
 
   const handleFiltroCriacao = (valor)=>{
     if(valor==='todas'){
-      setFiltroCriador([])
+      let ids = [];
+      listCampanhas.map(campanha => ids.push(campanha.idCampanha));
+      setFiltroCriador(ids)
     }
     else{
-      setFiltroCriador(listCampanhas.filter(campanha => campanha.criadorCampanha.idUsuario===user.idUsuario));
+      let ids = []
+      listCampanhas.filter(campanha => campanha.criadorCampanha.idUsuario === user.idUsuario).map(id => ids.push(id));
+      setFiltroCriador(ids);
     }
     atualizarFiltro()
   }
@@ -54,7 +58,7 @@ const ListaCampanha = () =>{
     if(valor==='todas'){
       setFiltroMeta([])
     } else if(valor==='sim'){
-      let filtro = listCampanhas.filter(campanha => !campanha.metaAtingida);
+      let filtro = listCampanhas.filter(campanha => campanha.metaAtingida===false);
       let filtroId = [];
       filtro.map(campanha => filtroId.push(campanha.idCampanha));
       setFiltroMeta(filtroId);
@@ -70,6 +74,7 @@ const ListaCampanha = () =>{
   console.log('filtro categorias: ',filtroCategorias)
 
   const atualizarFiltro = ()=>{
+    console.log('filtro meta', filtroMeta)
     const esconder = filtroMeta.concat(filtroCriador);
     console.log('id a esconder',esconder)
   }
