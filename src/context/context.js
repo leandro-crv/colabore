@@ -28,8 +28,22 @@ export default function MenuProvider({ children }) {
     
   }
 
+  const postUsuario = async (usuario) =>{
+    console.log('usuario no post usuário',usuario)
+    try{
+      const {data} = await api.post('usuario',usuario);
+      return data
+    }
+    catch(error){
+      return error
+    }
+
+  }
+
   const postFotoUsuario = async(id,foto) =>{
-    const {data} = await api.post(`usuario/uploadFotoPerfil?idUsuario=${id}`,foto);
+    let formData = new FormData();      
+    formData.append("file", foto);
+    const {data} = await api.post(`foto-perfil/uploadFotoPerfil?idUsuario=${id}`,formData,{headers:{'Content-Type': 'multipart/form-data'}});
     console.log('data postFotoUsuario', data);
   }
 
@@ -50,13 +64,10 @@ export default function MenuProvider({ children }) {
   const getUser = () =>{
     (async ()=>{
       const {data} = await api.get('usuario');
-      const response = await api.get(`usuario/downloadFotoPerfil/${data.idUsuario}`);
-      // console.log('foto do perfil',response)
       console.log('usuário é: ', data);
       setUser({
         nome: data.nome,
-        idUsuario: data.idUsuario,
-        fotoPerfil:''
+        idUsuario: data.idUsuario
       });
     })()
   }
@@ -73,6 +84,7 @@ export default function MenuProvider({ children }) {
         autenticate,
         user,
         postFotoUsuario,
+        postUsuario
         
       }}
     >
@@ -93,7 +105,8 @@ export function useMenuContext() {
     setAuth,
     autenticate,
     user,
-    postFotoUsuario
+    postFotoUsuario,
+    postUsuario
   } = context;
   return { 
     openMenu, nameLogo, 
@@ -104,6 +117,7 @@ export function useMenuContext() {
     setAuth,
     autenticate,
     user,
-    postFotoUsuario
+    postFotoUsuario,
+    postUsuario
   };
 }

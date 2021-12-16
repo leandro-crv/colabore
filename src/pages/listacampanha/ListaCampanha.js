@@ -9,6 +9,7 @@ import perfil from '../../images/perfil.jpg';
 import Loading from "../../components/loading";
 
 const ListaCampanha = () => {
+  const urlImgCampanha = 'https://colabore-api-dbc.herokuapp.com/foto-campanha/downloadFotoCampanha/'
   const { getCampanhas,
           getMinhasCampanhas,
           detalharCampanha,
@@ -194,7 +195,7 @@ const ListaCampanha = () => {
                 <h3>{campanha.tituloCampanha}</h3>
                 <h1>ID: {campanha.idCampanha}</h1>
                 {campanha.metaAtingida && (<p>Meta atingida</p>)}
-                <img src={campanha.foto === 'string' ? perfil : campanha.foto} alt={campanha.titutloCampanha} width='100px' />
+                <img src={urlImgCampanha+campanha.idCampanha} alt={campanha.titutloCampanha} width='100px' onError={(e)=>{e.target.onerror = null; e.target.src=perfil}} />
                 <p>Data de encerramento {moment(campanha.dataLimiteContribuicao).format('DD/MM/YYYY')}</p>
                 <h5>Meta de arrecadação: R$ {campanha.metaArrecadacao}</h5>
                 <h5 className={campanha.cor}>Total arrecadado: {campanha.totalArrecadado.toLocaleString('pt-BR', {

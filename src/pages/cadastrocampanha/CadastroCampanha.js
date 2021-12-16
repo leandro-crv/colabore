@@ -242,6 +242,8 @@ const CadastroCampanha = () => {
   );
 }
 
+// foto campanha -- > https://colabore-api-dbc.herokuapp.com/foto-campanha/downloadFotoCampanha/10
+
 export default CadastroCampanha;
 
 
