@@ -44,10 +44,11 @@ const ListaCampanha = () =>{
     })();   
   },[])
 
+  
   useEffect(()=>{
     setListaSemFiltro(listCampanhas);
     setLoading(false)
-    atualizarFiltro()
+   // atualizarFiltro()
   },[listCampanhas])
 
   useEffect(()=>{
@@ -143,6 +144,11 @@ const ListaCampanha = () =>{
     }
   }
   
+  const irParaPaginaDetalheCampanha = (campanha) =>{
+    detalharCampanha(campanha);
+    navigate('/detalhecampanha')
+  }
+
   return(
     <div>
       <h1>Campanhas</h1>
@@ -190,9 +196,9 @@ const ListaCampanha = () =>{
         </div>
       </div>
       <div>
-      <ul className="listaCampanhas">
-        {listaSemFiltro.map(campanha => (
-          <li>
+      <ul className={styles.listaCampanhas}>
+        {listCampanhas.map(campanha => (
+          <li className={styles.campanha} onClick={()=>irParaPaginaDetalheCampanha(campanha)}>
             <h3>{campanha.tituloCampanha}</h3>
             <h1>ID: {campanha.idCampanha}</h1>
             {campanha.metaAtingida && (<p>Meta atingida</p>)}

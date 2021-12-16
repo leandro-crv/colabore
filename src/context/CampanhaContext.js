@@ -26,6 +26,7 @@ const CampanhaProvider= ({children}) =>{
   const [detalheCampanha, setDetalheCampanha] = useState('');
   const [criador, setCriador] = useState(false);
   const [contribuiu, setContribuiu] = useState(false);
+
   const [cadastro, setCadastro] = useState(initialCadastro);
   const [edit, setEdit] = useState(false);
   const [listCategoriasBD, setListCategoriasBD] = useState([]);
@@ -41,7 +42,7 @@ const CampanhaProvider= ({children}) =>{
         campanha.cor = cor
       setListCampanhas(data.sort((a,b) => moment(a.dataLimiteContribuicao).isAfter(b.dataLimiteContribuicao) ? -1 : 1));
       })
-           
+         
   }
   
   const getMinhasCampanhas = async() =>{
@@ -77,6 +78,16 @@ const CampanhaProvider= ({children}) =>{
       const categorias = data.sort((a,b) => a.nome > b.nome ? 1 : -1)
       setListCategoriasBD(categorias);
     })()
+  }
+
+  const putDoar = async(id,valor)=>{
+    try{
+      const {data} = await api.put(`doacao/realiza-a-doacao-de-um-valor?Id%20da%20Campanha=${id}&Valor%20da%20doa%C3%A7%C3%A3o=${valor}`);
+      return(true)
+    }
+    catch(error){
+      return(false)
+    }
   }
 
   const postCampanhaCategoria = async(value) =>{
@@ -121,21 +132,8 @@ const CampanhaProvider= ({children}) =>{
     }
   }
 
-  const detalharCampanha = (id) =>{
-    // quando api tiver pronta
-    // (async ()=>{
-    //   const {data} = api.get('/campanha/id');
-    //   setDetalheCampanha(data);
-    // })();
-
-    if(user.idUsuario===detalheCampanha.criadorCampanhaId){
-      setCriador(true);
-    }
-    else{
-      setCriador(false);
-      let contribuiu = detalheCampanha.usuarios.find(usuario => usuario.idUsuario===user.idUsuario)!==undefined;
-      setContribuiu(contribuiu);
-    }
+  const detalharCampanha = (campanha) =>{
+    setDetalheCampanha(campanha);
 
   }
 
@@ -177,7 +175,8 @@ const CampanhaProvider= ({children}) =>{
       categoriasACadastrar, setCategoriasACadastrar,
       postCampanha,
       getMetaAtingida,
-      listMetaAtingida
+      listMetaAtingida,
+      putDoar
     }}>
       {children}
     </CampanhaContext.Provider>

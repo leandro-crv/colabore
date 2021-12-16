@@ -34,10 +34,16 @@
   
 }
 
-
+.listaCampanhas{
+  margin-left:16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
 
 .campanha{
-  background-color: aqua;
+  border: solid black thin;
+  margin-bottom: 8px;
 }
 
 .none{
