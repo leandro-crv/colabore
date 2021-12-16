@@ -87,7 +87,7 @@ a:hover {
 }
 
 
-label {
+/* label {
   position: absolute;
   top: -25px;
   left: 0;
@@ -103,7 +103,7 @@ input {
   border-radius: 10px;
   border: solid 1px var(--text-color);
   font-size: 1.2rem;
-}
+} */
 
 button:hover {
   cursor: pointer;

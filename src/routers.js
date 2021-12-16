@@ -11,12 +11,7 @@ import DetalheCampanha from "./pages/detalhecampanha/DetalheCampanha";
 import Perfil from "./pages/perfil";
 
 const Routers = () => {
-<<<<<<< HEAD
-  const {autenticate, loading, auth} = useMenuContext();
-=======
-  const {auth, setAuth, autenticate, getUser} = useMenuContext();
-  const [loading, setLoading] = useState(true);
->>>>>>> fecfdd630a44a66d955b722ce5413d4526da9ebb
+  const {autenticate, loading} = useMenuContext();
 
   useEffect(() => {
 

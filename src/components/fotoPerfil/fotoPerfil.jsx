@@ -2,7 +2,7 @@ import React from 'react';
 import Avatar from '@mui/material/Avatar';
 import { img } from './mockimg';
 import { useMenuContext } from '../../context/context';
-import perfil from '../../images/perfil.jpeg';
+import perfil from '../../images/perfil.jpg';
 
 export default function FotoPerfil() {
   const { user } = useMenuContext();

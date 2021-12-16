@@ -30,7 +30,7 @@ const ListaCampanha = () => {
 
 
 
-  const { setNameLogo, user } = useMenuContext();
+  const { setNameLogo, user, redirecionamento } = useMenuContext();
 
   const [listaInicial, setListaInicial] = useState([]);
   const [listCategorias, setListCategorias] = useState([]);

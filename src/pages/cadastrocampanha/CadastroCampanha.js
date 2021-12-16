@@ -10,7 +10,6 @@ import moment from 'moment';
 import api from '../../api';
 
 const CadastroCampanha = () => {
-  const navigate = useNavigate();
   const { cadastro, edit, cancelarEdicao, listCategoriasBD, getCampanhasCategorias, postCampanhaCategoria, categoriasACadastrar, setCategoriasACadastrar, postCampanha } = useContext(CampanhaContext);
   const [foto, setFoto] = useState(false);
   const [listCategoriasAtuais, setListCategoriasAtuais] = useState([])
