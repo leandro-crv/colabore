@@ -3,15 +3,21 @@ import { Formik, Field, Form, ErrorMessage } from 'formik';
 // import NumberFormat from 'react-number-format';
 import { CampanhaContext } from '../../context/CampanhaContext';
 import { useMenuContext } from '../../context/context';
+import InputMask from 'react-input-mask'
 
 import {GrFormClose} from 'react-icons/gr';
+import moment from 'moment';
+import api from '../../api';
 
 const CadastroCampanha = () => {
-  const { cadastro, edit, cancelarEdicao, listCategoriasBD, getCampanhasCategorias, postCampanhaCategoria, categoriasACadastrar, setCategoriasACadastrar } = useContext(CampanhaContext);
+  const navigate = useNavigate();
+  const { cadastro, edit, cancelarEdicao, listCategoriasBD, getCampanhasCategorias, postCampanhaCategoria, categoriasACadastrar, setCategoriasACadastrar, postCampanha } = useContext(CampanhaContext);
   const [foto, setFoto] = useState(false);
   const [listCategoriasAtuais, setListCategoriasAtuais] = useState([])
   const [inputCategoria, setInputCategoria] = useState("");
   const [sugestoes, setSugestoes] = useState([]);
+  const [mascaraMoeda, setMascaraMoeda] = useState('');
+  
 
   
   const {setNameLogo, redirecionamento} = useMenuContext();
@@ -28,19 +34,24 @@ const CadastroCampanha = () => {
   
   const validate = (values) => {
     const errors = {};
+    console.log(values.metaArrecadacao)
     if (!values.tituloCampanha) {
       errors.tituloCampanha = 'Nome é obrigatório';
     }
+
+    if(!values.dataLimiteContribuicao){
+      errors.dataLimiteContribuicao = "É obrigatório inserir uma data limite para contribuições";
+    } else if(!moment(values.dataLimiteContribuicao,'DD/MM/YYYY').isValid()){
+      errors.dataLimiteContribuicao = "Data inválida";
+    } else if(moment().isAfter(values.dataLimiteContribuicao)){
+      errors.dataLimiteContribuicao = "A data limite não pode ser inferior a hoje";
+    }
+
 
     if (!values.concluiCampanhaAutomaticamente) {
       errors.concluiCampanhaAutomaticamente = 'Indique se a campanha encerra após atingir a meta';
     }
 
-    if (!values.metaArrecadacao) {
-      errors.metaArrecadacao = "Insira uma meta de arrecadação";
-    } else if (values.metaArrecadacao <= 0) {
-      errors.metaArrecadacao = "A meta deve ser maior que zero";
-    }
     if (!values.descricaoCampanha) {
       errors.descricaoCampanha = "Descrição é um campo obrigatório";
     }
@@ -95,6 +106,23 @@ const CadastroCampanha = () => {
     handleInputCategoria('');
   }
 
+  const handleMascaraMoeda = (valor) => {
+    valor = valor.replace(/\D/g, "");
+    valor = valor.replace(/(\d)(\d{2})$/, "$1,$2");
+    valor = valor.replace(/(?=(\d{3})+(\D))\B/g, ".");
+    setMascaraMoeda('R$' + valor);
+  }
+
+  
+
+  const removerMascaraMoeda = (mascara) => {
+    mascara = mascara.replace('R$','');
+    mascara = mascara.replace(/\./g,'');
+    mascara = mascara.replace(',','.');
+      
+    return mascara;
+  }
+  
   return (
     <>
       {!edit ? (<h1>Cadastrar nova campanha</h1>) : (<h1>Editar campanha</h1>)}
@@ -116,18 +144,22 @@ const CadastroCampanha = () => {
             }
             else{
               idsPraCadastrar.push(id.idCategoria);
+              setCategoriasACadastrar(categoriasACadastrar.push({idCategoria:id.idCategoria}))
             }
           })
-          setCategoriasACadastrar([...categoriasACadastrar,idsPraCadastrar]);
+        
+          for(let i=0;i<semId.length;i++){
+            const {data} = await api.post ('categoria',{nome:semId[i]});
+            setCategoriasACadastrar(categoriasACadastrar.push({idCategoria:data.idCategoria}))
+          }
 
-          //  for(let i=0;i<semId.length;i++){
-          //    postCampanhaCategoria(semId[i]);
-          // }
-
-        console.log('sem id',semId,'id pra cadastrar',idsPraCadastrar)
-        values.concluiCampanhaAutomaticamente = values.concluiCampanhaAutomaticamente ==='sim'; 
-          values.categorias = idsPraCadastrar;
+         console.log('sem id',semId,'id pra cadastrar',idsPraCadastrar)
+         values.concluiCampanhaAutomaticamente = values.concluiCampanhaAutomaticamente ==='sim'; 
+          values.categorias = categoriasACadastrar;
+          values.dataLimiteContribuicao = moment(values.dataLimiteContribuicao,'DD/MM/YYYY').format('YYYY-MM-DD');
+          values.metaArrecadacao = removerMascaraMoeda(values.metaArrecadacao);
           console.log('POST CAMPANHA',values)
+          postCampanha(values)
         }}
       >
         <Form>
@@ -137,7 +169,11 @@ const CadastroCampanha = () => {
             <ErrorMessage name='tituloCampanha' render={msg => <div className='error'>{msg}</div>} />
           </div>
           <div>
-            <p>Data limite: </p>
+            <label htmlFor="dataLimiteContribuicao">Data limite para contribuição</label>
+            <Field id="dataLimiteContribuicao" name="dataLimiteContribuicao" render={({ field }) => (
+              <InputMask {...field} mask={`99/99/9999`} />
+            )} />
+            <ErrorMessage name='dataLimiteContribuicao' render={msg => <div className='error'>{msg}</div>} />
           </div>
           <div>
             <label>Encerrar ao atingir a meta? </label>
@@ -152,8 +188,7 @@ const CadastroCampanha = () => {
           </div>
           <div>
             <label htmlFor="metaArrecadacao">Meta de arrecadação:</label>
-            <Field id="metaArrecadacao" name="metaArrecadacao" placeholder="meta de arrecadacao de arrecadação" type='number' />
-            <ErrorMessage name='metaArrecadacao' render={msg => <div className='error'>{msg}</div>} />
+            <input value={mascaraMoeda} name="metaArrecadacao" onChange={(e)=> handleMascaraMoeda(e.target.value)}/>
           </div>
           <div>
             <label htmlFor="descricaoCampanha">Descrição:</label>
@@ -206,6 +241,7 @@ const CadastroCampanha = () => {
     </>
   );
 }
+
 
 export default CadastroCampanha;
 

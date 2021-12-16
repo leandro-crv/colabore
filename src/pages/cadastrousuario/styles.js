@@ -16,7 +16,7 @@ export const FormCadastro = styled(Form)`
     }
   }
 
-  .botãoFoto {
+  .botaoFoto {
     border: none;
   }
 
