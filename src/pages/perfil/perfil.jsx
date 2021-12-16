@@ -1,16 +1,19 @@
 import React, {useEffect} from 'react'
 import { useMenuContext } from '../../context/context';
 import NaoEstaLogado from '../../components/naoEstaLogado/naoEstaLogado';
-import Redirecionamento from '../../services/functions/redirecionamento';
 
 export default function Perfil() {
 
-  const { user } = useMenuContext();
+  const { user, redirecionamento } = useMenuContext();
 
   useEffect(() => {
-    if (!user.nome) {
-      Redirecionamento("/")
+    if (user.nome) {
+      redirecionamento("/listacampanha", true)
+    } else {
+      redirecionamento("/", true)
     }
+    
+    
   }, [])
 
   if (user.nome) {
@@ -32,5 +35,5 @@ export default function Perfil() {
       <NaoEstaLogado/>
     )
   }
-
+  
 }

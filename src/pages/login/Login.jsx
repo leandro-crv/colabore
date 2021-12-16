@@ -1,20 +1,18 @@
 import {useState, useEffect} from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import { Div, BordaLogin } from './styles'
 import { useMenuContext } from '../../context/context';
-import Redirecionamento from '../../services/functions/redirecionamento';
 
 
 const Login = () => {
   const [senhaErrada, setSenhaErrada] = useState(false);
-  const navigate = useNavigate();
-  const { setNameLogo, handleLogin, user, setLoading, autenticate } = useMenuContext()
+  const { setNameLogo, handleLogin, user, setLoading, autenticate, redirecionamento } = useMenuContext()
 
   useEffect(() => {
     setNameLogo('Login')
     if(user.nome){
-      Redirecionamento('/listacampanha')
+      redirecionamento('/listacampanha', true)
     }
   },[user])
 
@@ -43,11 +41,10 @@ const Login = () => {
         onSubmit={async (values) => {
           setLoading(true)
           const loginSuccess = await handleLogin(values)
-          autenticate('Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJjb2xhYm9yZS1hcGkiLCJwZXJtaXNzb2VzIjpbXSwic3ViIjoiOSIsImlhdCI6MTYzOTUyMzkwNCwiZXhwIjoxNjM5NjEwMzA0fQ.VjPUa-XFRYKIQzjt_7ib445zHs6yJQwLh7UkWuzipKg')
           if(loginSuccess){
             setSenhaErrada(false);
             setTimeout(() => setLoading(false), 1000)
-            navigate('/listacampanha');
+            redirecionamento('/listacampanha');
           }
           else{
             setTimeout(() => setLoading(false), 1000)

@@ -2,17 +2,14 @@ import { useContext, useState } from "react";
 import moment from "moment";
 import { useEffect } from "react";
 import {CampanhaContext} from '../../context/CampanhaContext'
-import { useNavigate } from "react-router-dom";
 import { useMenuContext } from "../../context/context";
 import perfil from '../../images/perfil.jpg';
 import Loading from '../../components/loading'
-import Redirecionamento from "../../services/functions/redirecionamento";
 
 const ListaCampanha = () =>{
   const {getCampanhas,listCampanhas,detalharCampanha} = useContext(CampanhaContext);
-  const navigate = useNavigate();
   const [list, setList ] = useState([])
-  const {setNameLogo, user } = useMenuContext();
+  const {setNameLogo, user, redirecionamento } = useMenuContext();
 
   useEffect(() => {
     if(user.nome) getCampanhas()
@@ -29,14 +26,14 @@ const ListaCampanha = () =>{
   useEffect(()=>{
     setNameLogo("Lista Campanha");
     if (!user.nome) {
-      Redirecionamento("/")
+      redirecionamento("/", true)
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   },[user])
 
   const irParaDetalheCampanha = (id)=>{
     detalharCampanha(id);
-    navigate('/detalhecampanha')
+    redirecionamento('/detalhecampanha')
   }
 
     return (

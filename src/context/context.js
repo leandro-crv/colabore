@@ -1,5 +1,6 @@
 import React, { createContext, useState, useContext } from "react";
 import api from '../api'
+import { useNavigate } from "react-router-dom";
 
 const MenuContext = createContext();
 
@@ -14,6 +15,7 @@ export default function MenuProvider({ children }) {
   }
   const [user, setUser] = useState(initialUser);
   const [ loading, setLoading] = useState(false)
+  const navigate = useNavigate();
   
 
   const handleLogin = async (login) => {
@@ -31,6 +33,16 @@ export default function MenuProvider({ children }) {
     api.defaults.headers.common['Authorization'] = '';
     window.location.href = '/';
     setAuth(false);
+  }
+
+  const redirecionamento = (pagina, esperarTempo = false) => {
+    if (esperarTempo) {
+      setTimeout(() => {
+        navigate(pagina)
+      }, 4000)
+    } else {
+      navigate(pagina)
+    }
   }
 
   const autenticate = (token) =>{
@@ -63,7 +75,8 @@ export default function MenuProvider({ children }) {
         auth,
         setAuth,
         autenticate,
-        user
+        user,
+        redirecionamento
       }}
     >
       {children}
@@ -83,7 +96,8 @@ export function useMenuContext() {
     auth,
     setAuth,
     autenticate,
-    user
+    user,
+    redirecionamento
   } = context;
   return { 
     openMenu, nameLogo, 
@@ -94,6 +108,7 @@ export function useMenuContext() {
     auth,
     setAuth,
     autenticate,
-    user
+    user,
+    redirecionamento
   };
 }

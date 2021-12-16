@@ -2,17 +2,15 @@ import { useContext, useEffect } from "react";
 import {FaUserAlt} from 'react-icons/fa'
 import { useMenuContext } from '../../context/context';
 import { CampanhaContext } from "../../context/CampanhaContext";
-import { useNavigate } from "react-router-dom"; 
 
 
 const DetalheCampanha = () => {
-  const navigate = useNavigate();
-  const { user, setNameLogo } = useMenuContext();
+  const { user, setNameLogo, redirecionamento } = useMenuContext();
   const {detalheCampanha, criador, contribuiu, prepararEdicao} = useContext(CampanhaContext);
 
   const irParaEdicao = (id)=>{
     prepararEdicao(id);
-    navigate('/cadastrocampanha')
+    redirecionamento('/cadastrocampanha')
   }
 
   useEffect(()=>{

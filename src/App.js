@@ -8,17 +8,18 @@ import { BrowserRouter } from 'react-router-dom';
 
 function App() {
   return (
+  <BrowserRouter>
     <MenuProvider>
       <CampanhaProvider>
-      <BrowserRouter>
+      
         <Header />
         <main className='body-content'>
           <Routers />
         </main>
         <Footer />
-      </BrowserRouter>
       </CampanhaProvider>
     </MenuProvider>
+  </BrowserRouter>
 
   );
 }

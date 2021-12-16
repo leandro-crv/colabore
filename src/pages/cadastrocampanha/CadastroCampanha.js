@@ -1,14 +1,12 @@
 import React, { useEffect, useContext, useState } from 'react';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
-import NumberFormat from 'react-number-format';
+// import NumberFormat from 'react-number-format';
 import { CampanhaContext } from '../../context/CampanhaContext';
-import { useNavigate } from 'react-router-dom';
 import { useMenuContext } from '../../context/context';
 
 import {GrFormClose} from 'react-icons/gr';
 
 const CadastroCampanha = () => {
-  const navigate = useNavigate();
   const { cadastro, edit, cancelarEdicao, listCategoriasBD, getCampanhasCategorias, postCampanhaCategoria, categoriasACadastrar, setCategoriasACadastrar } = useContext(CampanhaContext);
   const [foto, setFoto] = useState(false);
   const [listCategoriasAtuais, setListCategoriasAtuais] = useState([])
@@ -16,7 +14,7 @@ const CadastroCampanha = () => {
   const [sugestoes, setSugestoes] = useState([]);
 
   
-  const {setNameLogo} = useMenuContext();
+  const {setNameLogo, redirecionamento} = useMenuContext();
 
 
   useEffect(()=>{
@@ -25,7 +23,7 @@ const CadastroCampanha = () => {
   
   const prepararCancelarEdicao = () => {
     cancelarEdicao();
-    navigate('/detalhecampanha');
+    redirecionamento('/detalhecampanha');
   }
   
   const validate = (values) => {
@@ -126,8 +124,8 @@ const CadastroCampanha = () => {
           //    postCampanhaCategoria(semId[i]);
           // }
 
-         console.log('sem id',semId,'id pra cadastrar',idsPraCadastrar)
-         values.concluiCampanhaAutomaticamente = values.concluiCampanhaAutomaticamente ==='sim'; 
+        console.log('sem id',semId,'id pra cadastrar',idsPraCadastrar)
+        values.concluiCampanhaAutomaticamente = values.concluiCampanhaAutomaticamente ==='sim'; 
           values.categorias = idsPraCadastrar;
           console.log('POST CAMPANHA',values)
         }}
