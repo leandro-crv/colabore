@@ -12,7 +12,7 @@ import DetalheCampanha from "./pages/detalhecampanha/DetalheCampanha";
 import User from "./components/user/User";
 
 const Routers = () => {
-  const {auth, setAuth, autenticate} = useMenuContext();
+  const {auth, setAuth, autenticate, getUser} = useMenuContext();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

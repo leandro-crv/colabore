@@ -1,31 +1,24 @@
 import React, { useEffect, useState } from 'react';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import PasswordStrength from '../../components/PasswordStrength';
+import { useMenuContext } from "../../context/context";
+import { StyleSheetConsumer } from 'styled-components';
 
 const CadastroUsuario = () => {
-  const [foto, setFoto] = useState({});
-  const [valueSenha, setValueSenha] = useState('')
-
-  const initialValues = {
-    nome: 'leandro',
-    email: 'leandro@dbccompany.com.br',
-    senha: '123',
-    senha2: '123',
-    foto: '',
-  }
-
-  const changeInputFoto = (e) => {
-    console.log('input: ', e)
+  const [foto, setFoto] = useState('');
+  const [erroFoto, setErroFoto] = useState(false);
+  const [valueSenha, setValueSenha] = useState('');
   
-    const img = {
-      fileDowloandUri: e.value,
-      fileName: e.files[0].name,
-      fileType: e.files[0].type,
-      size: e.files[0].size
-    }
-    setFoto(img);  
-    getBase64(e.files[0])
+
+  const {postFotoUsuario, postUsuario, handleLogin, user} = useMenuContext();
+  const initialValues = {
+    nome: '',
+    email: '',
+    senha: '',
+    senha2: '',
   }
+
+  
 
   useEffect(() => {
     console.log(foto)
@@ -33,6 +26,7 @@ const CadastroUsuario = () => {
 
 
   const validate = (values) => {
+   
     const errors = {};
     if (!values.nome) {
       errors.nome = 'Nome é obrigatório';
@@ -44,41 +38,41 @@ const CadastroUsuario = () => {
       errors.email = 'Email inválido';
     }
 
-    if (!values.senha) {
-      errors.senha = "Senha é um campo obrigatório"
-    }
-  
-    if (values.senha2 !== valueSenha) {
-      errors.senha2 = "As senhas não são iguais";
-    }
-
-    if (!foto) {
-      errors.foto = "É obrigatório cadastrar uma foto";
-    }
-
     return errors;
   }
 
-  function getBase64(file) {
-    var reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = function() {
-        setFoto((prevState) => ({ ...prevState, base64: reader.result }))
-    };
-    reader.onerror = function(error) {
-        console.log('Error: ', error);
-    };
-  }
+
+ 
 
   return (
+    <>
     <Formik
       initialValues={initialValues}
       validate={validate}
       onSubmit={async (values) => {
-        delete values.senha2;
-        values.foto = foto
-        values.senha = valueSenha
-        console.log('POST cadastro usuário: ',values)
+        if(!foto){
+          setErroFoto(true);
+          return
+        } else if(valueSenha!==values.senha2){
+          alert('Senhas não conferem');
+          return
+        }
+        else{
+          setErroFoto(false);
+          delete values.senha2;
+          values.senha = valueSenha;
+          let usuario = await postUsuario(values);
+          console.log('post usuário é: ', usuario)
+          let response = await postFotoUsuario(usuario.idUsuario,foto);
+          const logar = await handleLogin({login: values.email, senha: values.senha});
+          if(logar){
+            window.location.href='/listacampanha'
+          }
+          else{
+            alert('Erro ao realizar login')
+          }
+
+        }
       }}
     >
       <Form>
@@ -105,7 +99,7 @@ const CadastroUsuario = () => {
             id="senha" name="senha" 
             placeholder="insira sua senha" 
             type="text" 
-            minLength={8}
+            minLength={6}
             value={valueSenha}
             onChange={(e) => setValueSenha(e.target.value)}          
           />
@@ -119,13 +113,13 @@ const CadastroUsuario = () => {
         </div>
         <div>
           <label htmlFor="foto">Foto:</label>
-          <input name='foto' type='file' accept='image/png, image/jpeg' onChange={(e) => changeInputFoto(e.target)} />
-          <ErrorMessage name='foto' render={msg => <div className='error'>{msg}</div>} />
+          <input name='foto' type='file' accept='image/png, image/jpeg' onChange={(e) => setFoto(e.target.files[0])} />
+          {erroFoto && (<div className='error'>É obrigatório cadastrar uma foto </div>)}
         </div>
         <button type="submit" className='botao1'>Cadastrar</button>
-
       </Form>
     </Formik>
+    </>
   );
 }
 

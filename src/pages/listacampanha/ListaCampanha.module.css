@@ -1,0 +1,51 @@
+.containerLista{
+  display: flex;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.filtros{
+  width: 40%;
+  padding:8px;
+  background-color: lightblue;  
+}
+
+.filtros > div{
+  margin-bottom: 16px;
+}
+
+.filtros label{
+  margin-left: 2px;
+}
+
+.tituloFiltro{
+  font-size: 1.2rem;
+  margin: 2px;
+  font-weight: bold;
+  border-bottom: solid gray thin;
+}
+
+.categorias{
+  max-height: 300px;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  
+}
+
+.listaCampanhas{
+  margin-left:16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.campanha{
+  border: solid black thin;
+  margin-bottom: 8px;
+}
+
+.none{
+  display: none;
+}

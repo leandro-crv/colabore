@@ -1,85 +1,109 @@
-import { useContext, useEffect } from "react";
-import {FaUserAlt} from 'react-icons/fa'
-import { useMenuContext } from '../../context/context';
-import { CampanhaContext } from "../../context/CampanhaContext";
-import { useNavigate } from "react-router-dom"; 
+// import { useContext, useEffect,useState } from "react";
+// import {FaUserAlt} from 'react-icons/fa'
+// import { useMenuContext } from '../../context/context';
+// import { CampanhaContext } from "../../context/CampanhaContext";
+// import { useNavigate } from "react-router-dom"; 
+// import styles from './DetalheCampanha.module.css'
 
+// const DetalheCampanha = () => {
+//   const navigate = useNavigate();
+//   const { user, setNameLogo } = useMenuContext();
+//   const {detalheCampanha,prepararEdicao, putDoar} = useContext(CampanhaContext);
+//   const [edit, setEdit] = useState(false);
+//   const [inputContribuicao, setInputContribuicao] = useState(false);
+//   const [contribuicao, setContribuicao] = useState('');
 
-const DetalheCampanha = () => {
-  const navigate = useNavigate();
-  const { user, setNameLogo } = useMenuContext();
-  const {detalheCampanha, criador, contribuiu, prepararEdicao} = useContext(CampanhaContext);
+//   const irParaEdicao = (id)=>{
+//     prepararEdicao(id);
+//     navigate('/cadastrocampanha')
+//   }
 
-  const irParaEdicao = (id)=>{
-    prepararEdicao(id);
-    navigate('/cadastrocampanha')
-  }
+//   useEffect(()=>{
+//     setNameLogo("Detalhe Campanha");
+//     if(detalheCampanha.criadorCampanha.idUsuario===user.idUsuario){
+//       setEdit(true);
+//     }
+//     else{
+//       setEdit(false);
+//     }
+//   // eslint-disable-next-line react-hooks/exhaustive-deps
+//   },[])
 
-  useEffect(()=>{
-    setNameLogo("Detalhe Campanha");
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[])
+//   const handleContribuicao = (valor) => {
+//     valor = valor.replace(/\D/g, "");
+//     valor = valor.replace(/(\d)(\d{2})$/, "$1,$2");
+//     valor = valor.replace(/(?=(\d{3})+(\D))\B/g, ".");
+//     setContribuicao('R$' + valor);
+//   }
 
-
-  const abrirCaixaDeContribuicao = ()=>{
-    var contribuicao = prompt("Digite quanto você quer doar");
-    var verificacao = window.confirm(`Você confirma a doação de R$ ${contribuicao}`);
-    if(verificacao){
-      console.log('fez a doação');
+//   const removerMascaraMoeda = (mascara) => {
+//     mascara = mascara.replace('R$','');
+//     mascara = mascara.replace(/\./g,'');
+//     mascara = mascara.replace(',','.');
       
-    }
-    else{
-      console.log('não fez a doação')
-    }
-  }
+//     return mascara;
+//   }
 
-  const retirarContribuicao = () =>{
-    console.log('contribuição retirada');
-  }
+//   const enviarContribuicao = async () => {
+//     const contribuicaoNumero = Number(removerMascaraMoeda(contribuicao))
+//     console.log('contribuição número',contribuicaoNumero)
+//     if(!contribuicaoNumero){
+//       alert('Sua contribuição tem que ser um valor positivo')
+//     }
+//     else{
+//       const retorno = await putDoar(detalheCampanha.idCampanha,contribuicaoNumero);
+//       if(retorno){
+//         alert('Parabéns, você contribuiu com nossa campanha!')
+//       }
+//       else{
+//         alert()
+//       }
 
+//     }
+    
+//   }
   
+//   const cancelarContribuicao = ()=>{
+//     setContribuicao('');
+//     setInputContribuicao(false);
+//   }
 
-  return (
-    <>
-    <div>
-      <p>Informações para teste</p>
-      <p>Id criador da campanha: {detalheCampanha.criadorCampanhaId} </p>
-    </div>
-      <h1>Detalhe da campanha</h1>
-      <div className="detalhe-campanha">
-        <h2>{detalheCampanha.titulo}</h2>
-        <p>Total arrecadado: 
-          {detalheCampanha.arrecadado.toLocaleString('pt-BR', {
-            style: 'currency',
-            currency: 'BRL' 
-          })}
-        </p>
-        <p>Descrição: {detalheCampanha.descricao}</p>
-        <img src={detalheCampanha.foto} width='200px' alt={detalheCampanha.titulo}/>
-        <ul> Categorias: 
-          {detalheCampanha.categorias.map(categoria => (
-            <li>{categoria}</li>
-          ))}
-        </ul>
-        <div>
-          <ul>
-            Contribuições ({detalheCampanha.usuarios.length})
-            {detalheCampanha.usuarios.map(usuario => (
-              <li>
-              <FaUserAlt/>
-              <span>{usuario.nome}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
-      {criador ? (<button onClick={()=>irParaEdicao(detalheCampanha.idCampanha)}>Editar campanha</button>): !contribuiu ? (
-        <button onClick={()=> abrirCaixaDeContribuicao()}>Contribuir</button>
-      ): (
-        <button onClick={()=> retirarContribuicao()}>Retirar contribuição</button>
-      )}
-    </>
-  );
-}
+//   return (
+//     <>
+//       <h1>Detalhe da Campanha</h1>
+//       <div className={styles.campanha}>
+//         <div>
+//         <h1>{detalheCampanha.titulo}</h1>
+//         <h3>Meta de arrecadação {detalheCampanha.metaArrecadacao}</h3>
+//       </div>
+//       <div>
+//         <img src={detalheCampanha.foto} alt={detalheCampanha.titulo} />
+//       </div>
+//       <div>
+//         <p>
+//           {detalheCampanha.descricaoCampanha}
+//         </p>
+//       </div>
+//       <div>
+//         <ul>
+//           {detalheCampanha.categorias.map(categoria => (
+//             <li>{categoria.nome}</li>
+//           ))}
+//         </ul>
+//       </div>
+//       <div>
+//         <p>Usuários que contribuíram ()</p>
+//       </div>
+//         {edit ? (<button>Editar campanha</button>) :
+//          (<button> Contribuir </button>)}
+//          <div>
+//          <input value={contribuicao} name="metaArrecadacao" onChange={(e)=> handleContribuicao(e.target.value)}/>
+//            <button onClick={()=>cancelarContribuicao()}>Cancelar</button>
+//            <button onClick={()=>enviarContribuicao()}>Enviar</button>
+//          </div>
+//      </div>
+//     </>
+//   );
+// }
 
-export default DetalheCampanha;
+// export default DetalheCampanha;
