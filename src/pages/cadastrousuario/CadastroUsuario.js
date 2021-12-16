@@ -4,9 +4,11 @@ import PasswordStrength from '../../components/PasswordStrength';
 import { useMenuContext } from "../../context/context";
 
 const CadastroUsuario = () => {
-  const [foto, setFoto] = useState({});
+  const [foto, setFoto] = useState('');
+  const [erroFoto, setErroFoto] = useState(false);
+
   const [valueSenha, setValueSenha] = useState('')
-  const {postFotoUsuario, user} = useMenuContext();
+  const {postFotoUsuario, postUsuario, handleLogin, user} = useMenuContext();
   const initialValues = {
     nome: 'leandro',
     email: 'leandro@dbccompany.com.br',
@@ -15,18 +17,7 @@ const CadastroUsuario = () => {
     foto: '',
   }
 
-  const changeInputFoto = (e) => {
-    console.log('input: ', e)
   
-    const img = {
-      fileDowloandUri: e.value,
-      fileName: e.files[0].name,
-      fileType: e.files[0].type,
-      size: e.files[0].size
-    }
-    setFoto(img);  
-    getBase64(e.files[0])
-  }
 
   useEffect(() => {
     console.log(foto)
@@ -53,7 +44,7 @@ const CadastroUsuario = () => {
       errors.senha2 = "As senhas não são iguais";
     }
 
-    if (!foto) {
+    if (!values.foto) {
       errors.foto = "É obrigatório cadastrar uma foto";
     }
 
@@ -71,15 +62,8 @@ const CadastroUsuario = () => {
     };
   }
 
-  const changeTeste = (e) =>{
-    console.log('e',e)
-    const img = {
-      fileDowloandUri: e.value,
-      fileName: e.files[0].name,
-      fileType: e.files[0].type,
-      size: e.files[0].size
-    }
-    console.log('img',img)
+  const changeTeste = (img) =>{
+    console.log('imagem é:',img)
     postFotoUsuario(12,img)
   }
 
@@ -87,16 +71,24 @@ const CadastroUsuario = () => {
     <>
     <div>
       <h1>Teste upload foto</h1>
-      <input type='file'  accept='image/png, image/jpeg' onChange={(e) => changeTeste(e.target)} />
+      {/* <input type='file'  accept='image/png, image/jpeg' onChange={(e) => changeTeste(e.target.files[0])} /> */}
     </div>
     <Formik
       initialValues={initialValues}
       validate={validate}
       onSubmit={async (values) => {
-        delete values.senha2;
-        values.foto = foto
-        values.senha = valueSenha
-        console.log('POST cadastro usuário: ',values)
+        if(!foto){
+          setErroFoto(true);
+          return
+        }
+        else{
+          setErroFoto(false);
+          delete values.senha2;
+          let usuario = await postUsuario(values);
+          let response = await postFotoUsuario(usuario.idUsuario,foto);
+          handleLogin({login: values.email, senha: values.senha});
+
+        }
       }}
     >
       <Form>
@@ -137,11 +129,10 @@ const CadastroUsuario = () => {
         </div>
         <div>
           <label htmlFor="foto">Foto:</label>
-          <input name='foto' type='file' accept='image/png, image/jpeg' onChange={(e) => changeInputFoto(e.target)} />
-          <ErrorMessage name='foto' render={msg => <div className='error'>{msg}</div>} />
+          <input name='foto' type='file' accept='image/png, image/jpeg' onChange={(e) => setFoto(e.target.files[0])} />
+          {erroFoto && (<div className='error'>É obrigatório cadastrar uma foto </div>)}
         </div>
         <button type="submit" className='botao1'>Cadastrar</button>
-
       </Form>
     </Formik>
     </>

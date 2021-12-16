@@ -19,17 +19,16 @@ const CampanhaProvider= ({children}) =>{
     categorias:[],
   }
 
-  const [listCampanhas,setListCampanhas] = useState([]);
-  const [listMinhasCampanhas,setListMinhasCampanhas] = useState([]);
+
   
 
   const [detalheCampanha, setDetalheCampanha] = useState('');
   const [criador, setCriador] = useState(false);
-  const [contribuiu, setContribuiu] = useState(false);
+ 
 
   const [cadastro, setCadastro] = useState(initialCadastro);
   const [edit, setEdit] = useState(false);
-  const [listCategoriasBD, setListCategoriasBD] = useState([]);
+  
   const [categoriasACadastrar, setCategoriasACadastrar] = useState([]);
   const [listMetaAtingida,setListMetaAtingida] = useState([]);
 
@@ -40,9 +39,8 @@ const CampanhaProvider= ({children}) =>{
         const {cor,metaAtingida} = arrecadadoMeta(campanha.totalArrecadado,campanha.metaArrecadacao)
         campanha.metaAtingida = metaAtingida
         campanha.cor = cor
-      setListCampanhas(data.sort((a,b) => moment(a.dataLimiteContribuicao).isAfter(b.dataLimiteContribuicao) ? -1 : 1));
-      })
-         
+      });
+     return data.sort((a,b) => moment(a.dataLimiteContribuicao).isAfter(b.dataLimiteContribuicao) ? -1 : 1);
   }
   
   const getMinhasCampanhas = async() =>{
@@ -51,8 +49,9 @@ const CampanhaProvider= ({children}) =>{
       const {cor,metaAtingida} = arrecadadoMeta(campanha.totalArrecadado,campanha.metaArrecadacao)
       campanha.metaAtingida = metaAtingida
       campanha.cor = cor
-    setListMinhasCampanhas(data.sort((a,b) => moment(a.dataLimiteContribuicao).isAfter(b.dataLimiteContribuicao) ? -1 : 1));
-    })
+    });
+
+    return data.sort((a,b) => moment(a.dataLimiteContribuicao).isAfter(b.dataLimiteContribuicao) ? -1 : 1)
   }
 
   const getMetaAtingida = async(metaAtingida)=>{
@@ -62,22 +61,24 @@ const CampanhaProvider= ({children}) =>{
       console.log('data meta atingida',data)
       data.map(campanha => ids.push(campanha.idCampanha));
       setListMetaAtingida(ids);
+      return ids;
+      //return data;
     }
     else{
       const {data} = await api.get('campanha/filtra-por-meta-atingida-ou-não-atingida');
       console.log('data meta não atingida',data)
       data.map(campanha => ids.push(campanha.idCampanha));
       setListMetaAtingida(ids);
+      return ids;
+      //return data;
     }
     
   }
 
-  const getCampanhasCategorias = () =>{
-    (async ()=>{
+  const getCampanhasCategorias = async() =>{
       const {data} = await api.get('categoria');
       const categorias = data.sort((a,b) => a.nome > b.nome ? 1 : -1)
-      setListCategoriasBD(categorias);
-    })()
+      return categorias;
   }
 
   const putDoar = async(id,valor)=>{
@@ -161,7 +162,6 @@ const CampanhaProvider= ({children}) =>{
   return(
     <CampanhaContext.Provider value={{
       getCampanhas,
-      listCampanhas, listMinhasCampanhas,
       detalharCampanha,
       detalheCampanha,
       criador,
@@ -169,13 +169,11 @@ const CampanhaProvider= ({children}) =>{
       prepararEdicao,
       edit,
       cancelarEdicao,
-      listCategoriasBD,
       getCampanhasCategorias, getMinhasCampanhas,
       postCampanhaCategoria,
       categoriasACadastrar, setCategoriasACadastrar,
       postCampanha,
       getMetaAtingida,
-      listMetaAtingida,
       putDoar
     }}>
       {children}
