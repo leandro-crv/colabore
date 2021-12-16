@@ -1,6 +1,6 @@
 import {Routes,Route} from "react-router-dom";
 import { useState, useEffect } from 'react'
-import NotFound from "./components/notFound/NotFound"; 
+import NotFound from "./components/notFound/NotFound";
 import Login from "./pages/login";
 import CadastroUsuario from "./pages/cadastrousuario/CadastroUsuario";
 import CadastroCampanha from "./pages/cadastrocampanha/CadastroCampanha";
@@ -14,7 +14,7 @@ const Routers = () => {
   const {autenticate, loading, auth} = useMenuContext();
 
   useEffect(() => {
-    
+
     const token = localStorage.getItem('token');
     if(token){
       autenticate(token);
@@ -32,14 +32,14 @@ const Routers = () => {
           <Route exact path='/cadastrousuario' element={<CadastroUsuario/>} />
           <Route exact path='/cadastrocampanha' element={<CadastroCampanha/>}/>
           <Route exact path='/listacampanha' element={<ListaCampanha/>} />
-          <Route exact path='/perfil' element={<Perfil/>}/>
-          <Route exact path='/detalhecampanha' element={<DetalheCampanha/>} />     
+          <Route exact path='/minhascontribuicoes' element={<Perfil/>}/>
+          <Route exact path='/detalhecampanha' element={<DetalheCampanha/>} />
           <Route path="*" element={<NotFound/>} />
         </Routes>
         {
           loading && <Loading />
         }
-    </>  
+    </>
   )
 }
 

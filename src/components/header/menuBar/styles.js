@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 
 export const MenuBarDivPrincipal = styled.div`
   display: flex;
@@ -14,7 +14,7 @@ export const MenuBarDivPrincipal = styled.div`
     }
   }
 
-`
+`;
 export const MenuBarDiv = styled.div`
   display: flex;
   align-items: center;
@@ -53,6 +53,5 @@ export const MenuBarDiv = styled.div`
       display: flex;
     }
   }
-  
-`
 
+`;

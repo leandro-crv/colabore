@@ -1,10 +1,14 @@
-import React from "react";
-import { SwitchRoot, SwitchInput, SwitchThumb, SwitchTrack } from "./styles"
+import React from 'react';
 import clsx from 'clsx';
 import { useSwitch } from '@mui/base/SwitchUnstyled';
+import {
+  SwitchRoot, SwitchInput, SwitchThumb, SwitchTrack,
+} from './styles';
 
-function MUISwitch({onClick, ...props}) {
-  const { getInputProps, checked, disabled, focusVisible } = useSwitch(props);
+function MUISwitch({ onClick, ...props }) {
+  const {
+    getInputProps, checked, disabled, focusVisible,
+  } = useSwitch(props);
 
   const stateClasses = {
     checked,

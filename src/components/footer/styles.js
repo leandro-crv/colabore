@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled from 'styled-components';
 
 export const DivFooter = styled.div`
   background: var(--second-color);
@@ -8,7 +8,7 @@ export const DivFooter = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  
+
     .titulo {
     background: linear-gradient(45deg, #659f68, #32669d, #32669d, #659f68);
     background-size: 200% 200%;
@@ -46,4 +46,4 @@ export const DivFooter = styled.div`
       background-position: 0% 0%;
     }
   }
-`
+`;

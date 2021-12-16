@@ -1,5 +1,5 @@
-import styled from 'styled-components'
-import {Form} from 'formik'
+import styled from 'styled-components';
+import { Form } from 'formik';
 
 export const Div = styled.div`
   display: flex;
@@ -24,9 +24,9 @@ export const Div = styled.div`
     color: var(--text-color);
     font-size: 1.5rem;
   }
-`
+`;
 
-export const BordaLogin = styled(Form) `
+export const BordaLogin = styled(Form)`
   border: 1px solid var(--border-color);
   display: flex;
   flex-direction: column;
@@ -37,4 +37,4 @@ export const BordaLogin = styled(Form) `
   width: 100%;
   max-width: 465px;
   gap: 20px;
-`
+`;

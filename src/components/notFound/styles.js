@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled from 'styled-components';
 
 export const Div = styled.div`
   display: flex;
@@ -15,4 +15,4 @@ export const Div = styled.div`
     text-transform: uppercase;
     letter-spacing: 0.2rem;
   }
-`
+`;

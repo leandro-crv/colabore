@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled from 'styled-components';
 
 export const Fundo = styled.div`
   width: 100vw;
@@ -22,4 +22,4 @@ export const Fundo = styled.div`
     justify-content: center;
     align-items: center;
   }
-`
+`;

@@ -1,2 +1,3 @@
-import UseSwitchesCustom from "./switch"
-export default UseSwitchesCustom; 
+import UseSwitchesCustom from './switch';
+
+export default UseSwitchesCustom;

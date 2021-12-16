@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 
 export const HeaderDivBackground = styled.div`
   width: 100%;
@@ -8,15 +8,15 @@ export const HeaderDivBackground = styled.div`
   justify-content: center;
   position: fixed;
   z-index: 1000;
-  top:0; 
+  top:0;
   @media(min-width: 650px) {
     height: 4rem;
     overflow: hidden;
   }
-`
+`;
 
 export const HeaderDiv = styled.div`
-  
+
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -24,7 +24,7 @@ export const HeaderDiv = styled.div`
   transition: 0.7s;
   overflow: hidden;
   padding: 0 1rem;
-  
+
 
   @media(min-width: 650px) {
     flex-direction: row;
@@ -32,4 +32,4 @@ export const HeaderDiv = styled.div`
     justify-content: space-between;
     transition: 0;
   }
-`
+`;

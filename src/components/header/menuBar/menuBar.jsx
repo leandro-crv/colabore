@@ -1,27 +1,29 @@
-import React from 'react'
-import {ImUsers, ImMenu} from 'react-icons/im'
-import { MenuBarDiv, MenuBarDivPrincipal } from './styles'
-import { useMenuContext } from '../../../context/context'
-import darkMode from '../../../services/functions/darkMode'
-import UseSwitchesCustom from '../../switch'
-import User from '../../user/User'
-import Navigation from './navigation'
+import React from 'react';
+import { ImUsers, ImMenu } from 'react-icons/im';
+import { MenuBarDiv, MenuBarDivPrincipal } from './styles';
+import { useMenuContext } from '../../../context/context';
+import darkMode from '../../../services/functions/darkMode';
+import UseSwitchesCustom from '../../switch';
+import User from '../../user/User';
+import Navigation from './navigation';
 
 const MenuBar = () => {
-  const { openMenu, setOpenMenu, user, nameLogo } = useMenuContext()
+  const {
+    openMenu, setOpenMenu, user, nameLogo,
+  } = useMenuContext();
 
   return (
     <MenuBarDivPrincipal>
       <MenuBarDiv>
         <div className="menu-left">
           <div className="imMenu">
-            <ImMenu onClick={() => setOpenMenu(openMenu === '60px' ? '250px' : '60px')}/>
+            <ImMenu onClick={() => setOpenMenu(openMenu === '60px' ? '250px' : '60px')} />
           </div>
-          
+
           <div className="imUsers">
             <ImUsers />
           </div>
-          
+
           <h1>
             {
               nameLogo
@@ -30,17 +32,16 @@ const MenuBar = () => {
 
           <UseSwitchesCustom onClick={() => darkMode()} />
 
-
-        </div> 
+        </div>
         {
           user.nome && <Navigation />
         }
         {
           user && <User />
-        } 
+        }
       </MenuBarDiv>
     </MenuBarDivPrincipal>
-  )
-}
+  );
+};
 
-export default MenuBar
+export default MenuBar;

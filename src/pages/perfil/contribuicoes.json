@@ -1,0 +1,42 @@
+
+{
+  "finalizadas":[
+    {
+      "id": "campanha 1",
+      "data": "11/08/2005",
+      "titulo": "dahsdjklhad",
+      "conclusao": true,
+      "meta": "dkasjdlkasjdl aslkd jalskdj alk"
+    },
+    {
+      "id": "campanha 2",
+      "data": "12/10/2008",
+      "titulo": "dahsdjklhad",
+      "conclusao": true,
+      "meta": "dkasjdlkasjdl aslkd jalskdj alk"
+    },
+    {
+      "id": "campanha 3",
+      "data": "12/10/2008",
+      "titulo": "dahsdjklhad",
+      "conclusao": true,
+      "meta": "dkasjdlkasjdl aslkd jalskdj alk"
+    }
+  ],
+
+
+  "em andamento":[
+    {
+      "data": "11/08/2005",
+      "titulo": "dahsdjklhad",
+      "conclusao": false,
+      "meta": "dkasjdlkasjdl aslkd jalskdj alk"
+    },
+    {
+      "data": "11/08/2005",
+      "titulo": "dahsdjklhad",
+      "conclusao": false,
+      "meta": "dkasjdlkasjdl aslkd jalskdj alk"
+    }
+  ]
+}

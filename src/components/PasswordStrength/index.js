@@ -1,2 +1,3 @@
-import PasswordStrength from './passwordStrength'
-export default PasswordStrength
+import PasswordStrength from './passwordStrength';
+
+export default PasswordStrength;

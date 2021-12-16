@@ -1,16 +1,16 @@
-import React from 'react'
-import NavLinks from './styles'
-import { Link } from 'react-router-dom'
-import { useMenuContext } from '../../../../context/context'
+import React from 'react';
+import { Link } from 'react-router-dom';
+import NavLinks from './styles';
+import { useMenuContext } from '../../../../context/context';
 
 const Navigation = () => {
-  const { setNameLogo } = useMenuContext()
-  
+  const { setNameLogo } = useMenuContext();
+
   return (
     <NavLinks className="navigation">
       <ul>
 
-        <Link to="/listacampanha"> 
+        <Link to="/listacampanha">
           <li>Colabore</li>
         </Link>
 
@@ -18,13 +18,13 @@ const Navigation = () => {
           <li>Cadastrar Campanha</li>
         </Link>
 
-        <Link to="/perfil" onClick={() => setNameLogo('Perfil')}> 
-          <li>Perfil</li>
+        <Link to="/minhascontribuicoes" onClick={() => setNameLogo('Minhas Contribuições')}>
+          <li>Minhas Contribuições</li>
         </Link>
-        
+
       </ul>
     </NavLinks>
-  ) 
-}
+  );
+};
 
-export default Navigation
+export default Navigation;

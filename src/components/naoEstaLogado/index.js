@@ -1,3 +1,3 @@
-import NaoEstaLogado from "./naoEstaLogado";
+import NaoEstaLogado from './naoEstaLogado';
 
 export default NaoEstaLogado;

@@ -1,3 +1,3 @@
-import FotoPerfil from "./fotoPerfil";
+import FotoPerfil from './fotoPerfil';
 
 export default FotoPerfil;

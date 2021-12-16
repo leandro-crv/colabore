@@ -1,2 +1,3 @@
-import MenuBar from './menuBar'
-export default MenuBar
+import MenuBar from './menuBar';
+
+export default MenuBar;

@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled from 'styled-components';
 
 const DivUlLi = styled.div`
   margin-top: 40px;
@@ -6,7 +6,7 @@ const DivUlLi = styled.div`
   ul {
     list-style: none;
     display: flex;
-    
+
     li {
       cursor: pointer;
       }
@@ -16,12 +16,12 @@ const DivUlLi = styled.div`
   @media(min-width: 650px) {
     margin-top: 0px;
   }
-`
+`;
 
 const NavLinks = styled(DivUlLi)`
   margin-top: 10px;
   /* display: none; */
-  
+
   ul {
       display: flex;
       flex-direction: column;
@@ -33,5 +33,5 @@ const NavLinks = styled(DivUlLi)`
       flex-direction: row;
     }
   }
-`
-export default NavLinks
+`;
+export default NavLinks;
