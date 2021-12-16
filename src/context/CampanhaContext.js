@@ -34,6 +34,7 @@ const CampanhaProvider= ({children}) =>{
 
   const getCampanhas = async () =>{
       const {data} = await api.get('campanha');
+      console.log('chamou campanhas e resposta é: ', data)
       data.map(campanha => {
         const {cor,metaAtingida} = arrecadadoMeta(campanha.totalArrecadado,campanha.metaArrecadacao)
         campanha.metaAtingida = metaAtingida

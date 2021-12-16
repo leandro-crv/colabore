@@ -51,7 +51,7 @@ export default function MenuProvider({ children }) {
     (async ()=>{
       const {data} = await api.get('usuario');
       const response = await api.get(`usuario/downloadFotoPerfil/${data.idUsuario}`);
-      console.log('foto do perfil',response)
+      // console.log('foto do perfil',response)
       console.log('usuário é: ', data);
       setUser({
         nome: data.nome,

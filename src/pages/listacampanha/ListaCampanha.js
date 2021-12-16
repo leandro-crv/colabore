@@ -15,16 +15,17 @@ const ListaCampanha = () =>{
         listMinhasCampanhas,
         detalharCampanha,
         getCampanhasCategorias,
-        listCategoriasBD,
-        getMetaAtingida,
-        listMetaAtingida
+        listCategoriasBD        
       } = useContext(CampanhaContext);
   
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   
   const [filtroCategorias, setFiltroCategorias] = useState([]);
-  const [filtroMeta,setFiltroMeta] = useState(false);
+  const [filtroMeta,setFiltroMeta] = useState({
+    ativo: false,
+    valor:''
+  });
   
  
   
@@ -40,37 +41,41 @@ const ListaCampanha = () =>{
       getCampanhas();
       getCampanhasCategorias();
       setNameLogo('Lista Campanha');
-      setListaSemFiltro(listCampanhas);
-      setLoading(false)
     })();   
   },[])
 
+  useEffect(()=>{
+    setListaSemFiltro(listCampanhas);
+    setLoading(false)
+    atualizarFiltro()
+  },[listCampanhas])
+
+  useEffect(()=>{
+    setListaSemFiltro(listMinhasCampanhas);
+    setLoading(false);
+  },[listMinhasCampanhas]);
+
+  
   useEffect(()=>{
     const categorias = [];
     listCategoriasBD.map(categoria => categorias.push(categoria.nome));
     setFiltroCategorias(categorias);
   },[listCategoriasBD]);
 
-  useEffect(()=>{
-    setListaSemFiltro(listMinhasCampanhas);
-    setLoading(false)
-    // atualizarFiltro();
-  },[listMinhasCampanhas])
 
-  useEffect(()=>{
-    atualizarFiltro();
-  },[filtroCategorias])
+  
 
   const atualizarFiltro = ()=>{
-    console.log('FILTRO DE META',filtroMeta);
-    console.log('FILTRO DE CATEGORIA', filtroCategorias)  
+   
     var filtroFinal = listaSemFiltro;
     console.log('lista sem filtro no atualizar filtro', listaSemFiltro)
-    if(!filtroMeta){
+    console.log('filtroCategorias é? ',filtroCategorias)
+    
+    if(!filtroMeta.ativo){
       filtroFinal = listaSemFiltro.filter(campanha => campanha.categorias.some(element => filtroCategorias.includes(element.nome)));
     }
     else{
-      filtroFinal = listaSemFiltro.filter(campanha => campanha.categorias.some(element => filtroCategorias.includes(element.nome) && listMetaAtingida.includes(campanha.idCampanha)));
+      filtroFinal = listaSemFiltro.filter(campanha => campanha.categorias.some(element => filtroCategorias.includes(element.nome) && campanha.metaAtingida===filtroMeta.valor));
     }
     console.log('filtro final',filtroFinal);
     setCampanhasNaPagina(filtroFinal);
@@ -83,40 +88,47 @@ const ListaCampanha = () =>{
   }
 
   const handleFiltroCriacao = async (valor)=>{
+    
     if(valor==='outrasCampanhas'){
-      await getCampanhas();
-     setListaSemFiltro(listCampanhas); 
+      getCampanhas();
     }
     else{
-      await getMinhasCampanhas();
-      setListaSemFiltro(listMinhasCampanhas);
+      getMinhasCampanhas();
     }
-    atualizarFiltro();
   }
 
   const handleFiltroCategorias =  (valor, check)=>{
     if(check){
-    setFiltroCategorias([...filtroCategorias,valor])
+      setFiltroCategorias([...filtroCategorias,valor])
+      atualizarFiltro()
     }
     else{
       setFiltroCategorias([...filtroCategorias.filter(categoria => categoria!==valor)])
+      atualizarFiltro()
     }
    
   }
 
   const handleFiltroMeta = async (valor)=>{
-    //setLoading(true);
+   
     if(valor==='todas'){
-      setFiltroMeta(false);
+      setFiltroMeta({
+        ativo: false
+      });
     }else if(valor==='sim'){
-      await getMetaAtingida(true);
-      setFiltroMeta(true);
-      atualizarFiltro();
+      setFiltroMeta({
+        ativo: true,
+        valor:true
+      });
+      
     } else if(valor==='nao'){
-      await getMetaAtingida(false);
-      setFiltroMeta(true);
-      atualizarFiltro();
+     setFiltroMeta({
+       ativo: true,
+       valor:false
+     })
+      
     }
+    atualizarFiltro();
   }
 
   
@@ -140,18 +152,18 @@ const ListaCampanha = () =>{
         <div>
           <h3 className={styles.tituloFiltro}>Criação da campanha</h3>
           <div>
-            <input name='criacaoCampanha' type='radio' onClick={()=> handleFiltroCriacao('outrasCampanhas')} checked/>
+            <input name='criacaoCampanha' type='radio' onChange={()=> handleFiltroCriacao('outrasCampanhas')} selected/>
             <label>Campanhas para doar</label>
           </div>
           <div>
-          <input name='criacaoCampanha' type='radio' onClick={()=> handleFiltroCriacao('minhasCampanhas')} />
+          <input name='criacaoCampanha' type='radio' onChange={()=> handleFiltroCriacao('minhasCampanhas')} />
           <label>Minhas Campanhas</label>
           </div>
         </div>
         <div>
           <h3 className={styles.tituloFiltro}>Meta atingida</h3>
           <div>
-            <input type='radio' name='metaAtingida' value='todas' onChange={()=> handleFiltroMeta('todas')} checked />
+            <input type='radio' name='metaAtingida' value='todas' onChange={()=> handleFiltroMeta('todas')} selected />
             <label>Mostrar todas campanhas</label>
           </div>
           <div>
@@ -179,7 +191,7 @@ const ListaCampanha = () =>{
       </div>
       <div>
       <ul className="listaCampanhas">
-        {campanhasNaPagina.map(campanha => (
+        {listaSemFiltro.map(campanha => (
           <li>
             <h3>{campanha.tituloCampanha}</h3>
             <h1>ID: {campanha.idCampanha}</h1>
