@@ -39,7 +39,7 @@ const DetalheCampanha = () => {
     mascara = mascara.replace('R$','');
     mascara = mascara.replace(/\./g,'');
     mascara = mascara.replace(',','.');
-      
+
     return mascara;
   }
 
@@ -59,9 +59,9 @@ const DetalheCampanha = () => {
       }
 
     }
-    
+
   }
-  
+
   const cancelarContribuicao = ()=>{
     setContribuicao('');
     setInputContribuicao(false);

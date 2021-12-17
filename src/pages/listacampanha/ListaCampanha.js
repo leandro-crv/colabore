@@ -21,8 +21,8 @@ const ListaCampanha = () => {
   const navigate = useNavigate();
 
   const [filtroCategorias, setFiltroCategorias] = useState([]);
-  
-  
+
+
   const [filtroMeta, setFiltroMeta] = useState({
     ativo: false,
     valor: ''
@@ -63,7 +63,7 @@ const ListaCampanha = () => {
     setFiltroCategorias(categorias);
   }, [listCategorias]);
 
-  
+
 
 
   const atualizarFiltro = () => {
@@ -197,8 +197,8 @@ const ListaCampanha = () => {
         </div>
         <div>
           <ul className={styles.listaCampanhas}>
-            {listaInicial.map(campanha => (
-              <li className={styles.campanha} onClick={() => irParaPaginaDetalheCampanha(campanha)}>
+            {listaInicial.map((campanha, i) => (
+              <li key={i} className={styles.campanha} onClick={() => irParaPaginaDetalheCampanha(campanha)}>
                 <h3>{campanha.tituloCampanha}</h3>
                 <h1>ID: {campanha.idCampanha}</h1>
                 {campanha.metaAtingida && (<p>Meta atingida</p>)}

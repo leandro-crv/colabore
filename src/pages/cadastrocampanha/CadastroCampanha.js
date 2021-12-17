@@ -4,6 +4,7 @@ import { Formik, Field, Form, ErrorMessage } from 'formik';
 import { CampanhaContext } from '../../context/CampanhaContext';
 import { useMenuContext } from '../../context/context';
 import InputMask from 'react-input-mask'
+import NotFound from '../../components/notFound/NotFound';
 
 import {GrFormClose} from 'react-icons/gr';
 import moment from 'moment';
@@ -16,21 +17,21 @@ const CadastroCampanha = () => {
   const [inputCategoria, setInputCategoria] = useState("");
   const [sugestoes, setSugestoes] = useState([]);
   const [mascaraMoeda, setMascaraMoeda] = useState('');
-  
 
-  
-  const {setNameLogo, redirecionamento} = useMenuContext();
+
+
+  const {setNameLogo, redirecionamento, user} = useMenuContext();
 
 
   useEffect(()=>{
     getCampanhasCategorias();
   },[])
-  
+
   const prepararCancelarEdicao = () => {
     cancelarEdicao();
     redirecionamento('/detalhecampanha');
   }
-  
+
   const validate = (values) => {
     const errors = {};
     console.log(values.metaArrecadacao)
@@ -112,131 +113,139 @@ const CadastroCampanha = () => {
     setMascaraMoeda('R$' + valor);
   }
 
-  
+
 
   const removerMascaraMoeda = (mascara) => {
     mascara = mascara.replace('R$','');
     mascara = mascara.replace(/\./g,'');
     mascara = mascara.replace(',','.');
-      
+
     return mascara;
   }
-  
+
   return (
     <>
       {!edit ? (<h1>Cadastrar nova campanha</h1>) : (<h1>Editar campanha</h1>)}
-      <Formik
-        initialValues={cadastro}
-        validate={validate}
-        enableReinitialize={true}
-        onSubmit={async (values) => {
-          //values.capa = foto;
-          values.foto = 'https://www.fmo.org.br/images/campanha-solidaria/logo.jpg';
-          var idsPraCadastrar = [];
-          var semId = [];
-          console.log('categoriasBD',listCategoriasBD)
-          console.log('categorias atuais',listCategoriasAtuais)
-          listCategoriasAtuais.map(categoria => {
-            let id = listCategoriasBD.find(cat => cat.nome === categoria);
-            if(id===undefined){
-              semId.push(categoria);
-            }
-            else{
-              idsPraCadastrar.push(id.idCategoria);
-              setCategoriasACadastrar(categoriasACadastrar.push({idCategoria:id.idCategoria}))
-            }
-          })
-        
-          for(let i=0;i<semId.length;i++){
-            const {data} = await api.post ('categoria',{nome:semId[i]});
-            setCategoriasACadastrar(categoriasACadastrar.push({idCategoria:data.idCategoria}))
-          }
+      {
+        user.nome ?
+        (
 
-         console.log('sem id',semId,'id pra cadastrar',idsPraCadastrar)
-         values.concluiCampanhaAutomaticamente = values.concluiCampanhaAutomaticamente ==='sim'; 
-          values.categorias = categoriasACadastrar;
-          values.dataLimiteContribuicao = moment(values.dataLimiteContribuicao,'DD/MM/YYYY').format('YYYY-MM-DD');
-          values.metaArrecadacao = removerMascaraMoeda(values.metaArrecadacao);
-          console.log('POST CAMPANHA',values)
-          postCampanha(values)
-        }}
-      >
-        <Form>
-          <div>
-            <label htmlFor="tituloCampanha">Título:</label>
-            <Field id="tituloCampanha" name="tituloCampanha" placeholder="Digite o título da campanha" />
-            <ErrorMessage name='tituloCampanha' render={msg => <div className='error'>{msg}</div>} />
-          </div>
-          <div>
-            <label htmlFor="dataLimiteContribuicao">Data limite para contribuição</label>
-            <Field id="dataLimiteContribuicao" name="dataLimiteContribuicao" render={({ field }) => (
-              <InputMask {...field} mask={`99/99/9999`} />
-            )} />
-            <ErrorMessage name='dataLimiteContribuicao' render={msg => <div className='error'>{msg}</div>} />
-          </div>
-          <div>
-            <label>Encerrar ao atingir a meta? </label>
-            <label>
-              <Field type="radio" name="concluiCampanhaAutomaticamente" value='sim' />
-              Sim
-            </label>
-            <label>
-              <Field type="radio" name="concluiCampanhaAutomaticamente" value='nao' />
-              Não
-            </label>
-          </div>
-          <div>
-            <label htmlFor="metaArrecadacao">Meta de arrecadação:</label>
-            <input value={mascaraMoeda} name="metaArrecadacao" onChange={(e)=> handleMascaraMoeda(e.target.value)}/>
-          </div>
-          <div>
-            <label htmlFor="descricaoCampanha">Descrição:</label>
-            <Field id="descricaoCampanha" name="descricaoCampanha" placeholder="Descrição" />
-            <ErrorMessage name='descricaoCampanha' render={msg => <div className='error'>{msg}</div>} />
-          </div>
-          {edit ? (
-            <>
-              <img src={cadastro.foto} width='200px' />
-              <label htmlFor="capa">Trocar imagem:</label>
-              <input name='capa' type='file' accept='image/png, image/jpeg' onChange={(e) => changeInputFoto(e.target)} />
-              <ErrorMessage name='capa' render={msg => <div className='error'>{msg}</div>} />
-            </>
-          ) : (
-            <div>
-              <label htmlFor="capa">Capa:</label>
-              <input name='capa' type='file' accept='image/png, image/jpeg' onChange={(e) => changeInputFoto(e.target)} />
-              <ErrorMessage name='capa' render={msg => <div className='error'>{msg}</div>} />
-            </div>
-          )}
-          <div >Categorias:</div>
-          <input type='text' value={inputCategoria} onChange={(e) => handleInputCategoria(e.target.value)} placeholder='Insira uma categoria' />
-          <ul>
-            {sugestoes.map(sugestao => (
-              <li><button onClick={()=>inserirCategoria(sugestao.nome)}>{sugestao.nome}</button></li>
-            ))}
-          </ul>
-          <div>
-            Categorias salvas:
-            <ul>
-              {listCategoriasAtuais.map(categoria => (
-                <li>{categoria} <GrFormClose onClick={()=>excluirCategoria(categoria)}/></li>
-              ))}
-            </ul>
-            <ErrorMessage name='categorias' render={msg => <div className='error'>{msg}</div>} />
-          </div>
-          {!edit ? (
-            <div>
-              <button type="submit" className='botao1'>Cadastrar</button>
-            </div>
-          ) : (
-            <div>
-              <button onClick={() => prepararCancelarEdicao()}>Cancelar</button>
-              <button type='submit' className='botao1'>Salvar</button>
-            </div>
-          )}
+          <Formik
+            initialValues={cadastro}
+            validate={validate}
+            enableReinitialize={true}
+            onSubmit={async (values) => {
+              //values.capa = foto;
+              values.foto = 'https://www.fmo.org.br/images/campanha-solidaria/logo.jpg';
+              var idsPraCadastrar = [];
+              var semId = [];
+              console.log('categoriasBD',listCategoriasBD)
+              console.log('categorias atuais',listCategoriasAtuais)
+              listCategoriasAtuais.map(categoria => {
+                let id = listCategoriasBD.find(cat => cat.nome === categoria);
+                if(id===undefined){
+                  semId.push(categoria);
+                }
+                else{
+                  idsPraCadastrar.push(id.idCategoria);
+                  setCategoriasACadastrar(categoriasACadastrar.push({idCategoria:id.idCategoria}))
+                }
+              })
 
-        </Form>
-      </Formik>
+              for(let i=0;i<semId.length;i++){
+                const {data} = await api.post ('categoria',{nome:semId[i]});
+                setCategoriasACadastrar(categoriasACadastrar.push({idCategoria:data.idCategoria}))
+              }
+
+             console.log('sem id',semId,'id pra cadastrar',idsPraCadastrar)
+             values.concluiCampanhaAutomaticamente = values.concluiCampanhaAutomaticamente ==='sim';
+              values.categorias = categoriasACadastrar;
+              values.dataLimiteContribuicao = moment(values.dataLimiteContribuicao,'DD/MM/YYYY').format('YYYY-MM-DD');
+              values.metaArrecadacao = removerMascaraMoeda(values.metaArrecadacao);
+              console.log('POST CAMPANHA',values)
+              postCampanha(values)
+            }}
+          >
+            <Form>
+              <div>
+                <label htmlFor="tituloCampanha">Título:</label>
+                <Field id="tituloCampanha" name="tituloCampanha" placeholder="Digite o título da campanha" />
+                <ErrorMessage name='tituloCampanha' render={msg => <div className='error'>{msg}</div>} />
+              </div>
+              <div>
+                <label htmlFor="dataLimiteContribuicao">Data limite para contribuição</label>
+                <Field id="dataLimiteContribuicao" name="dataLimiteContribuicao" render={({ field }) => (
+                  <InputMask {...field} mask={`99/99/9999`} />
+                )} />
+                <ErrorMessage name='dataLimiteContribuicao' render={msg => <div className='error'>{msg}</div>} />
+              </div>
+              <div>
+                <label>Encerrar ao atingir a meta? </label>
+                <label>
+                  <Field type="radio" name="concluiCampanhaAutomaticamente" value='sim' />
+                  Sim
+                </label>
+                <label>
+                  <Field type="radio" name="concluiCampanhaAutomaticamente" value='nao' />
+                  Não
+                </label>
+              </div>
+              <div>
+                <label htmlFor="metaArrecadacao">Meta de arrecadação:</label>
+                <input value={mascaraMoeda} name="metaArrecadacao" onChange={(e)=> handleMascaraMoeda(e.target.value)}/>
+              </div>
+              <div>
+                <label htmlFor="descricaoCampanha">Descrição:</label>
+                <Field id="descricaoCampanha" name="descricaoCampanha" placeholder="Descrição" />
+                <ErrorMessage name='descricaoCampanha' render={msg => <div className='error'>{msg}</div>} />
+              </div>
+              {edit ? (
+                <>
+                  <img src={cadastro.foto} width='200px' />
+                  <label htmlFor="capa">Trocar imagem:</label>
+                  <input name='capa' type='file' accept='image/png, image/jpeg' onChange={(e) => changeInputFoto(e.target)} />
+                  <ErrorMessage name='capa' render={msg => <div className='error'>{msg}</div>} />
+                </>
+              ) : (
+                <div>
+                  <label htmlFor="capa">Capa:</label>
+                  <input name='capa' type='file' accept='image/png, image/jpeg' onChange={(e) => changeInputFoto(e.target)} />
+                  <ErrorMessage name='capa' render={msg => <div className='error'>{msg}</div>} />
+                </div>
+              )}
+              <div >Categorias:</div>
+              <input type='text' value={inputCategoria} onChange={(e) => handleInputCategoria(e.target.value)} placeholder='Insira uma categoria' />
+              <ul>
+                {sugestoes.map(sugestao => (
+                  <li><button onClick={()=>inserirCategoria(sugestao.nome)}>{sugestao.nome}</button></li>
+                ))}
+              </ul>
+              <div>
+                Categorias salvas:
+                <ul>
+                  {listCategoriasAtuais.map(categoria => (
+                    <li>{categoria} <GrFormClose onClick={()=>excluirCategoria(categoria)}/></li>
+                  ))}
+                </ul>
+                <ErrorMessage name='categorias' render={msg => <div className='error'>{msg}</div>} />
+              </div>
+              {!edit ? (
+                <div>
+                  <button type="submit" className='botao1'>Cadastrar</button>
+                </div>
+              ) : (
+                <div>
+                  <button onClick={() => prepararCancelarEdicao()}>Cancelar</button>
+                  <button type='submit' className='botao1'>Salvar</button>
+                </div>
+              )}
+
+            </Form>
+          </Formik>
+        )
+
+        : <NotFound />
+      }
     </>
   );
 }

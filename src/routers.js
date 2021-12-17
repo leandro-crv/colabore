@@ -1,8 +1,8 @@
 import {Routes,Route} from "react-router-dom";
-import { useState, useEffect } from 'react'
+import { useEffect } from 'react'
 import NotFound from "./components/notFound/NotFound";
 import Login from "./pages/login";
-import CadastroUsuario from "./pages/cadastrousuario/CadastroUsuario";
+import { CadastroUsuario } from "./pages/cadastrousuario/CadastroUsuario";
 import CadastroCampanha from "./pages/cadastrocampanha/CadastroCampanha";
 import ListaCampanha from "./pages/listacampanha/ListaCampanha";
 import { useMenuContext } from "./context/context";

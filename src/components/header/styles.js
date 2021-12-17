@@ -9,7 +9,7 @@ export const HeaderDivBackground = styled.div`
   position: fixed;
   z-index: 1000;
   top:0;
-  @media(min-width: 650px) {
+  @media(min-width: 1250px) {
     height: 4rem;
     overflow: hidden;
   }
@@ -26,7 +26,7 @@ export const HeaderDiv = styled.div`
   padding: 0 1rem;
 
 
-  @media(min-width: 650px) {
+  @media(min-width: 1250px) {
     flex-direction: row;
     align-items: center;
     justify-content: space-between;

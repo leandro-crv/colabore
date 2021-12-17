@@ -1,30 +1,31 @@
 import React from 'react';
 import zxcvbn from 'zxcvbn';
+import styled from 'styled-components';
 
-export default function PasswordStrength({ password }) {
+const PasswordStrengthMeter = ({ password, background }) => {
   const passwordVazio = password === '' ? password : zxcvbn(password);
   const testResult = passwordVazio;
-  const num = (testResult.score * 100) / 4;
+  const num = testResult.score * 100/4;
 
   const createPassLabel = () => {
-    switch (testResult.score) {
+    switch(testResult.score) {
       case 0:
-        return 'Muito fraco';
+        return 'Muito Fraco';
       case 1:
         return 'Fraco';
       case 2:
         return 'Okay';
       case 3:
-        return 'Forte';
+        return 'Bom';
       case 4:
-        return 'Muito forte';
+        return 'Forte';
       default:
         return '';
     }
-  };
+  }
 
   const funcProgressColor = () => {
-    switch (testResult.score) {
+    switch(testResult.score) {
       case 0:
         return '#828282';
       case 1:
@@ -34,24 +35,35 @@ export default function PasswordStrength({ password }) {
       case 3:
         return '#00b500';
       case 4:
-        return '#00b500';
+        return '#005c00'
       default:
-        return 'none';
+        return '';
     }
-  };
+  }
 
   const changePasswordColor = () => ({
-    width: `${num}%`,
+    width: `${num === 0 ? num + 10 : num}%`,
     background: funcProgressColor(),
-    height: '7px',
-  });
+    transition: '1s',
+    height: '7px'
+  })
 
   return (
     <>
-      <div className="progress" style={{ height: '7px', backgroundColor: '#828282' }}>
-        <div className="progress-bar" style={changePasswordColor()} />
-      </div>
+      <ContainerStrengthPassword className="progress" display={password === '' ? 'none' : 'block'}>
+        <div className="progress-bar" style={changePasswordColor()}></div>
+      </ContainerStrengthPassword>
       <p style={{ color: funcProgressColor() }}>{createPassLabel()}</p>
     </>
-  );
+  )
 }
+
+export default PasswordStrengthMeter
+
+export const ContainerStrengthPassword = styled.div `
+  height: 7px;
+  background: black;
+  display: ${props => props.display && props.display};
+  border-radius: 7px;
+  overflow: hidden;
+`

@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import {Form} from 'formik'
+import { Form } from 'formik'
 
 export const FormCadastro = styled(Form)`
   width: 100%;
@@ -7,7 +7,7 @@ export const FormCadastro = styled(Form)`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  
+
   div {
     width: 100%;
 
@@ -16,20 +16,6 @@ export const FormCadastro = styled(Form)`
     }
   }
 
-  .botaoFoto {
-    border: none;
-  }
-
-  .botao2 {
-    font-size: 1.5rem;
-    color: black;
-    transform: scale(1)
-  }
-
-  .botao2:hover {
-    color: black;
-    transform: scale(1)
-  }
 
   h1 {
     font-size: 2rem;
@@ -41,7 +27,7 @@ export const FormCadastro = styled(Form)`
     color: var(--text-color);
     background-color: var(--background-color);
   }
-` 
+`
 
 export const BordaCadastro  = styled.div `
   border: 1px solid var(--border-color);
@@ -55,6 +41,18 @@ export const BordaCadastro  = styled.div `
   width: 100%;
   max-width:465px;
   border-radius: 0 0 7px 7px;
+
+  .error {
+    text-align: center;
+    padding-top: 5px;
+    color: red;
+  }
+
+  .botaoFoto {
+    border: none;
+  }
+
+
 `
 
 export const Password = styled.div `
@@ -68,4 +66,3 @@ export const ContainerBotoes = styled.div `
   justify-content: space-around;
   width: 100%;
 `
-

@@ -17,7 +17,7 @@ const MenuBar = () => {
       <MenuBarDiv>
         <div className="menu-left">
           <div className="imMenu">
-            <ImMenu onClick={() => setOpenMenu(openMenu === '60px' ? '250px' : '60px')} />
+            <ImMenu onClick={() => setOpenMenu(openMenu === '60px' ? '370px' : '60px')} />
           </div>
 
           <div className="imUsers">
@@ -37,7 +37,7 @@ const MenuBar = () => {
           user.nome && <Navigation />
         }
         {
-          user && <User />
+          user && <User class="userPerfil"/>
         }
       </MenuBarDiv>
     </MenuBarDivPrincipal>
