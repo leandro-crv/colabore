@@ -2,12 +2,10 @@ import { useContext, useEffect, useState } from "react";
 import { FaUserAlt } from 'react-icons/fa'
 import { useMenuContext } from '../../context/context';
 import { CampanhaContext } from "../../context/CampanhaContext";
-
 import styles from './DetalheCampanha.module.css';
 import noImgCampanha from '../../images/noImgCampanha.png';
 import perfil from '../../images/perfil.jpg';
-
-
+import CampanhaDetalhe from "../../components/campanhaDetalhe/CampanhaDetalhe";
 
 const DetalheCampanha = () => {
   const urlImgCampanha = 'https://colabore-api-dbc.herokuapp.com/foto-campanha/downloadFotoCampanha/';
@@ -113,9 +111,8 @@ const DetalheCampanha = () => {
   
 
   return (
-    <>
-      <h1>Detalhe da Campanha</h1>
-      <div className={styles.campanha}>
+        
+      <div className={styles.container}>
         <div>
         <h1>{campanha.titulo}</h1>
         <h3>Meta de arrecadação {campanha.metaArrecadacao && (campanha.metaArrecadacao.toLocaleString('pt-BR',{style:'currency',currency:'BRL'}))}</h3>
@@ -174,9 +171,9 @@ const DetalheCampanha = () => {
           </div>
         ):null
         }
-         
+         <CampanhaDetalhe campanha={campanha} />
         </div>
-    </>
+    
   );
 }
 
