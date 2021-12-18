@@ -11,7 +11,6 @@ export const CadastroUsuario = () => {
 
   const [, setErroFoto] = useState(false);
   const {setNameLogo} = useMenuContext();
-
   const {postFotoUsuario, postUsuario, redirecionamento} = useMenuContext();
   const [modal, setModal] = useState(false);
 
@@ -39,8 +38,12 @@ export const CadastroUsuario = () => {
       }
     }
 
-    if (!values.confirmeSenha) {
+    if (!values.senha) {
       errors.confirmeSenha = 'Senha é um campo obrigatório.' ;
+      return errors;
+
+    } else if(values.confirmeSenha !== values.senha){
+      errors.confirmeSenha = 'As senhas não conferem' ;
       return errors;
     }
 
@@ -61,17 +64,18 @@ export const CadastroUsuario = () => {
     },
     validate: validacao,
     onSubmit: async (values) => {
-      if(values.senha !== values.confirmeSenha){
-        alert('Senhas não conferem');
-      } else if(!foto){
-        setErroFoto(true);
-      } else {
+      console.log(values.confirmeSenha, values.senha, foto)
+      try {
         setErroFoto(false);
         delete values.confirmeSenha;
-        const usuario = await postUsuario(values);
+        const usuario = await postUsuario(values); // 500
         await postFotoUsuario(usuario.idUsuario,foto);
         setModal(true)
+      } catch(err) {
+        alert('Erro ao cadastrar usuario! E-mail já utilizado.')
       }
+
+      formik.resetForm()
     },
 
   })
@@ -120,7 +124,6 @@ export const CadastroUsuario = () => {
             >
               <PasswordStrength password={formik.values.senha}/>
             </Campo>
-            {formik.errors.senha && <p className="error">{formik.errors.senha}</p>}
 
             <Campo
               text="Confirme sua senha: *"
@@ -139,6 +142,7 @@ export const CadastroUsuario = () => {
               className='botaoFoto'
               onChange={(e) => setFoto(e.target.files[0])}
               accept='image/png, image/jpeg'
+              required
             />
 
             <ContainerBotoes>

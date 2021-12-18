@@ -4,6 +4,7 @@
   --main-color: white;
   --second-color: #212121;
   --text-color: black;
+  --loading-color: white;
   --text-color2: white;
   --hover-color: white;
   --background-color: #659f68;
@@ -15,6 +16,7 @@
 .darkMode:root {
   --main-color: black;
   --text-color: white;
+  --loading-color: black;
   --hover-color: black;
   --background-color: #32669d;
   --border-color: rgb(97, 97, 97);
@@ -86,7 +88,7 @@ a:hover {
   align-items: center;
   justify-content: center;
   min-height: calc(100vh - 3rem);
-  margin-top: 5rem;
+  margin-top: 6rem;
 }
 
 

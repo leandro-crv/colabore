@@ -16,7 +16,6 @@ export const FormCadastro = styled(Form)`
     }
   }
 
-
   h1 {
     font-size: 2rem;
     width: 100%;

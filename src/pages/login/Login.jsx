@@ -17,19 +17,6 @@ const Login = function () {
     setNameLogo('Login');
   }, []);
 
-  // const validate = (values) => {
-  //   const errors = {};
-  //   if (values.login === '') {
-  //     console.log(values.login === '')
-  //     errors.login = 'E-mail é um campo obrigatório';
-  //   }
-
-  //   if (!values.senha) {
-  //     errors.senha = 'Senha é um campo obrigatório';
-  //   }
-  //   return errors;
-  // };
-
   const formik = useFormik({
 
     initialValues: {
@@ -42,8 +29,6 @@ const Login = function () {
       senha: ''
     },
 
-    // validate: validate,
-
     onSubmit: async values => {
       setLoading(true);
       const loginSuccess = await handleLogin(values);
@@ -52,7 +37,7 @@ const Login = function () {
         setTimeout(() => setLoading(false), 1000);
         redirecionamento('/listacampanha');
       } else {
-        alert('E-mail ou senha incorreto')
+        alert('E-mail ou senha incorreto.')
         setTimeout(() => setLoading(false), 1000);
         setSenhaErrada(true);
 
@@ -82,8 +67,6 @@ const Login = function () {
               value={formik.values.login}
               onChange={formik.handleChange}
               placeholder="Digite o email..."
-              // validacao={formik.values.login}
-              // msg='E-mail é um campo obrigatório'
             />
 
             <Campo
@@ -93,8 +76,6 @@ const Login = function () {
               onChange={formik.handleChange}
               type="password"
               placeholder="Digite a senha..."
-              // validacao={formik.values.senha}
-              // msg='Senha é um campo obrigatório'
             />
 
             {senhaErrada ? (<div>Usuário ou senha incorretos</div>) : null}

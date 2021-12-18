@@ -43,7 +43,7 @@ export default function MenuProvider({ children }) {
   const postFotoUsuario = async(id,foto) =>{
     let formData = new FormData();
     formData.append("file", foto);
-   await api.post(`foto-perfil/uploadFotoPerfil?idUsuario=${id}`,formData,{headers:{'Content-Type': 'multipart/form-data'}})
+    await api.post(`foto-perfil/uploadFotoPerfil?idUsuario=${id}`,formData,{headers:{'Content-Type': 'multipart/form-data'}})
   }
 
   const handleLogout = () =>{

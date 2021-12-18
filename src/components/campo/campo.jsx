@@ -18,6 +18,7 @@ const Campo = (props) => {
         onChange={props.onChange}
         className={props.className}
         accept={props.accept}
+        required={props.required}
       />
 
       {props.children}
