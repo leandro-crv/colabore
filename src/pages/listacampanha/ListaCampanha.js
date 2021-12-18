@@ -8,201 +8,158 @@ import { useMenuContext } from "../../context/context";
 import perfil from '../../images/perfil.jpg';
 import Loading from "../../components/loading";
 
+import { Formik, Form, Field } from "formik";
+
+import {
+  TextField,
+  FilledInput,
+  Button,
+  Checkbox,
+  Radio,
+  RadioGroup,
+  FormControlLabel,
+  FormControl,
+  FormLabel,
+  Select,
+  MenuItem
+} from "@material-ui/core";
+
 const ListaCampanha = () => {
   const urlImgCampanha = 'https://colabore-api-dbc.herokuapp.com/foto-campanha/downloadFotoCampanha/'
   const { getCampanhas,
-          getMinhasCampanhas,
-          detalharCampanha,
-          getCampanhasCategorias,
-          getMetaAtingida
+    getMinhasCampanhas,
+    getCampanhasCategorias,
+    getMetaAtingida,
+    setIdDetalhe
   } = useContext(CampanhaContext);
 
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  const [filtroCategorias, setFiltroCategorias] = useState([]);
-  
-  
-  const [filtroMeta, setFiltroMeta] = useState({
-    ativo: false,
-    valor: ''
-  });
-
-
-
   const { setNameLogo, user, redirecionamento } = useMenuContext();
+  const [listaCampanhas, setListaCampanhas] = useState([]);
+  const [listCategoriasNomes, setListCategoriasNomes] = useState([]);
 
-  const [listaInicial, setListaInicial] = useState([]);
-  const [listCategorias, setListCategorias] = useState([]);
 
-  const [campanhasNaPagina, setCampanhasNaPagina] = useState([]);
-
-  useEffect(()=>{
+  useEffect(() => {
     setNameLogo("Lista Campanha");
     if (!user.nome) {
       redirecionamento("/", true)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[user])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user])
+
 
   useEffect(() => {
     (async () => {
-      setLoading(false);
       var campanhasBD = await getCampanhas();
-      setListaInicial(campanhasBD);
+      setListaCampanhas(campanhasBD);
       var categoriasBD = await getCampanhasCategorias();
-      setListCategorias(categoriasBD);
+      console.log('categorias BD no useEffect', categoriasBD)
+      let nomesDasCategorias = [];
+      categoriasBD.map(categoria => nomesDasCategorias.push(categoria.nome))
+      setListCategoriasNomes(nomesDasCategorias);
       setNameLogo('Lista Campanha');
+      setLoading(false);
     })();
   }, [])
 
-
-  useEffect(() => {
-    const categorias = [];
-    listCategorias.map(categoria => categorias.push(categoria.nome));
-    setFiltroCategorias(categorias);
-  }, [listCategorias]);
-
+  if (loading) {
+    return (<Loading />)
+  }
+  console.log('categorias fora do useEffect', listCategoriasNomes)
   
 
 
-  const atualizarFiltro = () => {
-
-    var filtroFinal = listaInicial;
-    console.log('lista sem filtro no atualizar filtro', listaInicial)
-    console.log('filtroCategorias é? ', filtroCategorias)
-    console.log('filtro meta é: ', filtroMeta)
-
-    if (!filtroMeta.ativo) {
-      filtroFinal = listaInicial.filter(campanha => campanha.categorias.some(element => filtroCategorias.includes(element.nome)));
-    }
-    else {
-      filtroFinal = listaInicial.filter(campanha => campanha.categorias.some(element => filtroCategorias.includes(element.nome) && campanha.metaAtingida === filtroMeta.valor));
-    }
-    console.log('filtro final', filtroFinal);
-    setCampanhasNaPagina(filtroFinal);
-  }
-
-
   const irParaDetalheCampanha = (id) => {
-    detalharCampanha(id);
+    setIdDetalhe(id);
     redirecionamento('/detalhecampanha')
-  }
-
-  const handleFiltroCriacao = async (valor) => {
-
-    if (valor === 'outrasCampanhas') {
-      getCampanhas();
-    }
-    else {
-      getMinhasCampanhas();
-    }
-  }
-
-  const handleFiltroCategorias = (valor, check) => {
-    if (check) {
-      setFiltroCategorias([...filtroCategorias, valor])
-      atualizarFiltro()
-    }
-    else {
-      setFiltroCategorias([...filtroCategorias.filter(categoria => categoria !== valor)])
-      atualizarFiltro()
-    }
-
-  }
-
-  const handleFiltroMeta = async (valor) => {
-    if (valor === 'todas') {
-      setFiltroMeta({
-        ativo: false
-      });
-    } else if (valor === 'sim') {
-      setFiltroMeta({
-        ativo: true,
-        valor: await getMetaAtingida(true)
-      });
-
-    } else if (valor === 'nao') {
-      setFiltroMeta({
-        ativo: true,
-        valor: await getMetaAtingida()
-      })
-    }
-
-    atualizarFiltro();
-  }
-
-
-  const selecionarTodasCategorias = (selecionar) => {
-    if (selecionar) {
-      const categorias = [];
-      listCategorias.map(categoria => categorias.push(categoria.nome));
-      setFiltroCategorias(categorias);
-    }
-    else {
-      setFiltroCategorias([]);
-    }
-  }
-
-  const irParaPaginaDetalheCampanha = (campanha) => {
-    detalharCampanha(campanha);
-    navigate('/detalhecampanha')
   }
 
   return (
     <div>
       <h1>Campanhas</h1>
-      {loading && (<Loading />)}
       <div className={styles.containerLista}>
         <div className={styles.filtros}>
-          <div>
-            <h3 className={styles.tituloFiltro}>Criação da campanha</h3>
-            <div>
-              <input name='criacaoCampanha' type='radio' onChange={() => handleFiltroCriacao('outrasCampanhas')} selected />
-              <label>Campanhas para doar</label>
-            </div>
-            <div>
-              <input name='criacaoCampanha' type='radio' onChange={() => handleFiltroCriacao('minhasCampanhas')} />
-              <label>Minhas Campanhas</label>
-            </div>
-          </div>
-          <div>
-            <h3 className={styles.tituloFiltro}>Meta atingida</h3>
-            <div>
-              <input type='radio' name='metaAtingida' value='todas' onChange={() => handleFiltroMeta('todas')} selected />
-              <label>Mostrar todas campanhas</label>
-            </div>
-            <div>
-              <input type='radio' name='metaAtingida' value='sim' onChange={() => handleFiltroMeta('sim')} />
-              <label>Meta atingida</label>
-            </div>
-            <div>
-              <input type='radio' name='metaAtingida' value='nao' onChange={() => handleFiltroMeta('nao')} />
-              <label>Meta não atingida</label>
-            </div>
-          </div>
-          <div>
-            <h3 className={styles.tituloFiltro}>Categorias da campanha</h3>
-            <input type='checkbox' onChange={(e) => selecionarTodasCategorias(e.target.checked)} defaultChecked={true} />
-            <label>Selecionar todas</label>
-            <div className={styles.categorias}>
-              {listCategorias.map(categoria => (
-                <div className={styles.categoria}>
-                  <input type='checkbox' name='checkboxCategoria' value={categoria.nome} onChange={(e) => handleFiltroCategorias(e.target.value, e.target.checked)} checked={filtroCategorias.find(cat => cat === categoria.nome) !== undefined} />
-                  <label>{categoria.nome}</label>
+          <Formik
+            initialValues={{
+              criador: 'outrasCampanhas',
+              metaAtingida: 'todas',
+              categorias: listCategoriasNomes
+            }}
+            enableReinitialize={true}
+            onSubmit={async (values,{setSubmitting}) => {
+              setSubmitting(true)
+              let retornoDoFiltro = [];
+              let listaDeCampanhas = [];
+              let listaMeta = [];
+              if(values.criador ==='outrasCampanhas'){
+                listaDeCampanhas = await getCampanhas();
+              }
+              else{
+                listaDeCampanhas = await getMinhasCampanhas();
+              }
+
+              let temFiltroMeta = values.metaAtingida!=='todas';
+              if(values.metaAtingida==='sim'){
+                listaMeta = await getMetaAtingida(true);
+              }
+              else if(values.metaAtingida==='nao'){
+                listaMeta = await getMetaAtingida(false);
+              }
+              
+              if(!temFiltroMeta){
+                retornoDoFiltro = listaDeCampanhas.filter(campanha => campanha.categorias.some(element => values.categorias.includes(element.nome)));
+              }
+              else{
+                retornoDoFiltro = listaDeCampanhas.filter(campanha => campanha.categorias.some(element => values.categorias.includes(element.nome) && listaMeta.includes(campanha.idCampanha)));
+              }
+              
+              console.log('valor do filtro final é: ', retornoDoFiltro)
+              setListaCampanhas(retornoDoFiltro)
+
+            }}
+          >
+            {({ values, isSubmitting, ...props }) => (
+              <Form>
+                <div>
+                  <Field name='criador' type='radio' value='outrasCampanhas' defaultChecked={true} />
+                  <label>Campanhas para contribuir</label>
+                  <Field name='criador' type='radio' value='minhasCampanhas' label='Minhas campanhas' />
+                  <label>Minhas Campanhas</label>
                 </div>
-              ))}
-            </div>
-          </div>
+                <div>
+                  <Field name='metaAtingida' type='radio' value='todas' defaultChecked={true}/>
+                  <label>Todas campanhas</label>
+                  <Field name='metaAtingida' type='radio' value='sim' />
+                  <label>Meta atingida</label>
+                  <Field name='metaAtingida' type='radio' value='nao' />
+                  <label>Meta não atingida</label>
+                </div>
+                <div>
+                  {listCategoriasNomes.map(categoria => (
+                    <div>
+                      <Field name='categorias' as={Checkbox} value={categoria} defaultChecked={true} />
+                      <label>{categoria}</label>
+                    </div>
+                  ))}
+                </div>
+                <div>
+                  <pre>{JSON.stringify(values, null, 2)}</pre>
+                </div>
+                <Button disabled={isSubmitting} type="submit">Pesquisar</Button>
+              </Form>
+            )}
+          </Formik>
         </div>
         <div>
           <ul className={styles.listaCampanhas}>
-            {listaInicial.map(campanha => (
-              <li className={styles.campanha} onClick={() => irParaPaginaDetalheCampanha(campanha)}>
+            {listaCampanhas.map(campanha => (
+              <li key={campanha.idCampanha} className={styles.campanha} onClick={() => irParaDetalheCampanha(campanha.idCampanha)}>
                 <h3>{campanha.tituloCampanha}</h3>
                 <h1>ID: {campanha.idCampanha}</h1>
                 {campanha.metaAtingida && (<p>Meta atingida</p>)}
-                <img src={urlImgCampanha+campanha.idCampanha} alt={campanha.titutloCampanha} width='100px' onError={(e)=>{e.target.onerror = null; e.target.src=perfil}} />
+                <img src={urlImgCampanha + campanha.idCampanha} alt={campanha.titutloCampanha} width='100px' onError={(e) => { e.target.onerror = null; e.target.src = perfil }} />
                 <p>Data de encerramento {moment(campanha.dataLimiteContribuicao).format('DD/MM/YYYY')}</p>
                 <h5>Meta de arrecadação: R$ {campanha.metaArrecadacao}</h5>
                 <h5 className={campanha.cor}>Total arrecadado: {campanha.totalArrecadado.toLocaleString('pt-BR', {

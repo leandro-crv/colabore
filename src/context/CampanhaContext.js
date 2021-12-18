@@ -13,19 +13,15 @@ const CampanhaProvider= ({children}) =>{
     concluiCampanhaAutomaticamente:'',
     dataLimiteContribuicao:'',
     descricaoCampanha:'',
-    foto:'',
     metaArrecadacao:'',
     tituloCampanha:'',
-    categorias:[],
+    categorias:[]
   }
 
 
-  
-
   const [detalheCampanha, setDetalheCampanha] = useState('');
-  const [criador, setCriador] = useState(false);
- 
-
+  const [criador, setCriador] = useState(false); 
+  const [idDetalhe,setIdDetalhe] = useState(0);
   const [cadastro, setCadastro] = useState(initialCadastro);
   const [edit, setEdit] = useState(false);
   
@@ -81,6 +77,19 @@ const CampanhaProvider= ({children}) =>{
       return categorias;
   }
 
+
+
+  const getCampanhaDetalhe = async(id) =>{
+    try{
+      const {data} = await api.get(`campanha/${id}`);
+      return data;
+    }
+    catch{
+      return false;
+    }
+  }
+
+
   const putDoar = async(id,valor)=>{
     try{
       const {data} = await api.put(`doacao/realiza-a-doacao-de-um-valor?Id%20da%20Campanha=${id}&Valor%20da%20doa%C3%A7%C3%A3o=${valor}`);
@@ -94,18 +103,28 @@ const CampanhaProvider= ({children}) =>{
   const postCampanhaCategoria = async(value) =>{
     const {data} = await api.post('categoria', {nome:value});
     console.log('data retorno post categoria',data)
-    setCategoriasACadastrar([...categoriasACadastrar,data.idCategoria]);
+    return data.idCategoria
+    //setCategoriasACadastrar([...categoriasACadastrar,data.idCategoria]);
   }
 
   const postCampanha = async(campanha) =>{
     try{
       const {data} = await api.post('campanha',campanha);
       console.log('campanha cadastrada',data);
-      window.location.href = '/listacampanha'
+      return data;
     }
     catch(error){
       console.log('erro no post Campanha',error)
+      return false;
     }
+  }
+
+
+  const postFotoCampanha = async(id,foto) =>{
+    let formData = new FormData();      
+    formData.append("file", foto);
+    const {data} = await api.post(`foto-campanha/uploadFotoCampanha?idCampanha=${id}`,formData,{headers:{'Content-Type': 'multipart/form-data'}});
+    console.log('data postFotoCampanha', data);
   }
 
   const arrecadadoMeta = (arrecadado, meta)=>{
@@ -133,36 +152,41 @@ const CampanhaProvider= ({children}) =>{
     }
   }
 
-  const detalharCampanha = (campanha) =>{
-    setDetalheCampanha(campanha);
+  
 
-  }
-
-  const prepararEdicao = (id) => {
-    console.log('id no preparar Edição', id)
-    const campanha = {
-      titulo: detalheCampanha.titulo,
-      descricao: detalheCampanha.descricao,
-      meta: detalheCampanha.meta,
-      categorias:detalheCampanha.categorias,
-      encerra: detalheCampanha.encerra,
-      foto: detalheCampanha.foto
+  const prepararEdicao = (campanha) => {
+   
+    const campanhaFormatada = {
+      concluiCampanhaAutomaticamente: campanha.concluiCampanhaAutomaticamente,
+      dataLimiteContribuicao: moment(campanha.dataLimiteContribuicao).format('DD/MM/YYYY'),
+      descricaoCampanha: campanha.descricaoCampanha,
+      metaArrecadacao: campanha.metaArrecadacao,
+      tituloCampanha: campanha.tituloCampanha,
+      categorias:campanha.tagsCategoria
     }
-    setCadastro(campanha);
+    setCadastro(campanhaFormatada);
     setEdit(true);
   }
 
+  
   const cancelarEdicao = ()=>{
     setCadastro(initialCadastro);
     setEdit(false);
   }
   
-
+  const deleteCampanha = async(id) =>{
+    try{
+      const {data} = await api.delete(`campanha/${id}`);
+      return true;
+    }
+    catch(error){
+      return false;
+    }
+  }
 
   return(
     <CampanhaContext.Provider value={{
       getCampanhas,
-      detalharCampanha,
       detalheCampanha,
       criador,
       cadastro,
@@ -174,7 +198,12 @@ const CampanhaProvider= ({children}) =>{
       categoriasACadastrar, setCategoriasACadastrar,
       postCampanha,
       getMetaAtingida,
-      putDoar
+      putDoar,
+      postFotoCampanha,
+      getCampanhaDetalhe,
+      idDetalhe,
+      setIdDetalhe,
+      deleteCampanha
     }}>
       {children}
     </CampanhaContext.Provider>
