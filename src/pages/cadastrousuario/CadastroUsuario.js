@@ -22,25 +22,25 @@ export const CadastroUsuario = () => {
   const validacao = (values) => {
     const errors = {};
     if (!values.nome) {
-      errors.nome = 'Nome é obrigatório';
+      errors.nome = 'Nome é um campo obrigatório.';
       return errors;
     }
 
     if (!values.email) {
-      errors.email =  'E-mail é um campo obrigatório' ;
+      errors.email =  'E-mail é um campo obrigatório.' ;
       return errors;
     }
 
     if(values.email) {
       const regexEmail = /^[a-z0-9.]+@dbccompany.com.br$/.test(values.email)
       if(!regexEmail)  {
-        errors.email =  'Obrigatorio e-mail da DBC'
+        errors.email =  'É obrigatorio um e-mail da DBC.'
         return errors;
       }
     }
 
     if (!values.confirmeSenha) {
-      errors.confirmeSenha = 'Senha é obrigatório' ;
+      errors.confirmeSenha = 'Senha é um campo obrigatório.' ;
       return errors;
     }
 
@@ -88,7 +88,7 @@ export const CadastroUsuario = () => {
           <BordaCadastro>
 
             <Campo
-              text="Nome: "
+              text="Nome: *"
               nameCamp="nome"
               maxLength="30"
               type="text"
@@ -99,7 +99,7 @@ export const CadastroUsuario = () => {
             {formik.errors.nome && <p className="error">{formik.errors.nome}</p>}
 
             <Campo
-              text="Email:"
+              text="Email: *"
               nameCamp="email"
               maxLength="30"
               type="text"
@@ -110,7 +110,7 @@ export const CadastroUsuario = () => {
             {formik.errors.email && <p className="error">{formik.errors.email}</p>}
 
             <Campo
-              text="Senha:"
+              text="Senha: *"
               nameCamp="senha"
               minLength="8"
               type="password"
@@ -123,7 +123,7 @@ export const CadastroUsuario = () => {
             {formik.errors.senha && <p className="error">{formik.errors.senha}</p>}
 
             <Campo
-              // text="Confirme sua senha:"
+              text="Confirme sua senha: *"
               nameCamp="confirmeSenha"
               type="password"
               value={formik.values.confirmeSenha}
@@ -133,7 +133,7 @@ export const CadastroUsuario = () => {
             {formik.errors.confirmeSenha && <p className="error">{formik.errors.confirmeSenha}</p>}
 
             <Campo
-              text="Foto:"
+              text="Foto: *"
               nameCamp="foto"
               type="file"
               className='botaoFoto'

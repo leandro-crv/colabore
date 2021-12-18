@@ -31,4 +31,8 @@ export const ModalComponent = styled.div`
   justify-content: center;
 
   gap: 30px;
+
+  h1:first-child {
+    color: green;
+  }
 `

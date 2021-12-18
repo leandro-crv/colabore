@@ -76,7 +76,7 @@ const Login = function () {
           <BordaLogin onSubmit={formik.handleSubmit}>
 
             <Campo
-              text="E-mail: "
+              text="E-mail: *"
               nameCamp="login"
               type="text"
               value={formik.values.login}
@@ -87,7 +87,7 @@ const Login = function () {
             />
 
             <Campo
-              text="Senha: "
+              text="Senha: *"
               nameCamp="senha"
               value={formik.values.senha}
               onChange={formik.handleChange}

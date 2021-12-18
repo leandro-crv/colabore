@@ -2,7 +2,7 @@ import React from 'react';
 import zxcvbn from 'zxcvbn';
 import styled from 'styled-components';
 
-const PasswordStrengthMeter = ({ password, background }) => {
+const PasswordStrengthMeter = ({ password }) => {
   const passwordVazio = password === '' ? password : zxcvbn(password);
   const testResult = passwordVazio;
   const num = testResult.score * 100/4;
@@ -62,7 +62,7 @@ export default PasswordStrengthMeter
 
 export const ContainerStrengthPassword = styled.div `
   height: 7px;
-  background: black;
+  background: var(--border-color);
   display: ${props => props.display && props.display};
   border-radius: 7px;
   overflow: hidden;
