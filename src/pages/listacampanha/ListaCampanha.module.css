@@ -7,7 +7,6 @@
 .filtros{
   width: 40%;
   padding:8px;
-  background-color: lightblue;  
 }
 
 form > div{
@@ -20,8 +19,8 @@ form .rotuloFiltro{
   padding-bottom: 2px;
 }
 
-form input[type='radio']{
-  margin-right: 8px;
+form input{
+  margin-right: 6px;
 }
 
 .listaCampanhas li{

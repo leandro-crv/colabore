@@ -93,7 +93,8 @@ const Campanha = ({ campanha }) => {
           </Typography>
           <Typography sx={{
             display: 'flex',
-            justifyContent: 'flex-start'
+            justifyContent: 'flex-start',
+            gap: '4px'
           }}
           >
             {campanha.categorias.map(categoria => (
@@ -101,9 +102,8 @@ const Campanha = ({ campanha }) => {
                 bgcolor: '#f5f5f5',
                 color: 'black',
                 border: 'solid gray thin',
-                borderRadius: '8px',
-                padding: '2px',
-                marginLeft: '2px'
+                borderRadius: '4px',
+                padding: '4px'
               }}
                 variant="caption"
               >

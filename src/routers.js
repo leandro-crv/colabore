@@ -11,15 +11,15 @@ import DetalheCampanha from "./pages/detalhecampanha/DetalheCampanha";
 import Perfil from "./pages/perfil";
 
 const Routers = () => {
-  const {autenticate, loading} = useMenuContext();
+  const {autenticate} = useMenuContext();
+  const [loading,setLoading] = useState(true);
 
   useEffect(() => {
-
     const token = localStorage.getItem('token');
     if(token){
       autenticate(token);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    setLoading(false);
   },[])
 
   if(loading){
@@ -33,7 +33,7 @@ const Routers = () => {
           <Route exact path='/cadastrocampanha' element={<CadastroCampanha/>}/>
           <Route exact path='/listacampanha' element={<ListaCampanha/>} />
           <Route exact path='/minhascontribuicoes' element={<Perfil/>}/>
-          <Route exact path='/detalhecampanha' element={<DetalheCampanha/>} />
+          <Route exact path='/detalhecampanha/:id' element={<DetalheCampanha/>} />
           <Route path="*" element={<NotFound/>} />
         </Routes>
         {

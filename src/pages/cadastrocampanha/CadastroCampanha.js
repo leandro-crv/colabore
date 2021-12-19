@@ -1,10 +1,9 @@
 import React, { useEffect, useContext, useState } from 'react';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
-
 import { CampanhaContext } from '../../context/CampanhaContext';
 import { useMenuContext } from '../../context/context';
 import InputMask from 'react-input-mask'
-
+import styles from './CadastroCampanha.module.css';
 import { GrFormClose } from 'react-icons/gr';
 import moment from 'moment';
 import api from '../../api';
@@ -22,8 +21,6 @@ import {
 import Autocomplete, { createFilterOptions } from '@material-ui/lab/Autocomplete';
 import CurrencyTextField from '@unicef/material-ui-currency-textfield'
 import categoriasAutoComplete from '../../components/categorias/CategoriasAutocomplete';
-import inputCurrency from '../../components/inputCurrency/InputCurrency'
-import InputCurrency from '../../components/inputCurrency/InputCurrency';
 
 
 
@@ -70,8 +67,8 @@ const CadastroCampanha = () => {
       errors.dataLimiteContribuicao = "É obrigatório inserir uma data limite para contribuições";
     } else if (!moment(values.dataLimiteContribuicao, 'DD/MM/YYYY').isValid()) {
       errors.dataLimiteContribuicao = "Data inválida";
-    } else if (moment().isAfter(values.dataLimiteContribuicao)) {
-      errors.dataLimiteContribuicao = "A data limite não pode ser inferior a hoje";
+    } else if (moment().isAfter(moment(values.dataLimiteContribuicao,'DD/MM/YYYY'))) {
+      errors.dataLimiteContribuicao = "A data limite deve ser após hoje";
     }
 
     if (!values.concluiCampanhaAutomaticamente) {
@@ -103,7 +100,7 @@ const CadastroCampanha = () => {
 
  
   return (
-    <>
+    <div className={styles.cadastroCampanha}>
       {!edit ? (<h1>Cadastrar nova campanha</h1>) : (<h1>Editar campanha</h1>)}
       <Formik
         initialValues={cadastro}
@@ -150,7 +147,7 @@ const CadastroCampanha = () => {
           <Form>
             <div>
               <label htmlFor="tituloCampanha">Título:</label>
-              <Field id="tituloCampanha" name="tituloCampanha" placeholder="Digite o título da campanha" as={TextField} />
+              <Field type='text' id="tituloCampanha" name="tituloCampanha" placeholder="Digite o título da campanha" />
               <ErrorMessage name='tituloCampanha' render={msg => <div className='error'>{msg}</div>} />
             </div>
             <div>
@@ -172,15 +169,15 @@ const CadastroCampanha = () => {
               </label>
             </div>
             <div>
-              <label htmlFor="metaArrecadacao">Meta de arrecadação:</label>
-              <Field   name='metaArrecadacao' type="number"  />
+              
             </div>
             <div>
-               
+              <label htmlFor="metaArrecadacao">Meta de arrecadação (R$):</label>
+              <Field type="number"  name='metaArrecadacao' />
             </div>
             <div>
               <label htmlFor="descricaoCampanha">Descrição:</label>
-              <Field id="descricaoCampanha" name="descricaoCampanha" placeholder="Descrição" as={TextField} />
+              <Field type='text' id="descricaoCampanha" name="descricaoCampanha" placeholder="Descrição" />
               <ErrorMessage name='descricaoCampanha' render={msg => <div className='error'>{msg}</div>} />
             </div>
             {edit ? (
@@ -250,7 +247,7 @@ const CadastroCampanha = () => {
         )}
 
       </Formik>
-    </>
+    </div>
   );
 }
 

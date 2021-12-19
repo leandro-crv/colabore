@@ -6,9 +6,9 @@ import styles from './ListaCampanha.module.css';
 import { useNavigate } from "react-router-dom";
 import { useMenuContext } from "../../context/context";
 
-import Loading from "../../components/loading";
-import Campanha from "../../components/campanha/Campanha";
 
+import Campanha from "../../components/campanha/Campanha";
+import SearchIcon from '@mui/icons-material/Search';
 import { Formik, Form, Field } from "formik";
 
 import {
@@ -40,6 +40,7 @@ const ListaCampanha = () => {
   const { setNameLogo, user, redirecionamento } = useMenuContext();
   const [listaCampanhas, setListaCampanhas] = useState([]);
   const [listCategoriasNomes, setListCategoriasNomes] = useState([]);
+  
 
 
   useEffect(() => {
@@ -47,7 +48,6 @@ const ListaCampanha = () => {
     if (!user.nome) {
       redirecionamento("/", true)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user])
 
 
@@ -65,16 +65,13 @@ const ListaCampanha = () => {
     })();
   }, [])
 
-  if (loading) {
-    return (<Loading />)
-  }
+  
   console.log('categorias fora do useEffect', listCategoriasNomes)
   
 
 
   const irParaDetalheCampanha = (id) => {
-    setIdDetalhe(id);
-    redirecionamento('/detalhecampanha')
+    redirecionamento(`/detalhecampanha/${id}`)
   }
 
   return (
@@ -159,12 +156,15 @@ const ListaCampanha = () => {
                   </h3>
                   {listCategoriasNomes.map(categoria => (
                     <div>
-                      <Field name='categorias' as={Checkbox} value={categoria} defaultChecked={true} />
+                      <Field name='categorias' type='checkbox' value={categoria} defaultChecked={true}/>
                       <label>{categoria}</label>
                     </div>
                   ))}
                 </div>
-                <Button disabled={isSubmitting} type="submit">Pesquisar</Button>
+                <Button disabled={isSubmitting} type="submit">
+                  Pesquisar
+                  <SearchIcon/>
+                </Button>
               </Form>
             )}
           </Formik>
