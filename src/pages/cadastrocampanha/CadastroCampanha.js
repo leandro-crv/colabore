@@ -1,51 +1,75 @@
 import React, { useEffect, useContext, useState } from 'react';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
-// import NumberFormat from 'react-number-format';
 import { CampanhaContext } from '../../context/CampanhaContext';
 import { useMenuContext } from '../../context/context';
 import InputMask from 'react-input-mask'
-
-import {GrFormClose} from 'react-icons/gr';
+import styles from './CadastroCampanha.module.css';
+import { GrFormClose } from 'react-icons/gr';
 import moment from 'moment';
 import api from '../../api';
 
+import {
+  TextField,
+  FilledInput,
+  Button,
+  Checkbox,
+  Radio,
+  FormControlLabel,
+  Select,
+  MenuItem
+} from "@material-ui/core";
+import Autocomplete, { createFilterOptions } from '@material-ui/lab/Autocomplete';
+import CurrencyTextField from '@unicef/material-ui-currency-textfield'
+import categoriasAutoComplete from '../../components/categorias/CategoriasAutocomplete';
+
+
+
 const CadastroCampanha = () => {
-  const { cadastro, edit, cancelarEdicao, listCategoriasBD, getCampanhasCategorias, postCampanhaCategoria, categoriasACadastrar, setCategoriasACadastrar, postCampanha } = useContext(CampanhaContext);
-  const [foto, setFoto] = useState(false);
+  const { cadastro,
+          edit, 
+          cancelarEdicao, 
+          getCampanhasCategorias, 
+          postCampanhaCategoria, 
+          postCampanha, 
+          postFotoCampanha 
+        } = useContext(CampanhaContext);
+  const { setNameLogo, redirecionamento } = useMenuContext();
+  const [foto, setFoto] = useState('');
   const [listCategoriasAtuais, setListCategoriasAtuais] = useState([])
-  const [inputCategoria, setInputCategoria] = useState("");
-  const [sugestoes, setSugestoes] = useState([]);
+
   const [mascaraMoeda, setMascaraMoeda] = useState('');
-  
+  const [listCategoriasBD, setListCategoriasBD] = useState([]);
 
-  
-  const {setNameLogo, redirecionamento} = useMenuContext();
+  const [valueTag, setValueTag] = useState([]);
+  const filter = createFilterOptions();
 
 
-  useEffect(()=>{
-    getCampanhasCategorias();
-  },[])
-  
+  useEffect(() => {
+    (async () => {
+      let categorias = await getCampanhasCategorias();
+      setListCategoriasBD(categorias);
+    })();
+  }, [])
+
   const prepararCancelarEdicao = () => {
     cancelarEdicao();
     redirecionamento('/detalhecampanha');
   }
-  
+
   const validate = (values) => {
     const errors = {};
-    console.log(values.metaArrecadacao)
+    console.log('valueTag',valueTag)
     if (!values.tituloCampanha) {
       errors.tituloCampanha = 'Nome é obrigatório';
     }
 
-    if(!values.dataLimiteContribuicao){
+    if (!values.dataLimiteContribuicao) {
       errors.dataLimiteContribuicao = "É obrigatório inserir uma data limite para contribuições";
-    } else if(!moment(values.dataLimiteContribuicao,'DD/MM/YYYY').isValid()){
+    } else if (!moment(values.dataLimiteContribuicao, 'DD/MM/YYYY').isValid()) {
       errors.dataLimiteContribuicao = "Data inválida";
-    } else if(moment().isAfter(values.dataLimiteContribuicao)){
-      errors.dataLimiteContribuicao = "A data limite não pode ser inferior a hoje";
+    } else if (moment().isAfter(moment(values.dataLimiteContribuicao,'DD/MM/YYYY'))) {
+      errors.dataLimiteContribuicao = "A data limite deve ser após hoje";
     }
-
 
     if (!values.concluiCampanhaAutomaticamente) {
       errors.concluiCampanhaAutomaticamente = 'Indique se a campanha encerra após atingir a meta';
@@ -55,189 +79,175 @@ const CadastroCampanha = () => {
       errors.descricaoCampanha = "Descrição é um campo obrigatório";
     }
 
-    if (!foto) {
-      errors.capa = "É obrigatório uma foto de capa"
-    }
-
-    if(!listCategoriasAtuais.length){
-      errors.categorias = "É obrigatório ao menos uma categoria para a campanha";
-    }
-
     return errors;
   }
 
-  const changeInputFoto = (e) => {
-    const img = {
-      fileDowloandUri: e.value,
-      fileName: e.files[0].name,
-      fileType: e.files[0].type,
-      size: e.files[0].size
-    }
-    setFoto(img);
-  }
 
   useEffect(() => {
     setNameLogo("Cadastro Campanha")
-  },[]);
-
-  const handleInputCategoria = (value) => {
-    setInputCategoria(value);
-    if(!value.length){
-      setSugestoes([]);
-    } else{
-      const regex = new RegExp(`^${value}`, 'gi');
-      const sugestao = listCategoriasBD.filter(c=> c.nome.match(regex));
-      if(sugestao.length){
-        setSugestoes(sugestao);
-      }
-      else{
-        setSugestoes([{nome:value}])
-      }
-    }
-
-  }
-
-  const excluirCategoria = (nome) =>{
-    setListCategoriasAtuais(listCategoriasAtuais.filter(categoria=> categoria!==nome))
-  }
-  const inserirCategoria = (nome) =>{
-    setListCategoriasAtuais([...listCategoriasAtuais,nome]);
-    handleInputCategoria('');
-  }
-
-  const handleMascaraMoeda = (valor) => {
-    valor = valor.replace(/\D/g, "");
-    valor = valor.replace(/(\d)(\d{2})$/, "$1,$2");
-    valor = valor.replace(/(?=(\d{3})+(\D))\B/g, ".");
-    setMascaraMoeda('R$' + valor);
-  }
+  }, []);
 
   
+
 
   const removerMascaraMoeda = (mascara) => {
-    mascara = mascara.replace('R$','');
-    mascara = mascara.replace(/\./g,'');
-    mascara = mascara.replace(',','.');
-      
+    mascara = mascara.replace('R$', '');
+    mascara = mascara.replace(/\./g, '');
+    mascara = mascara.replace(',', '.');
+
     return mascara;
   }
-  
+
+ 
   return (
-    <>
+    <div className={styles.cadastroCampanha}>
       {!edit ? (<h1>Cadastrar nova campanha</h1>) : (<h1>Editar campanha</h1>)}
       <Formik
         initialValues={cadastro}
         validate={validate}
         enableReinitialize={true}
         onSubmit={async (values) => {
-          //values.capa = foto;
-          values.foto = 'https://www.fmo.org.br/images/campanha-solidaria/logo.jpg';
-          var idsPraCadastrar = [];
-          var semId = [];
-          console.log('categoriasBD',listCategoriasBD)
-          console.log('categorias atuais',listCategoriasAtuais)
-          listCategoriasAtuais.map(categoria => {
-            let id = listCategoriasBD.find(cat => cat.nome === categoria);
-            if(id===undefined){
-              semId.push(categoria);
-            }
-            else{
-              idsPraCadastrar.push(id.idCategoria);
-              setCategoriasACadastrar(categoriasACadastrar.push({idCategoria:id.idCategoria}))
-            }
-          })
-        
-          for(let i=0;i<semId.length;i++){
-            const {data} = await api.post ('categoria',{nome:semId[i]});
-            setCategoriasACadastrar(categoriasACadastrar.push({idCategoria:data.idCategoria}))
+          if (!foto) {
+            alert('É obrigatório cadastrar uma foto');
+            return
+          }
+          if(!valueTag){
+            alert('É obrigatório cadastrar ao menos uma categoria para a campanha');
+            return
           }
 
-         console.log('sem id',semId,'id pra cadastrar',idsPraCadastrar)
-         values.concluiCampanhaAutomaticamente = values.concluiCampanhaAutomaticamente ==='sim'; 
-          values.categorias = categoriasACadastrar;
-          values.dataLimiteContribuicao = moment(values.dataLimiteContribuicao,'DD/MM/YYYY').format('YYYY-MM-DD');
-          values.metaArrecadacao = removerMascaraMoeda(values.metaArrecadacao);
-          console.log('POST CAMPANHA',values)
-          postCampanha(values)
+          var semId = [];
+          valueTag.filter(categoria => categoria.freeSolo).map(cat => semId.push(cat.nome));
+          var idsPraCadastrar = [];
+          
+          valueTag.filter(categoria => categoria.idCategoria!==undefined).map(cat => idsPraCadastrar.push({idCategoria: cat.idCategoria}));
+
+          for (let i = 0; i < semId.length; i++) {
+            let retornoApi = await postCampanhaCategoria(semId[i]);
+            idsPraCadastrar.push({ idCategoria: retornoApi })
+          }
+
+
+          values.concluiCampanhaAutomaticamente = values.concluiCampanhaAutomaticamente === 'true';
+          values.categorias = idsPraCadastrar;
+          values.metaArrecadacao = Number(values.metaArrecadacao)
+          values.dataLimiteContribuicao = moment(values.dataLimiteContribuicao, 'DD/MM/YYYY').format('YYYY-MM-DD');
+
+          console.log('POST CAMPANHA', values)
+          let idDaCampanha = await postCampanha(values);
+
+          if (idDaCampanha) {
+            let postFoto = await postFotoCampanha(idDaCampanha.idCampanha, foto);
+            window.location.href = '/listacampanha';
+          }
+
         }}
       >
-        <Form>
-          <div>
-            <label htmlFor="tituloCampanha">Título:</label>
-            <Field id="tituloCampanha" name="tituloCampanha" placeholder="Digite o título da campanha" />
-            <ErrorMessage name='tituloCampanha' render={msg => <div className='error'>{msg}</div>} />
-          </div>
-          <div>
-            <label htmlFor="dataLimiteContribuicao">Data limite para contribuição</label>
-            <Field id="dataLimiteContribuicao" name="dataLimiteContribuicao" render={({ field }) => (
-              <InputMask {...field} mask={`99/99/9999`} />
-            )} />
-            <ErrorMessage name='dataLimiteContribuicao' render={msg => <div className='error'>{msg}</div>} />
-          </div>
-          <div>
-            <label>Encerrar ao atingir a meta? </label>
-            <label>
-              <Field type="radio" name="concluiCampanhaAutomaticamente" value='sim' />
-              Sim
-            </label>
-            <label>
-              <Field type="radio" name="concluiCampanhaAutomaticamente" value='nao' />
-              Não
-            </label>
-          </div>
-          <div>
-            <label htmlFor="metaArrecadacao">Meta de arrecadação:</label>
-            <input value={mascaraMoeda} name="metaArrecadacao" onChange={(e)=> handleMascaraMoeda(e.target.value)}/>
-          </div>
-          <div>
-            <label htmlFor="descricaoCampanha">Descrição:</label>
-            <Field id="descricaoCampanha" name="descricaoCampanha" placeholder="Descrição" />
-            <ErrorMessage name='descricaoCampanha' render={msg => <div className='error'>{msg}</div>} />
-          </div>
-          {edit ? (
-            <>
-              <img src={cadastro.foto} width='200px' />
-              <label htmlFor="capa">Trocar imagem:</label>
-              <input name='capa' type='file' accept='image/png, image/jpeg' onChange={(e) => changeInputFoto(e.target)} />
-              <ErrorMessage name='capa' render={msg => <div className='error'>{msg}</div>} />
-            </>
-          ) : (
+        {({ values, isSubmitting, handleChange }) => (
+          <Form>
             <div>
-              <label htmlFor="capa">Capa:</label>
-              <input name='capa' type='file' accept='image/png, image/jpeg' onChange={(e) => changeInputFoto(e.target)} />
-              <ErrorMessage name='capa' render={msg => <div className='error'>{msg}</div>} />
+              <label htmlFor="tituloCampanha">Título:</label>
+              <Field type='text' id="tituloCampanha" name="tituloCampanha" placeholder="Digite o título da campanha" />
+              <ErrorMessage name='tituloCampanha' render={msg => <div className='error'>{msg}</div>} />
             </div>
-          )}
-          <div >Categorias:</div>
-          <input type='text' value={inputCategoria} onChange={(e) => handleInputCategoria(e.target.value)} placeholder='Insira uma categoria' />
-          <ul>
-            {sugestoes.map(sugestao => (
-              <li><button onClick={()=>inserirCategoria(sugestao.nome)}>{sugestao.nome}</button></li>
-            ))}
-          </ul>
-          <div>
-            Categorias salvas:
-            <ul>
-              {listCategoriasAtuais.map(categoria => (
-                <li>{categoria} <GrFormClose onClick={()=>excluirCategoria(categoria)}/></li>
-              ))}
-            </ul>
-            <ErrorMessage name='categorias' render={msg => <div className='error'>{msg}</div>} />
-          </div>
-          {!edit ? (
             <div>
-              <button type="submit" className='botao1'>Cadastrar</button>
+              <label htmlFor="dataLimiteContribuicao">Data limite para contribuição</label>
+              <Field id="dataLimiteContribuicao" name="dataLimiteContribuicao" render={({ field }) => (
+                <InputMask {...field} mask={`99/99/9999`} />
+              )} />
+              <ErrorMessage name='dataLimiteContribuicao' render={msg => <div className='error'>{msg}</div>} />
             </div>
-          ) : (
             <div>
-              <button onClick={() => prepararCancelarEdicao()}>Cancelar</button>
-              <button type='submit' className='botao1'>Salvar</button>
+              <label>Encerrar ao atingir a meta? </label>
+              <label>
+                <Field type="radio" name="concluiCampanhaAutomaticamente" value='true' />
+                Sim
+              </label>
+              <label>
+                <Field type="radio" name="concluiCampanhaAutomaticamente" value='false' />
+                Não
+              </label>
             </div>
-          )}
+            <div>
+              
+            </div>
+            <div>
+              <label htmlFor="metaArrecadacao">Meta de arrecadação (R$):</label>
+              <Field type="number"  name='metaArrecadacao' />
+            </div>
+            <div>
+              <label htmlFor="descricaoCampanha">Descrição:</label>
+              <Field type='text' id="descricaoCampanha" name="descricaoCampanha" placeholder="Descrição" />
+              <ErrorMessage name='descricaoCampanha' render={msg => <div className='error'>{msg}</div>} />
+            </div>
+            {edit ? (
+              <>
+                <img src={cadastro.foto} width='200px' />
+                <label htmlFor="capa">Trocar imagem:</label>
+                <input name='capa' type='file' accept='image/png, image/jpeg' onChange={(e) => setFoto(e.target.files[0])} />
+                <ErrorMessage name='capa' render={msg => <div className='error'>{msg}</div>} />
+              </>
+            ) : (
+              <div>
+                <label htmlFor="foto">Foto da campanha:</label>
+                <input className='botaoFoto' name='foto' type='file' accept='image/png, image/jpeg' onChange={(e) => setFoto(e.target.files[0])} />
+                <ErrorMessage name='foto' render={msg => <div className='error'>{msg}</div>} />
+              </div>
+            )}
+            <div>
+              <Autocomplete
+                disablePortal
+                multiple
+                value={valueTag}
+                onChange={(event, value) => {
+                  if (value && value.freeSolo) {
+                    setValueTag({
+                      nome: value.inputValue
+                    });
+                    return;
+                  }
+                  setValueTag(value);
+                }}
+                filterOptions={(options, params) => {
+                  const filtered = filter(options, params);
 
-        </Form>
+                  if (params.inputValue !== "") {
+                    filtered.push({
+                      freeSolo: true,
+                      inputValue: params.inputValue,
+                      nome: params.inputValue
+                    });
+                  }
+                  return filtered;
+                }}
+                id="inputCategorias"
+                options={listCategoriasBD}
+                getOptionLabel={option => option.nome}
+                sx={{ width: 300 }}
+                freeSolo
+                renderInput={params => (
+                  <TextField {...params} name='categorias' label="Categorias" variant="outlined" fullWidth />
+                )}
+              />
+            </div>
+            {!edit ? (
+              <div>
+                <button type="submit" className='botao1'>Cadastrar</button>
+              </div>
+            ) : (
+              <div>
+                <button onClick={() => prepararCancelarEdicao()}>Cancelar</button>
+                <button type='submit' className='botao1'>Salvar</button>
+              </div>
+            )}
+            <div>
+              <pre>{JSON.stringify(values, null, 2)}</pre>
+            </div>
+          </Form>
+        )}
+
       </Formik>
-    </>
+    </div>
   );
 }
 

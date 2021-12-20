@@ -56,6 +56,10 @@ p, a, li, span, h3 {
   font-size: 1rem
 }
 
+li{
+  list-style: none;
+}
+
 a {
   color: var(--text-color);
   text-decoration: none;
@@ -85,6 +89,7 @@ a:hover {
   justify-content: center;
   min-height: calc(100vh - 3rem);
 }
+
 
 
 /* label {

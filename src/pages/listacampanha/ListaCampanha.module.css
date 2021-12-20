@@ -1,49 +1,38 @@
-.containerLista{
+.paginaCampanhas{
+  margin-top: 5rem;
   display: flex;
-  max-width: 1200px;
-  margin: 0 auto;
+  justify-content: space-between;
 }
 
 .filtros{
   width: 40%;
   padding:8px;
-  background-color: lightblue;  
 }
 
-.filtros > div{
+form > div{
   margin-bottom: 16px;
+ 
 }
 
-.filtros label{
-  margin-left: 2px;
+form .rotuloFiltro{
+  border-bottom: gray thin solid;
+  padding-bottom: 2px;
 }
 
-.tituloFiltro{
-  font-size: 1.2rem;
-  margin: 2px;
-  font-weight: bold;
-  border-bottom: solid gray thin;
+form input{
+  margin-right: 6px;
 }
 
-.categorias{
-  max-height: 300px;
-  overflow: auto;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  
+.listaCampanhas li{
+  margin-bottom:16px;
 }
 
-.listaCampanhas{
-  margin-left:16px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+.listaCampanhas li:last-child{
+  margin-bottom:0;
 }
 
-.campanha{
-  border: solid black thin;
-  margin-bottom: 8px;
+.listaCampanhas li:hover{
+  cursor:pointer;
 }
 
 .none{
