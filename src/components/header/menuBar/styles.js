@@ -7,8 +7,7 @@ export const MenuBarDivPrincipal = styled.div`
   align-items: center;
   width: 100%;
 
-  @media(min-width: 650px ) {
-    width: auto;
+  @media(min-width: 1250px ) {
     .displayNone {
       display: none;
     }
@@ -17,16 +16,24 @@ export const MenuBarDivPrincipal = styled.div`
 `;
 export const MenuBarDiv = styled.div`
   display: flex;
-  align-items: center;
-  justify-content: space-around;
   width: 100vw;
+  margin-top: 20px;
   gap: 1rem;
   height: 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+
+  .userPerfil {
+    margin-top: 40px;
+  }
 
   .menu-left {
     display: flex;
     align-items: center;
     gap: 1rem;
+
   }
 
   svg {
@@ -42,8 +49,12 @@ export const MenuBarDiv = styled.div`
     display: none;
   }
 
-  @media(min-width: 650px) {
+  @media(min-width: 1250px) {
     gap: 0.5rem;
+    margin: 0;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
 
     .imMenu {
       display: none;

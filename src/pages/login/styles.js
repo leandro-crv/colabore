@@ -37,4 +37,9 @@ export const BordaLogin = styled(Form)`
   width: 100%;
   max-width: 465px;
   gap: 20px;
+
+  div {
+    display: flex;
+    flex-direction: column
+  }
 `;

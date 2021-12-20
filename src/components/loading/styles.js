@@ -4,7 +4,7 @@ export const Fundo = styled.div`
   width: 100vw;
   height: 100vh;
 
-  background: var(--text-color);
+  background: var(--loading-color);
 
   padding: 0;
   margin: 0;

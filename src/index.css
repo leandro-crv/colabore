@@ -4,20 +4,24 @@
   --main-color: white;
   --second-color: #212121;
   --text-color: black;
+  --loading-color: white;
   --text-color2: white;
   --hover-color: white;
   --background-color: #659f68;
   --border-color: black;
   --gradient-color: linear-gradient(to right, #659f68, #32669d);
+  --modal-color: rgba(0, 0, 0, .7)
 }
 
 .darkMode:root {
   --main-color: black;
   --text-color: white;
+  --loading-color: black;
   --hover-color: black;
   --background-color: #32669d;
   --border-color: rgb(97, 97, 97);
   --gradient-color: linear-gradient(to left, #659f68, #32669d);
+  --modal-color: rgba(255, 255, 255, .7)
 }
 
 * {
@@ -84,44 +88,17 @@ a:hover {
 
 .body-content {
   padding-bottom: 70px;
-  display: flex;
+  /* display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: center; */
   min-height: calc(100vh - 3rem);
+  max-width: 1200px;
+  margin: 6rem auto 0 auto;
 }
 
 
 
-/* label {
-  position: absolute;
-  top: -25px;
-  left: 0;
-  color: var(--text-color);
-  font-size: 1rem;
-  letter-spacing: 0.1rem;
-}
-
-input {
-  width: 370px;
-  height: 35px;
-  padding-left: 10px;
-  border-radius: 10px;
-  border: solid 1px var(--text-color);
-  font-size: 1.2rem;
-} */
-
-button:hover {
-  cursor: pointer;
-}
-
-.error {
-  text-align: center;
-  padding-top: 5px;
-  color: red;
-}
-
-
-button[type=submit] {
+button {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -130,4 +107,6 @@ button[type=submit] {
   border-radius: 20px;
   border: solid 1px var(--text-color);
   font-size: 1.5rem;
+  cursor: pointer;
 }
+

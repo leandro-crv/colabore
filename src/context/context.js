@@ -16,7 +16,7 @@ export default function MenuProvider({ children }) {
   const [user, setUser] = useState(initialUser);
   const [ loading, setLoading] = useState(false)
   const navigate = useNavigate();
-  
+
 
   const handleLogin = async (login) => {
     try{
@@ -31,20 +31,19 @@ export default function MenuProvider({ children }) {
   const postUsuario = async (usuario) =>{
     console.log('usuario no post usuário',usuario)
     try{
-      const {data} = await api.post('usuario',usuario);
+      const { data } = await api.post('usuario',usuario);
       return data
     }
     catch(error){
-      return error
+      return console.log(error)
     }
 
   }
 
   const postFotoUsuario = async(id,foto) =>{
-    let formData = new FormData();      
+    let formData = new FormData();
     formData.append("file", foto);
-    const {data} = await api.post(`foto-perfil/uploadFotoPerfil?idUsuario=${id}`,formData,{headers:{'Content-Type': 'multipart/form-data'}});
-    console.log('data postFotoUsuario', data);
+    await api.post(`foto-perfil/uploadFotoPerfil?idUsuario=${id}`,formData,{headers:{'Content-Type': 'multipart/form-data'}})
   }
 
   const handleLogout = () =>{
@@ -54,11 +53,11 @@ export default function MenuProvider({ children }) {
     
   }
 
-  const redirecionamento = (pagina, esperarTempo = false) => {
+  const redirecionamento = (pagina, esperarTempo = false, tempo = 3000) => {
     if (esperarTempo) {
       setTimeout(() => {
         navigate(pagina)
-      }, 4000)
+      }, tempo)
     } else {
       navigate(pagina)
     }
@@ -104,7 +103,7 @@ export default function MenuProvider({ children }) {
         redirecionamento,
         postFotoUsuario,
         postUsuario
-        
+
       }}
     >
       {children}
@@ -115,9 +114,9 @@ export default function MenuProvider({ children }) {
 export function useMenuContext() {
   const context = useContext(MenuContext);
   if (!context) throw new Error("useMenuContext must be used within a MenuProvider");
-  const { 
-    openMenu, nameLogo, 
-    setOpenMenu, setNameLogo, 
+  const {
+    openMenu, nameLogo,
+    setOpenMenu, setNameLogo,
     loading, setLoading,
     handleLogin,
     handleLogout,
@@ -126,9 +125,10 @@ export function useMenuContext() {
     redirecionamento,
     postFotoUsuario,
     postUsuario
+
   } = context;
-  return { 
-    openMenu, nameLogo, 
+  return {
+    openMenu, nameLogo,
     setOpenMenu, setNameLogo,
     loading, setLoading,
     handleLogin,
