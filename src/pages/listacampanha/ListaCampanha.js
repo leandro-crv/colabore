@@ -158,7 +158,8 @@ const ListaCampanha = () => {
           </Formik>
         </div>
         <div>
-          <ul className={styles.listaCampanhas}>
+          {!listaCampanhas.length ? (<h1>Sua pesquisa não retornou nenhuma campanha!</h1>): (
+            <ul className={styles.listaCampanhas}>
             {listaCampanhas.map(campanha => (
               <li key={campanha.idCampanha} 
                   className={styles.campanha} 
@@ -168,6 +169,7 @@ const ListaCampanha = () => {
               </li>
             ))}
           </ul>
+          )}
         </div>
       </div>
     </div>

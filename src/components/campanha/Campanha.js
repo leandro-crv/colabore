@@ -10,9 +10,8 @@ import Typography from '@mui/material/Typography';
 import { CardActionArea } from '@mui/material';
 
 
-
-const urlImgCampanha = 'https://colabore-api-dbc.herokuapp.com/foto-campanha/downloadFotoCampanha/'
 const Campanha = ({ campanha }) => {
+  const urlImgCampanha = 'https://colabore-api-dbc.herokuapp.com/foto-campanha/downloadFotoCampanha/'
   console.log('campanha', campanha)
   return (
     <Card sx={{ maxWidth: 500 }}>

@@ -85,6 +85,17 @@ const CampanhaProvider = ({ children }) => {
     }
   }
 
+  const putCampanha = async(id,valores) =>{
+    console.log('id é: ',id, 'campanha é: ', valores);
+    try{
+      const {data} = await api.put(`campanha/${id}`,valores);
+      console.log('retorno do put da camapnha', data)
+      return true;
+    }
+    catch{
+      return false;
+    }
+  }
 
   const putDoar = async (id, valor) => {
     try {
@@ -138,14 +149,17 @@ const CampanhaProvider = ({ children }) => {
 
 
   const prepararEdicao = (campanha) => {
-
+    console.log('campanha no preprarar Edição',campanha)
+    let idsCategoria = [];
+    campanha.tagsCategoria.map(categoria => idsCategoria.push({idCategoria: categoria.idCategoria}));
     const campanhaFormatada = {
       concluiCampanhaAutomaticamente: campanha.concluiCampanhaAutomaticamente,
       dataLimiteContribuicao: moment(campanha.dataLimiteContribuicao).format('DD/MM/YYYY'),
       descricaoCampanha: campanha.descricaoCampanha,
       metaArrecadacao: campanha.metaArrecadacao,
       tituloCampanha: campanha.tituloCampanha,
-      categorias: campanha.tagsCategoria
+      categorias: idsCategoria,
+      id: campanha.idCampanha
     }
     setCadastro(campanhaFormatada);
     setEdit(true);
@@ -182,6 +196,7 @@ const CampanhaProvider = ({ children }) => {
       postCampanha,
       getMetaAtingida,
       putDoar,
+      putCampanha,
       postFotoCampanha,
       getCampanhaDetalhe,
       idDetalhe,

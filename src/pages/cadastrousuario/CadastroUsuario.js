@@ -21,8 +21,6 @@ const CadastroUsuario = () => {
     senha2: '',
   }
 
-  
-
   useEffect(() => {
     setNameLogo("Cadastro Usuário")
   },[])
@@ -44,8 +42,6 @@ const CadastroUsuario = () => {
     return errors;
   }
 
-
- 
 
   return (
     <>
