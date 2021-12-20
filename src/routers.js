@@ -8,7 +8,7 @@ import ListaCampanha from "./pages/listacampanha/ListaCampanha";
 import { useMenuContext } from "./context/context";
 import Loading from "./components/loading";
 import DetalheCampanha from "./pages/detalhecampanha/DetalheCampanha";
-import Perfil from "./pages/perfil";
+import MinhasContribuicoes from "./pages/minhascontribuicoes";
 
 const Routers = () => {
   const {autenticate, loading} = useMenuContext();
@@ -22,9 +22,6 @@ const Routers = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   },[])
 
-  if(loading){
-    return (<Loading />)
-  }
   return (
     <>
         <Routes>
@@ -32,7 +29,7 @@ const Routers = () => {
           <Route exact path='/cadastrousuario' element={<CadastroUsuario/>} />
           <Route exact path='/cadastrocampanha' element={<CadastroCampanha/>}/>
           <Route exact path='/listacampanha' element={<ListaCampanha/>} />
-          <Route exact path='/minhascontribuicoes' element={<Perfil/>}/>
+          <Route exact path='/minhascontribuicoes' element={<MinhasContribuicoes/>}/>
           <Route exact path='/detalhecampanha' element={<DetalheCampanha/>} />
           <Route path="*" element={<NotFound/>} />
         </Routes>

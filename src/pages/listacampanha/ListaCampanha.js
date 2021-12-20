@@ -47,12 +47,13 @@ const ListaCampanha = () => {
 
   useEffect(() => {
     (async () => {
-      setLoading(false);
+      setLoading(true);
       var campanhasBD = await getCampanhas();
       setListaInicial(campanhasBD);
       var categoriasBD = await getCampanhasCategorias();
       setListCategorias(categoriasBD);
       setNameLogo('Lista Campanha');
+      setLoading(false);
     })();
   }, [])
 
@@ -197,7 +198,8 @@ const ListaCampanha = () => {
         </div>
         <div>
           <ul className={styles.listaCampanhas}>
-            {listaInicial.map((campanha, i) => (
+            {listaInicial.map((campanha, i) => {
+              return(
               <li key={i} className={styles.campanha} onClick={() => irParaPaginaDetalheCampanha(campanha)}>
                 <h3>{campanha.tituloCampanha}</h3>
                 <h1>ID: {campanha.idCampanha}</h1>
@@ -218,7 +220,8 @@ const ListaCampanha = () => {
                   ))}
                 </ul>
               </li>
-            ))}
+
+            )})}
           </ul>
         </div>
       </div>
