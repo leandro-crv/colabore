@@ -17,9 +17,14 @@ const Routers = () => {
   useEffect(() => {
     const token = localStorage.getItem('token');
     if(token){
-      autenticate(token);
+      (async()=>{
+       await autenticate(token);
+        setLoading(false)
+      })()
     }
-    setLoading(false);
+    else{
+      setLoading(false);
+    }
   },[])
 
   if(loading){

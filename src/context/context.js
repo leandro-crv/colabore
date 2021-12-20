@@ -7,12 +7,12 @@ const MenuContext = createContext();
 export default function MenuProvider({ children }) {
   const [openMenu, setOpenMenu] = useState('60px');
   const [nameLogo, setNameLogo] = useState('Login');
-  const [auth, setAuth] = useState(false);
+
   const initialUser = {
-    fotoPerfil:'',
     idUsuario:0,
     nome:''
   }
+
   const [user, setUser] = useState(initialUser);
   const [ loading, setLoading] = useState(false)
   const navigate = useNavigate();
@@ -21,7 +21,7 @@ export default function MenuProvider({ children }) {
   const handleLogin = async (login) => {
     try{
       const {data} = await api.post('login', login);
-      autenticate(data);
+      await autenticate(data);
       return true;
     } catch(error){
       return false;
@@ -51,7 +51,7 @@ export default function MenuProvider({ children }) {
     localStorage.removeItem('token');
     api.defaults.headers.common['Authorization'] = '';
     window.location.href = '/';
-    setAuth(false);
+    
   }
 
   const redirecionamento = (pagina, esperarTempo = false) => {
@@ -64,22 +64,31 @@ export default function MenuProvider({ children }) {
     }
   }
 
-  const autenticate = (token) =>{
+  const autenticate = async (token) =>{
     localStorage.setItem('token',token);
     api.defaults.headers.common['Authorization'] = token;
-    setAuth(true);
-    getUser();
+    let user = await getUser();
+    if(!user){
+      return false
+    }
+    else{
+      setUser({
+        nome: user.nome,
+        idUsuario : user.idUsuario
+      });
+      return true
+    }
   }
 
-  const getUser = () =>{
-    (async ()=>{
+  const getUser = async () =>{
+    try{
       const {data} = await api.get('usuario');
       console.log('usuário é: ', data);
-      setUser({
-        nome: data.nome,
-        idUsuario: data.idUsuario
-      });
-    })()
+      return data;
+    }
+    catch(error){
+      return false;
+    }
   }
 
   return (
@@ -90,8 +99,6 @@ export default function MenuProvider({ children }) {
         loading, setLoading,
         handleLogin,
         handleLogout,
-        auth,
-        setAuth,
         autenticate,
         user,
         redirecionamento,
@@ -114,8 +121,6 @@ export function useMenuContext() {
     loading, setLoading,
     handleLogin,
     handleLogout,
-    auth,
-    setAuth,
     autenticate,
     user,
     redirecionamento,
@@ -128,8 +133,6 @@ export function useMenuContext() {
     loading, setLoading,
     handleLogin,
     handleLogout,
-    auth,
-    setAuth,
     autenticate,
     user,
     redirecionamento,

@@ -95,7 +95,7 @@ const CadastroUsuario = () => {
               name="email"
               placeholder="Digite seu email"
               type="email"
-              maxLength="30"
+              maxLength="50"
             />
             <ErrorMessage name='email' render={msg => <div className='error' >{msg}</div>} />
           </div>

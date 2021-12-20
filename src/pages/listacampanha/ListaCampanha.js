@@ -8,22 +8,10 @@ import { useMenuContext } from "../../context/context";
 
 
 import Campanha from "../../components/campanha/Campanha";
-import SearchIcon from '@mui/icons-material/Search';
 import { Formik, Form, Field } from "formik";
 
-import {
-  TextField,
-  FilledInput,
-  Button,
-  Checkbox,
-  Radio,
-  RadioGroup,
-  FormControlLabel,
-  FormControl,
-  FormLabel,
-  Select,
-  MenuItem
-} from "@material-ui/core";
+import { Button } from "@material-ui/core";
+import SearchIcon from '@mui/icons-material/Search';
 
 const ListaCampanha = () => {
   
