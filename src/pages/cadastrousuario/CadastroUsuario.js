@@ -105,7 +105,7 @@ export const CadastroUsuario = () => {
             <Campo
               text="Email: *"
               nameCamp="email"
-              maxLength="30"
+              maxLength="50"
               type="text"
               placeholder='Digite seu email...'
               value={formik.values.email}
@@ -116,7 +116,7 @@ export const CadastroUsuario = () => {
             <Campo
               text="Senha: *"
               nameCamp="senha"
-              minLength="8"
+              minLength="6"
               type="password"
               value={formik.values.senha}
               onChange={formik.handleChange}
@@ -146,11 +146,10 @@ export const CadastroUsuario = () => {
             />
 
             <ContainerBotoes>
-              <button type="submit">Cadastrar</button>
-
               <button  onClick={() => redirecionamento('/')}>
                 Voltar
               </button>
+              <button type="submit">Cadastrar</button>
 
             </ContainerBotoes>
           </BordaCadastro>
