@@ -269,9 +269,9 @@ const CadastroCampanha = () => {
                 <button type='submit' className='botao1'>Salvar</button>
               </ContainerBotoes>
             )}
-            <div>
+            {/* <div>
               <pre>{JSON.stringify(values, null, 2)}</pre>
-            </div>
+            </div> */}
           </BordaCadastro>
         </FormCadastro>
       )}

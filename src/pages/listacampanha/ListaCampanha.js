@@ -52,11 +52,7 @@ const ListaCampanha = () => {
       setLoading(false);
     })();
   }, [])
-
-  
-  console.log('categorias fora do useEffect', listCategoriasNomes)
-  
-
+ 
 
   const irParaDetalheCampanha = (id) => {
     redirecionamento(`/detalhecampanha/${id}`)
@@ -145,10 +141,13 @@ const ListaCampanha = () => {
                   {listCategoriasNomes.map(categoria => (
                     <div>
                       <Field name='categorias' type='checkbox' value={categoria} defaultChecked={true}/>
-                      <label>{categoria}</label>
+                      <label>{categoria[0].toUpperCase() + categoria.substring(1)}</label>
                     </div>
                   ))}
                 </div>
+              {/* <div>
+                  <pre>{JSON.stringify(values, null, 2)}</pre>
+              </div> */}
                 <Button disabled={isSubmitting} type="submit">
                   Pesquisar
                   <SearchIcon/>

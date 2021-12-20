@@ -69,7 +69,7 @@ const CampanhaProvider = ({ children }) => {
 
   const getCampanhasCategorias = async () => {
     const { data } = await api.get('categoria');
-    const categorias = data.sort((a, b) => a.nome > b.nome ? 1 : -1)
+    const categorias = data.sort((a, b) => a.nome.toLowerCase() > b.nome.toLowerCase() ? 1 : -1)
     return categorias;
   }
 
@@ -111,7 +111,7 @@ const CampanhaProvider = ({ children }) => {
     const { data } = await api.post('categoria', { nome: value });
     console.log('data retorno post categoria', data)
     return data.idCategoria
-    //setCategoriasACadastrar([...categoriasACadastrar,data.idCategoria]);
+    
   }
 
   const postCampanha = async (campanha) => {
