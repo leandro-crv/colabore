@@ -60,7 +60,6 @@ const ListaCampanha = () => {
 
   return (
     <div>
-      <h1>Campanhas</h1>
       <div className={styles.paginaCampanhas}>
         <aside className={styles.filtros}>
           <Formik
