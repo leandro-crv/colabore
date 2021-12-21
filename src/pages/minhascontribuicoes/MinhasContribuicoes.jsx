@@ -17,15 +17,21 @@ const Perfil =  () => {
     const token = localStorage.getItem('token')
 
     if(!token) return redirecionamento('/', true)
-    setLoading(true)
+
 
     api.get('campanha/minhas-contribuicoes', {
       headers: {
         Authorization: token
       }
     }).then(resp => {
+      setLoading(true)
+      if(resp.data[0] === '') {
+        setTimeout(() => setLoading(false), 2500);
+        setTimeout(() => setNameLogo('Minhas Contribuições'), 2550);
+      }
       setContribuicoes(resp.data)
-      
+
+
     })
 
   },[])
@@ -44,121 +50,127 @@ const Perfil =  () => {
   }
 
   if(user.nome) {
-    return (
-      <div>
+    setTimeout(() => setLoading(false), 2500);
+    setTimeout(() => setNameLogo('Minhas Contribuições'), 2550);
 
-  <Div>
-        <h1 style={{color: 'red'}}> EM ANDAMENTO </h1>
-          {
-            contribuicoes && contribuicoes.map((e,i) => {
+      return (
 
-              if(e.metaArrecadacao > e.totalArrecadado) {
-                
-                return (
-                  <>
 
-                    <Card key={i} >
+        <div>
 
-                  <img src={getImage(e.idCampanha)} alt="Não foi possível carregar a imagem." srcset="" />
-                <CardContend>
-                  <p>
-                    <span>Título: </span>
-                    {e.tituloCampanha}</p>
-                  <p>
-                    <span>Descrição: </span>
-                    {e.descricaoCampanha} </p>
-                  <p>
-                    <span>Data de encerramento: </span>
-                    {moment(e.dataLimiteContribuicao).format('DD/MM/YYYY')}</p>
-                  <p>
-                    <span>Meta de arrecadação: </span>
-                    {convertCurrency(e.metaArrecadacao)}</p>
-                  <p>
-                    <span>Total Arrecadado: </span>
-                    {convertCurrency(e.totalArrecadado)}</p>
-                  <p>
-                    <span>Minha contribuição: </span>
-                    {convertCurrency(e.usuarioDoacaoDTO.valorTotalDoado)}</p>
-                  <p>
-                    <span>Criador: </span>
-                    {e.criadorDaCampanha.nome}
-                    <br />
-                    <hr />
-                    {e.criadorDaCampanha.email}
-                  </p>
+    <Div>
+          <h1 style={{color: 'red'}}> EM ANDAMENTO </h1>
+            {
+              contribuicoes && contribuicoes.map((e,i) => {
 
-                  <Button type="button" variant="contained" onClick={()=>irParaPaginaDetalheCampanha(e)}>
-                    Detalhe Campanha
-                  </Button>
-                </CardContend>
-              </Card>
-                  </>
-              )
+                if(e.metaArrecadacao > e.totalArrecadado) {
 
-            }
-          })
+                  return (
+                    <>
 
-          }
-        </Div>
+                      <Card key={i} >
 
-        <Div>
-        <h1 style={{color: 'green', marginTop: '80px'}}> CONCLUÍDAS </h1>
-          {
-            contribuicoes && contribuicoes.map((e,i) => {
+                    <img src={getImage(e.idCampanha)} alt="Não foi possível carregar a imagem." srcset="" />
+                  <CardContend>
+                    <p>
+                      <span>Título: </span>
+                      {e.tituloCampanha}</p>
+                    <p>
+                      <span>Descrição: </span>
+                      {e.descricaoCampanha} </p>
+                    <p>
+                      <span>Data de encerramento: </span>
+                      {moment(e.dataLimiteContribuicao).format('DD/MM/YYYY')}</p>
+                    <p>
+                      <span>Meta de arrecadação: </span>
+                      {convertCurrency(e.metaArrecadacao)}</p>
+                    <p>
+                      <span>Total Arrecadado: </span>
+                      {convertCurrency(e.totalArrecadado)}</p>
+                    <p>
+                      <span>Minha contribuição: </span>
+                      {convertCurrency(e.usuarioDoacaoDTO.valorTotalDoado)}</p>
+                    <p>
+                      <span>Criador: </span>
+                      {e.criadorDaCampanha.nome}
+                      <br />
+                      <hr />
+                      {e.criadorDaCampanha.email}
+                    </p>
 
-              if(e.metaArrecadacao <= e.totalArrecadado) {
-                return (
-                  <>
+                    <Button type="button" variant="contained" onClick={()=>irParaPaginaDetalheCampanha(e)}>
+                      Detalhe Campanha
+                    </Button>
+                  </CardContend>
+                </Card>
+                    </>
+                )
 
-                    <Card key={i} >
-
-                  <img src={getImage(e.idCampanha)} alt="Não foi possível carregar a imagem." srcset="" />
-                <CardContend>
-                  <p>
-                    <span>Título: </span>
-                    {e.tituloCampanha}</p>
-                  <p>
-                    <span>Descrição: </span>
-                    {e.descricaoCampanha} </p>
-                  <p>
-                    <span>Data de encerramento: </span>
-                    {moment(e.dataLimiteContribuicao).format('DD/MM/YYYY')}</p>
-                  <p>
-                    <span>Meta de arrecadação: </span>
-                    {convertCurrency(e.metaArrecadacao)}</p>
-                  <p>
-                    <span>Total Arrecadado: </span>
-                    {convertCurrency(e.totalArrecadado)}</p>
-                  <p>
-                    <span>Minha contribuição: </span>
-                    {convertCurrency(e.usuarioDoacaoDTO.valorTotalDoado)}</p>
-                  <p>
-                    <span>Criador: </span>
-                    {e.criadorDaCampanha.nome}
-                    <br />
-                    <hr />
-                    {e.criadorDaCampanha.email}
-                  </p>
-
-                  <Button type="button" variant="contained" onClick={()=>irParaPaginaDetalheCampanha(e)}>
-                    Detalhe Campanha
-                  </Button>
-                </CardContend>
-              </Card>
-                  </>
-              )
+              }
+            })
 
             }
-            setTimeout(() => setLoading(false), 2000);
-            setNameLogo('Minhas Contribuições')
-          })
+          </Div>
 
-          }
-        </Div>
+          <Div>
+          <h1 style={{color: 'green', marginTop: '80px'}}> CONCLUÍDAS </h1>
+            {
+              contribuicoes && contribuicoes.map((e,i) => {
 
-      </div>
+                if(e.metaArrecadacao <= e.totalArrecadado) {
+                  return (
+                    <>
 
-    );
+                      <Card key={i} >
+
+                    <img src={getImage(e.idCampanha)} alt="Não foi possível carregar a imagem." srcset="" />
+                  <CardContend>
+                    <p>
+                      <span>Título: </span>
+                      {e.tituloCampanha}</p>
+                    <p>
+                      <span>Descrição: </span>
+                      {e.descricaoCampanha} </p>
+                    <p>
+                      <span>Data de encerramento: </span>
+                      {moment(e.dataLimiteContribuicao).format('DD/MM/YYYY')}</p>
+                    <p>
+                      <span>Meta de arrecadação: </span>
+                      {convertCurrency(e.metaArrecadacao)}</p>
+                    <p>
+                      <span>Total Arrecadado: </span>
+                      {convertCurrency(e.totalArrecadado)}</p>
+                    <p>
+                      <span>Minha contribuição: </span>
+                      {convertCurrency(e.usuarioDoacaoDTO.valorTotalDoado)}</p>
+                    <p>
+                      <span>Criador: </span>
+                      {e.criadorDaCampanha.nome}
+                      <br />
+                      <hr />
+                      {e.criadorDaCampanha.email}
+                    </p>
+
+                    <Button type="button" variant="contained" onClick={()=>irParaPaginaDetalheCampanha(e)}>
+                      Detalhe Campanha
+                    </Button>
+                  </CardContend>
+                </Card>
+                    </>
+                )
+
+              }
+
+
+            })
+
+            }
+          </Div>
+
+        </div>
+
+      );
+
   } else {
     return <NaoEstaLogado />
   }

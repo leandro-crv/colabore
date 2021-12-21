@@ -92,6 +92,15 @@ export const BordaCadastro  = styled.div `
       flex-direction: row;
       justify-content: center;
       gap: 30px;
+
+      input {
+        width: 25px;
+        height: 25px;
+      }
+
+      label {
+        transform: translateX(-30px);
+      }
     }
 `
 
@@ -131,13 +140,5 @@ export const Categorias = styled(Autocomplete) `
     }
 
 
-`
-
-export const ContainerBotoes = styled.div `
-  display: flex;
-  flex-direction:row;
-  backgroun-color:red;
-  justify-content: space-around;
-  width: 100%;
 `
 
