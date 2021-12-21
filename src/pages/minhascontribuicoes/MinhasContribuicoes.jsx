@@ -59,7 +59,7 @@ const Perfil =  () => {
 
                     <Card key={i} >
 
-                  <img src={getImage(e.idCampanha)} alt="Não foi possível carregar imagem." srcset="" />
+                  <img src={getImage(e.idCampanha)} alt="Não foi possível carregar a imagem." srcset="" />
                 <CardContend>
                   <p>
                     <span>Título: </span>
@@ -112,7 +112,7 @@ const Perfil =  () => {
 
                     <Card key={i} >
 
-                  <img src={getImage(e.idCampanha)} alt="Não foi possível carregar imagem." srcset="" />
+                  <img src={getImage(e.idCampanha)} alt="Não foi possível carregar a imagem." srcset="" />
                 <CardContend>
                   <p>
                     <span>Título: </span>
