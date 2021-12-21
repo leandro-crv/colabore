@@ -53,12 +53,13 @@ const Perfil =  () => {
             contribuicoes && contribuicoes.map((e,i) => {
 
               if(e.metaArrecadacao > e.totalArrecadado) {
+                console.log(getImage(e.idCampanha))
                 return (
                   <>
 
                     <Card key={i} >
 
-                  <img src={getImage(e.idCampanha)} alt="" srcset="" />
+                  <img src={getImage(e.idCampanha)} alt="Não foi possível carregar imagem." srcset="" />
                 <CardContend>
                   <p>
                     <span>Título: </span>
@@ -111,7 +112,7 @@ const Perfil =  () => {
 
                     <Card key={i} >
 
-                  <img src={getImage(e.idCampanha)} alt="" srcset="" />
+                  <img src={getImage(e.idCampanha)} alt="Não foi possível carregar imagem." srcset="" />
                 <CardContend>
                   <p>
                     <span>Título: </span>
