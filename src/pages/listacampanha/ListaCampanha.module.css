@@ -2,12 +2,33 @@
   margin-top: 5rem;
   display: flex;
   justify-content: space-between;
+  gap: 16px;
 }
 
-.filtros{
-  width: 40%;
-  padding:8px;
+.paginaCampanhas aside{
+  background-color: cadetblue;
+  padding: 16px;
+  width: 25%;
 }
+
+form input{
+  margin-right: 6px;
+}
+
+.paginaCampanhas main{
+  width: 75%;
+  background-color: burlywood;
+}
+
+.paginaCampanhas main ul{
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+
 
 form > div{
   margin-bottom: 16px;
@@ -19,17 +40,10 @@ form .rotuloFiltro{
   padding-bottom: 2px;
 }
 
-form input{
-  margin-right: 6px;
-}
 
-.listaCampanhas li{
-  margin-bottom:16px;
-}
 
-.listaCampanhas li:last-child{
-  margin-bottom:0;
-}
+
+
 
 .listaCampanhas li:hover{
   cursor:pointer;

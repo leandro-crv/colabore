@@ -18,9 +18,10 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import noImgCampanha from '../../images/noImgCampanha.png';
 import perfil from '../../images/perfil.jpg';
-
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { Input, InputLabel, Button } from '@mui/material';
 import { useState } from 'react';
+import { useMenuContext } from '../../context/context';
 
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props;
@@ -38,7 +39,7 @@ export default function CampanhaDetalhe({ campanha, enviarContribuicao, editavel
   const urlImgUsuario = 'https://colabore-api-dbc.herokuapp.com/foto-perfil/downloadFotoPerfil/';
   const [expanded, setExpanded] = React.useState(false);
   const [valor, setValor] = useState(0);
-  
+  const {redirecionamento} = useMenuContext()
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
@@ -51,8 +52,8 @@ export default function CampanhaDetalhe({ campanha, enviarContribuicao, editavel
 
   return (
     <Card sx={{
-      maxWidth: 700,
-      padding: '16px',
+      width:500,
+      minHeight:500
     }}>
       <CardMedia
         component="img"
@@ -146,7 +147,7 @@ export default function CampanhaDetalhe({ campanha, enviarContribuicao, editavel
           </Collapse>
         </>
       )}
-
+      <Button onClick={()=>redirecionamento('/listacampanha')}> <ArrowBackIcon/> Voltar</Button>
     </Card>
   );
 }

@@ -5,7 +5,7 @@ import { useMenuContext } from '../../context/context';
 import InputMask from 'react-input-mask'
 import { FormCadastro, ContainerBotoes, BordaCadastro } from './styles';
 
-import { GrFormClose } from 'react-icons/gr';
+
 import moment from 'moment';
 import api from '../../api';
 import noImgCampanha from '../../images/noImgCampanha.png';
@@ -21,15 +21,17 @@ import {
   MenuItem
 } from "@material-ui/core";
 import Autocomplete, { createFilterOptions } from '@material-ui/lab/Autocomplete';
-import CurrencyTextField from '@unicef/material-ui-currency-textfield'
-import categoriasAutoComplete from '../../components/categorias/CategoriasAutocomplete';
-import Campanha from '../../components/campanha/Campanha';
+
 
 
 
 const CadastroCampanha = () => {
-  const { cadastro,
+  const { 
+    cadastro,
+    setCadastro,
+    initialCadastro,
     edit,
+    setEdit,
     cancelarEdicao,
     getCampanhasCategorias,
     postCampanhaCategoria,
@@ -53,7 +55,14 @@ const CadastroCampanha = () => {
       let categorias = await getCampanhasCategorias();
       setListCategoriasBD(categorias);
     })();
-  }, [])
+  }, []);
+
+  useEffect(()=>{
+    return()=>{
+      setCadastro(initialCadastro);
+      setEdit(false);
+    }
+  },[])
 
   const prepararCancelarEdicao = () => {
     cancelarEdicao();
@@ -90,9 +99,6 @@ const CadastroCampanha = () => {
   useEffect(() => {
     setNameLogo("Cadastro Campanha")
   }, []);
-
-
-
 
   const removerMascaraMoeda = (mascara) => {
     mascara = mascara.replace('R$', '');

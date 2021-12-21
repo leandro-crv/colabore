@@ -4,17 +4,18 @@ import perfil from '../../images/perfil.jpg';
 
 import Card from '@mui/material/Card';
 
-import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
-import { CardActionArea } from '@mui/material';
+
 
 
 const Campanha = ({ campanha }) => {
   const urlImgCampanha = 'https://colabore-api-dbc.herokuapp.com/foto-campanha/downloadFotoCampanha/'
   console.log('campanha', campanha)
   return (
-    <Card sx={{ maxWidth: 500 }}>
+    <Card sx={{  
+      width:350,
+      }}>
       {campanha.metaAtingida && (
               <Typography variant='h6' component='div'
               sx={{
@@ -29,7 +30,7 @@ const Campanha = ({ campanha }) => {
               Meta batida!
             </Typography>
       )}
-      <CardActionArea>
+      
         <CardMedia
           component='img'
           height='140'
@@ -37,9 +38,10 @@ const Campanha = ({ campanha }) => {
           onError={(e) => { e.target.onerror = null; e.target.src = perfil }}
           alt={campanha.tituloCampanha}
         />
-      </CardActionArea>
+        
+      
       <Typography sx={{
-        padding:'8px',
+        padding:'16px',
         display:'flex',
         flexDirection:'column',
         justifyContent:'space-between'
