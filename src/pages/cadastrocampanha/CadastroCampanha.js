@@ -61,14 +61,13 @@ const CadastroCampanha = () => {
     }
   },[])
 
-  const prepararCancelarEdicao = () => {
+  const prepararCancelarEdicao = (voltarParaId) => {
     cancelarEdicao();
-    redirecionamento('/detalhecampanha');
+    redirecionamento(`/detalhecampanha/${voltarParaId}`);
   }
 
   const validate = (values) => {
     const errors = {};
-    console.log('valueTag', valueTag)
     if (!values.tituloCampanha) {
       errors.tituloCampanha = 'Nome é obrigatório';
     }
@@ -97,13 +96,7 @@ const CadastroCampanha = () => {
     setNameLogo("Cadastro Campanha")
   }, []);
 
-  const removerMascaraMoeda = (mascara) => {
-    mascara = mascara.replace('R$', '');
-    mascara = mascara.replace(/\./g, '');
-    mascara = mascara.replace(',', '.');
-
-    return mascara;
-  }
+  
 
   if(!user.nome){
     return<NaoEstaLogado />
@@ -118,11 +111,7 @@ const CadastroCampanha = () => {
         enableReinitialize={true}
         onSubmit={async (values) => {
           if (!edit) {
-            if (!foto) {
-              alert('É obrigatório cadastrar uma foto');
-              return
-            }
-            if (!valueTag) {
+            if (!valueTag.length) {
               alert('É obrigatório cadastrar ao menos uma categoria para a campanha');
               return
             }
@@ -145,10 +134,11 @@ const CadastroCampanha = () => {
           values.metaArrecadacao = Number(values.metaArrecadacao)
           values.dataLimiteContribuicao = moment(values.dataLimiteContribuicao, 'DD/MM/YYYY').format('YYYY-MM-DD');
 
-          console.log('POST CAMPANHA', values)
+          
           if (!edit) {
             let idDaCampanha = await postCampanha(values);
             if (idDaCampanha) {
+              
               let postFoto = await postFotoCampanha(idDaCampanha.idCampanha, foto);
               window.location.href = '/listacampanha';
             }
@@ -158,17 +148,16 @@ const CadastroCampanha = () => {
 
             let editarCampanha = await putCampanha(idEmEdicao, values);
             if (editarCampanha) {
-              if (!foto) {
-                window.location.href = `/detalhecampanha/${idEmEdicao}`;
+              if (foto==='') {
+                redirecionamento(`/detalhecampanha/${idEmEdicao}`);
+                
               }
               else {
-                postFotoCampanha(idEmEdicao, foto);
+                await postFotoCampanha(idEmEdicao, foto);
                 redirecionamento(`/detalhecampanha/${idEmEdicao}`);
               }
             }
-            else {
-              console.log('erro ao editar campanha')
-            }
+            
           }
         }}
       >
@@ -191,12 +180,12 @@ const CadastroCampanha = () => {
             <div>
               <label>Encerrar ao atingir a meta?* </label>
               <div className='concluiMeta'>
-                <label>
                   <Field type="radio" name="concluiCampanhaAutomaticamente" value='true'/>
+                <label>
                   Sim
                 </label>
-                <label>
                   <Field type="radio" name="concluiCampanhaAutomaticamente" value='false' />
+                <label>
                   Não
                 </label>
               </div>
@@ -226,13 +215,12 @@ const CadastroCampanha = () => {
             ) : (
               <div>
                 <label htmlFor="foto">Foto da campanha: *</label>
-                <input className='botaoFoto' name='foto' type='file' accept='image/png, image/jpeg' onChange={(e) => setFoto(e.target.files[0])} />
+                <input className='botaoFoto' name='foto' type='file' accept='image/png, image/jpeg' onChange={(e) => setFoto(e.target.files[0])} required/>
                 <ErrorMessage name='foto' render={msg => <div className='error'>{msg}</div>} />
               </div>
             )}
             <div>
               <Categorias
-              className='teste'
                 disablePortal
                 multiple
                 value={valueTag}
@@ -273,14 +261,12 @@ const CadastroCampanha = () => {
               </ContainerBotoes>
 
             ) : (
-              <ContainerBotoes>
-                <button onClick={() => prepararCancelarEdicao()}>Cancelar</button>
-                <button type='submit' className='botao1'>Salvar</button>
-              </ContainerBotoes>
+              <>
+                <button onClick={() => prepararCancelarEdicao(values.id)}>Cancelar</button>
+                <button type='submit'>Salvar</button>
+              </>
             )}
-            {/* <div>
-              <pre>{JSON.stringify(values, null, 2)}</pre>
-            </div> */}
+           
           </BordaCadastro>
         </FormCadastro>
       )}

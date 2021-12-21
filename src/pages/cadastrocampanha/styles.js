@@ -135,6 +135,8 @@ export const Categorias = styled(Autocomplete) `
 
 export const ContainerBotoes = styled.div `
   display: flex;
+  flex-direction:row;
+  backgroun-color:red;
   justify-content: space-around;
   width: 100%;
 `
