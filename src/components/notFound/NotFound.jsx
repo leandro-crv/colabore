@@ -7,10 +7,13 @@ const NotFound = () => {
 
   useEffect(() => {
     setNameLogo('');
-    if (!user.name) {
+    const token = localStorage.getItem('token')
+    if (!token) {
       redirecionamento('/', true);
-    } else {
-      redirecionamento('/listacampanha');
+    }
+
+    if (token){
+      redirecionamento('/listacampanha', true);
     }
   }, []);
 

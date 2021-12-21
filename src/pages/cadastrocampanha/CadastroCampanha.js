@@ -1,28 +1,20 @@
 import React, { useEffect, useContext, useState } from 'react';
-import { Formik, Field, Form, ErrorMessage } from 'formik';
+import { Formik, Field, ErrorMessage } from 'formik';
 import { CampanhaContext } from '../../context/CampanhaContext';
 import { useMenuContext } from '../../context/context';
 import InputMask from 'react-input-mask'
-import { FormCadastro, ContainerBotoes, BordaCadastro } from './styles';
+import { FormCadastro, ContainerBotoes, BordaCadastro, Categorias } from './styles';
+import NaoEstaLogado from '../../components/naoEstaLogado'
 
 
 import moment from 'moment';
-import api from '../../api';
-import noImgCampanha from '../../images/noImgCampanha.png';
 
-import {
-  TextField,
-  FilledInput,
-  Button,
-  Checkbox,
-  Radio,
-  FormControlLabel,
-  Select,
-  MenuItem
-} from "@material-ui/core";
-import Autocomplete, { createFilterOptions } from '@material-ui/lab/Autocomplete';
+import { TextField } from "@material-ui/core";
 
 
+
+import { createFilterOptions } from '@material-ui/lab/Autocomplete';
+import  { useNavigate } from 'react-router-dom'
 
 
 const CadastroCampanha = () => {
@@ -39,16 +31,21 @@ const CadastroCampanha = () => {
     postFotoCampanha,
     putCampanha
   } = useContext(CampanhaContext);
-  const { setNameLogo, redirecionamento } = useMenuContext();
+  const { setNameLogo, redirecionamento, user } = useMenuContext();
   const [foto, setFoto] = useState('');
   const urlImgCampanha = 'https://colabore-api-dbc.herokuapp.com/foto-campanha/downloadFotoCampanha/'
 
-  const [mascaraMoeda, setMascaraMoeda] = useState('');
   const [listCategoriasBD, setListCategoriasBD] = useState([]);
 
   const [valueTag, setValueTag] = useState([]);
   const filter = createFilterOptions();
+  const navigate = useNavigate()
 
+
+  useEffect(() => {
+    const token = localStorage.getItem('token')
+    if(!token) redirecionamento('/', true, 3000)
+  },[])
 
   useEffect(() => {
     (async () => {
@@ -108,6 +105,9 @@ const CadastroCampanha = () => {
     return mascara;
   }
 
+  if(!user.nome){
+    return<NaoEstaLogado />
+  } else {
 
   return (
     <div>
@@ -174,7 +174,7 @@ const CadastroCampanha = () => {
       >
       {({ values, isSubmitting, handleChange }) => (
         <FormCadastro>
-          {!edit ? (<h1>Cadastrar nova campanha</h1>) : (<h1>Editar campanha</h1>)}
+          {!edit ? (<h1>Cadastrar campanha</h1>) : (<h1>Editar campanha</h1>)}
           <BordaCadastro>
             <div>
               <label htmlFor="tituloCampanha">Título: *</label>
@@ -190,14 +190,16 @@ const CadastroCampanha = () => {
             </div>
             <div>
               <label>Encerrar ao atingir a meta?* </label>
-              <label>
-                <Field type="radio" name="concluiCampanhaAutomaticamente" value='true' />
-                Sim
-              </label>
-              <label>
-                <Field type="radio" name="concluiCampanhaAutomaticamente" value='false' />
-                Não
-              </label>
+              <div className='concluiMeta'>
+                <label>
+                  <Field type="radio" name="concluiCampanhaAutomaticamente" value='true'/>
+                  Sim
+                </label>
+                <label>
+                  <Field type="radio" name="concluiCampanhaAutomaticamente" value='false' />
+                  Não
+                </label>
+              </div>
             </div>
             <div>
 
@@ -229,7 +231,8 @@ const CadastroCampanha = () => {
               </div>
             )}
             <div>
-              <Autocomplete
+              <Categorias
+              className='teste'
                 disablePortal
                 multiple
                 value={valueTag}
@@ -284,7 +287,7 @@ const CadastroCampanha = () => {
 
     </Formik>
     </div >
-  );
+  )};
 }
 
 
