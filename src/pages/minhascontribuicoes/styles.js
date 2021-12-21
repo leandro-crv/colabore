@@ -1,86 +1,74 @@
 import styled from 'styled-components'
 
-
-export const Div = styled.div`
+export const Div = styled.div `
   display: flex;
-  flex-direction: column;
   align-items: center;
-  /* width: 100vw; */
-  padding: 20px;
-
-  gap: 10px;
-  box-sizing: border-box;
-`
-
-export const Card = styled.div`
-  display: flex;
-  flex-direction: row;
-  min-width: 370px;
+  justify-content: center;
+  flex-direction: column;
   width: 100%;
   max-width: 1200px;
-  gap: 10px;
+  gap: 20px;
+  flex-wrap: wrap;
+  `
 
+export const Card = styled.div `
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 15px;
+  width: 100%;
+  height: 500px;
+  padding-bottom: 15px;
+  max-width: 900px;
   border: double 8px var(--text-color);
-  border-radius: 20px;
-  overflow: hidden;
+  border-radius: 8px;
 
   img {
-    width: 370px;
-    height: 100%;
+    width: 100%;
+    height: 50%;
     background: var(--gradient-color);
   }
 
-  @media screen and (max-width: 800px) {
-    width: 80vw;
-    min-width: 350px;
-    flex-direction: column;
-    height: auto;
-    justify-content: center;
-    align-items: center;
-    gap: 20px;
-
-    div {
-      width: 100%;
-    }
+  @media (min-width: 700px) {
+    flex-direction: row;
+    justify-content: flex-start;
+    height: 300px;
+    padding: 0;
 
     img {
-      width: 100%;
-      min-height: 150px;
+      height: 100%;
+      width: 50%;
     }
   }
-
-  button {
-    width: 300px;
-    margin-right: 20px;
-  }
-
 `
 
-export const CardContend = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  min-width: 370px;
-  gap: 10px;
-  padding: 10px;
-  width: 100%;
+export const CardContend = styled.div `
+    width: 100%;
+    height: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    text-align: center;
 
-  button {
-    align-self: flex-end;
-  }
-
-  p {
-    text-transform: capitalize;
-
-    & span {
-      font-weight: 600;
+    hr, p {
+      width: 100%;
     }
-  }
 
-  @media screen and (max-width: 800px) {
-    align-items: flex-start;
-    padding-left: 20px;
-    padding-bottom: 10px;
-  }
+    button {
+      width: 90%;
+      margin-top: 20px;
+    }
 
+    span {
+      font-weight: 800;
+    }
+
+    @media (min-width: 700px) {
+      width: 50%;
+      height: 100%;
+      text-align: left;
+
+    }
 `

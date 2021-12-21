@@ -1,5 +1,5 @@
 import {Routes,Route} from "react-router-dom";
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import NotFound from "./components/notFound/NotFound";
 import Login from "./pages/login";
 import { CadastroUsuario } from "./pages/cadastrousuario/CadastroUsuario";
@@ -11,19 +11,14 @@ import DetalheCampanha from "./pages/detalhecampanha/DetalheCampanha";
 import MinhasContribuicoes from "./pages/minhascontribuicoes";
 
 const Routers = () => {
-  const {autenticate} = useMenuContext();
-  const [loading,setLoading] = useState(true);
+  const {autenticate, loading} = useMenuContext();
 
   useEffect(() => {
     const token = localStorage.getItem('token');
     if(token){
       (async()=>{
-       await autenticate(token);
-        setLoading(false)
+      await autenticate(token);
       })()
-    }
-    else{
-      setLoading(false);
     }
   },[]);
 

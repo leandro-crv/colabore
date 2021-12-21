@@ -1,23 +1,20 @@
 import { useContext, useEffect, useState } from "react";
-import { FaUserAlt } from 'react-icons/fa'
 import { useMenuContext } from '../../context/context';
 import { CampanhaContext } from "../../context/CampanhaContext";
 import styles from './DetalheCampanha.module.css';
-import noImgCampanha from '../../images/noImgCampanha.png';
-import perfil from '../../images/perfil.jpg';
 import CampanhaDetalhe from "../../components/campanhaDetalhe/CampanhaDetalhe";
-import Loading from "../../components/loading";
-
+import { useNavigate } from "react-router-dom";
 import { useParams } from 'react-router-dom';
+import NaoEstaLogado from "../../components/naoEstaLogado";
 
 
 
 const DetalheCampanha = () => {
   const {id: idDetalhe} = useParams();
-  const { user, setNameLogo, redirecionamento } = useMenuContext();
+  const { user, setNameLogo, redirecionamento, setLoading } = useMenuContext();
   const [agradecimento, setAgradecimento] = useState(false);
   const [editavel, setEditavel] = useState(false);
-
+  const navigate = useNavigate()
   const { prepararEdicao,
     putDoar,
     getCampanhaDetalhe,
@@ -27,24 +24,37 @@ const DetalheCampanha = () => {
   const [campanha, setCampanha] = useState('');
 
   useEffect(() => {
-    setNameLogo("Detalhe Campanha");
-    (async () => {
-      let campanhaApi = await getCampanhaDetalhe(idDetalhe);
-      if(!campanhaApi){
-        redirecionamento('/notfound')
-      }
-      else{
-        setCampanha(campanhaApi);
-        if(campanhaApi.usuarioDoacaoDTOS.length){
-          setEditavel(false);
-        }
-        else{
-          setEditavel(true);
-        }
-      }
-    })();
+    if(!localStorage.getItem('token')) navigate('/')
   },[])
 
+  useEffect(() => {
+
+    if(user.nome) {
+      setNameLogo("Detalhe Campanha")
+      setLoading(true)
+      asyncTeste()
+
+      setTimeout(() => setLoading(false), 2000);
+      setTimeout(() => setNameLogo("Detalhe Campanha"), 2050);
+    }
+
+  }, [])
+
+  async function asyncTeste() {
+    let campanhaApi = await getCampanhaDetalhe(idDetalhe);
+    if(!campanhaApi){
+      redirecionamento('/')
+    }
+    else{
+      setCampanha(campanhaApi);
+      if(campanhaApi.usuarioDoacaoDTOS.length){
+        setEditavel(false);
+      }
+      else{
+        setEditavel(true);
+      }
+    }
+  }
 
   const irParaEdicao = (campanha) => {
     prepararEdicao(campanha);
@@ -58,12 +68,12 @@ const DetalheCampanha = () => {
     else{
       const retorno = await putDoar(campanha.idCampanha,contribuicao);
       if(retorno){
-       setAgradecimento(true);
-       let atualizaCampanha = await getCampanhaDetalhe(idDetalhe);
-       setCampanha(atualizaCampanha);
-       setTimeout(()=>{
-         setAgradecimento(false)
-       },1000);
+      setAgradecimento(true);
+      let atualizaCampanha = await getCampanhaDetalhe(idDetalhe);
+      setCampanha(atualizaCampanha);
+      setTimeout(()=>{
+        setAgradecimento(false)
+      },1000);
       }
       else{
         alert('Houve um erro com sua doação!');
@@ -81,17 +91,21 @@ const DetalheCampanha = () => {
     }
   }
 
+  if(!user.nome) {
+    return <NaoEstaLogado />
+  } else {
+
   return (
       <div className={styles.container}>
         {agradecimento && (<h1 className="green">Obrigado por sua doação!</h1>)}
-         <CampanhaDetalhe
+        <CampanhaDetalhe
           campanha={campanha}
           editavel={editavel}
           perguntarExcluir={perguntarExcluir}
           irParaEdicao={irParaEdicao}
           enviarContribuicao={enviarContribuicao} />
         </div>
-  );
+  )};
 }
 
 export default DetalheCampanha;
