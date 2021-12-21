@@ -1,4 +1,4 @@
-import React, { useEffect,  useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useFormik, Formik } from 'formik';
 import PasswordStrength from '../../components/PasswordStrength';
 import { FormCadastro, ContainerBotoes, BordaCadastro } from './styles'
@@ -8,16 +8,16 @@ import Modal from '../../components/modal';
 
 export const CadastroUsuario = () => {
   const [foto, setFoto] = useState({});
-
-  const [, setErroFoto] = useState(false);
-  const {postFotoUsuario, postUsuario, redirecionamento, setLoading, setNameLogo} = useMenuContext();
+  const [erroFoto, setErroFoto] = useState(false);
+  const { postFotoUsuario, postUsuario, redirecionamento, setLoading, setNameLogo } = useMenuContext();
+  const {handleLogin} = useMenuContext();
   const [modal, setModal] = useState(false);
 
   useEffect(() => {
     setNameLogo('Cadastro Usuário')
-    if(localStorage.getItem('token')) {
+    if (localStorage.getItem('token')) {
       setTimeout(() => setLoading(true), 2000)
-    redirecionamento('/listacampanha', true, 3500 )
+      redirecionamento('/listacampanha', true, 3500)
     }
   }, [])
 
@@ -29,24 +29,25 @@ export const CadastroUsuario = () => {
     }
 
     if (!values.email) {
-      errors.email =  'E-mail é um campo obrigatório.' ;
+      errors.email = 'E-mail é um campo obrigatório.';
       return errors;
     }
 
-    if(values.email) {
+    if (values.email) {
       const regexEmail = /^[a-z0-9.]+@dbccompany.com.br$/.test(values.email)
-      if(!regexEmail)  {
-        errors.email =  'É obrigatorio um e-mail da DBC.'
+      if (!regexEmail) {
+        errors.email = 'É obrigatorio um e-mail da DBC.'
         return errors;
       }
     }
 
+
     if (!values.senha) {
-      errors.confirmeSenha = 'Senha é um campo obrigatório.' ;
+      errors.confirmeSenha = 'Senha é um campo obrigatório.';
       return errors;
 
-    } else if(values.confirmeSenha !== values.senha){
-      errors.confirmeSenha = 'As senhas não conferem' ;
+    } else if (values.confirmeSenha !== values.senha) {
+      errors.confirmeSenha = 'As senhas não conferem';
       return errors;
     }
 
@@ -67,23 +68,28 @@ export const CadastroUsuario = () => {
     },
     validate: validacao,
     onSubmit: async (values) => {
-      console.log(values.confirmeSenha, values.senha, foto)
-      try {
-        setErroFoto(false);
-        delete values.confirmeSenha;
-        const usuario = await postUsuario(values); // 500
-        await postFotoUsuario(usuario.idUsuario,foto);
-        setModal(true)
-      } catch(err) {
-        alert('Erro ao cadastrar usuario! E-mail já utilizado.')
-      }
+      
+      delete values.confirmeSenha;
+        try{
+          const usuario = await postUsuario(values);
+          await postFotoUsuario(usuario.idUsuario, foto);
+          const logar = await handleLogin({ login: values.email, senha: values.senha })
+          if (logar) {
+            redirecionamento('/listacampanha')
+          }
+          else {
+            alert("Ocorreu um erro com seu login!")
+          }          
+        } catch{
+          alert('Erro ao cadastrar usuário! E-mail já utilizado.')
+        }
 
       formik.resetForm()
     },
 
   })
 
-  if(!localStorage.getItem('token')) {
+  if (!localStorage.getItem('token')) {
     return (
       <div>
         <Formik>
@@ -126,7 +132,7 @@ export const CadastroUsuario = () => {
                 onChange={formik.handleChange}
                 placeholder='Digite sua senha...'
               >
-                <PasswordStrength password={formik.values.senha}/>
+                <PasswordStrength password={formik.values.senha} />
               </Campo>
 
               <Campo
@@ -148,14 +154,12 @@ export const CadastroUsuario = () => {
                 accept='image/png, image/jpeg'
                 required
               />
-
+              {erroFoto && (<p className='error'>É obrigatório cadastrar uma foto</p>)}
               <ContainerBotoes>
-
-                <button type="submit">Cadastrar</button>
-                <button  onClick={() => redirecionamento('/')}>
+                <button onClick={() => redirecionamento('/')}>
                   Voltar
                 </button>
-
+                <button type="submit">Cadastrar</button>
               </ContainerBotoes>
             </BordaCadastro>
 
@@ -166,7 +170,7 @@ export const CadastroUsuario = () => {
       </div>
     );
   } else {
-    return<h1>Você já está logado, você será redirecionado(a) para a página principal.</h1>
+    return <h1>Você já está logado, você será redirecionado(a) para a página principal.</h1>
   }
 
 

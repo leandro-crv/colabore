@@ -30,11 +30,10 @@ const CampanhaProvider = ({ children }) => {
 
   const getCampanhas = async () => {
     const { data } = await api.get('campanha');
-    console.log('chamou campanhas e resposta é: ', data)
     data.map(campanha => {
       campanha.cor = arrecadadoMeta(campanha.totalArrecadado, campanha.metaArrecadacao)
     });
-    return data.sort((a, b) => moment(a.dataLimiteContribuicao).isAfter(b.dataLimiteContribuicao) ? -1 : 1);
+    return data.sort((a, b) => moment(a.dataLimiteContribuicao).isAfter(b.dataLimiteContribuicao) ? 1 : -1);
   }
 
   const getMinhasCampanhas = async () => {
@@ -43,26 +42,24 @@ const CampanhaProvider = ({ children }) => {
       campanha.cor = arrecadadoMeta(campanha.totalArrecadado, campanha.metaArrecadacao)
     });
 
-    return data.sort((a, b) => moment(a.dataLimiteContribuicao).isAfter(b.dataLimiteContribuicao) ? -1 : 1)
+    return data.sort((a, b) => moment(a.dataLimiteContribuicao).isAfter(b.dataLimiteContribuicao) ? 1 : -1)
   }
 
   const getMetaAtingida = async (metaAtingida) => {
     const ids = [];
     if (metaAtingida) {
       const { data } = await api.get('campanha/filtra-por-meta-atingida-ou-não-atingida?meta=meta-atingida');
-      console.log('data meta atingida', data)
       data.map(campanha => ids.push(campanha.idCampanha));
       setListMetaAtingida(ids);
       return ids;
-      //return data;
+      
     }
     else {
       const { data } = await api.get('campanha/filtra-por-meta-atingida-ou-não-atingida');
-      console.log('data meta não atingida', data)
       data.map(campanha => ids.push(campanha.idCampanha));
       setListMetaAtingida(ids);
       return ids;
-      //return data;
+    
     }
 
   }
@@ -86,10 +83,8 @@ const CampanhaProvider = ({ children }) => {
   }
 
   const putCampanha = async(id,valores) =>{
-    console.log('id é: ',id, 'campanha é: ', valores);
     try{
       const {data} = await api.put(`campanha/${id}`,valores);
-      console.log('retorno do put da camapnha', data)
       return true;
     }
     catch{
@@ -109,7 +104,6 @@ const CampanhaProvider = ({ children }) => {
 
   const postCampanhaCategoria = async (value) => {
     const { data } = await api.post('categoria', { nome: value });
-    console.log('data retorno post categoria', data)
     return data.idCategoria
     
   }
@@ -117,11 +111,9 @@ const CampanhaProvider = ({ children }) => {
   const postCampanha = async (campanha) => {
     try {
       const { data } = await api.post('campanha', campanha);
-      console.log('campanha cadastrada', data);
       return data;
     }
     catch (error) {
-      console.log('erro no post Campanha', error)
       return false;
     }
   }
@@ -131,7 +123,6 @@ const CampanhaProvider = ({ children }) => {
     let formData = new FormData();
     formData.append("file", foto);
     const { data } = await api.post(`foto-campanha/uploadFotoCampanha?idCampanha=${id}`, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
-    console.log('data postFotoCampanha', data);
   }
 
   const arrecadadoMeta = (arrecadado, meta) => {
@@ -149,7 +140,6 @@ const CampanhaProvider = ({ children }) => {
 
 
   const prepararEdicao = (campanha) => {
-    console.log('campanha no preprarar Edição',campanha)
     let idsCategoria = [];
     campanha.tagsCategoria.map(categoria => idsCategoria.push({idCategoria: categoria.idCategoria}));
     const campanhaFormatada = {

@@ -11,13 +11,13 @@ import Typography from '@mui/material/Typography';
 
 const Campanha = ({ campanha }) => {
   const urlImgCampanha = 'https://colabore-api-dbc.herokuapp.com/foto-campanha/downloadFotoCampanha/'
-  console.log('campanha', campanha)
   return (
     <Card sx={{  
-      width:350,
+      width:400,
+      
       }}>
       {campanha.metaAtingida && (
-              <Typography variant='h6' component='div'
+            <Typography variant='h6' component='div'
               sx={{
                 fontWeight: 'bold',
                 color: 'white',
@@ -44,7 +44,7 @@ const Campanha = ({ campanha }) => {
         padding:'16px',
         display:'flex',
         flexDirection:'column',
-        justifyContent:'space-between'
+        gap:'8px'
       }}
       >
         <Typography gutterBottom variant="h6"
@@ -61,7 +61,7 @@ const Campanha = ({ campanha }) => {
       </Typography>
       <Typography sx={{
         display: 'flex',
-        justifyContent: 'space-between'
+        gap: '8px'
       }}
       >
         <Typography color="text.secondary">Meta de arrecadação: </Typography>
@@ -74,7 +74,7 @@ const Campanha = ({ campanha }) => {
       </Typography>
       <Typography sx={{
         display: 'flex',
-        justifyContent: 'space-between'
+        gap:'8px'
       }}
       >
         <Typography color="text.secondary">Total arrecadado: </Typography>
@@ -114,6 +114,7 @@ const Campanha = ({ campanha }) => {
           </Typography>
         </>
       ) : null}
+      <Typography color='text.secondary' component='div' >Encerramento: {moment(campanha.dataLimiteContribuicao).format('DD/MM/YYYY')} </Typography>
       <Typography variant='overline' color='text.secondary' component='div'>
         Atualizado em  {moment(campanha.ultimaAlteracao).format('DD/MM/YYYY hh:mm')}
       </Typography>

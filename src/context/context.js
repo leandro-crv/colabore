@@ -29,15 +29,13 @@ export default function MenuProvider({ children }) {
   }
 
   const postUsuario = async (usuario) =>{
-    console.log('usuario no post usuário',usuario)
     try{
       const { data } = await api.post('usuario',usuario);
       return data
     }
     catch(error){
-      return console.log(error)
+      return false
     }
-
   }
 
   const postFotoUsuario = async(id,foto) =>{
@@ -82,7 +80,6 @@ export default function MenuProvider({ children }) {
   const getUser = async () =>{
     try{
       const {data} = await api.get('usuario');
-      console.log('usuário é: ', data);
       return data;
     }
     catch(error){

@@ -25,7 +25,7 @@ const Perfil =  () => {
       }
     }).then(resp => {
       setContribuicoes(resp.data)
-      console.log(resp.data)
+      
     })
 
   },[])
@@ -53,7 +53,7 @@ const Perfil =  () => {
             contribuicoes && contribuicoes.map((e,i) => {
 
               if(e.metaArrecadacao > e.totalArrecadado) {
-                console.log(getImage(e.idCampanha))
+                
                 return (
                   <>
 

@@ -1,16 +1,14 @@
-import { useContext, useState } from "react";
-import { useEffect } from "react";
+import { useContext, useState, useEffect } from "react";
+
 import { CampanhaContext } from '../../context/CampanhaContext'
-import styles from './ListaCampanha.module.css';
 import { useMenuContext } from "../../context/context";
 import NaoEstaLogado from "../../components/naoEstaLogado";
-
-
 import Campanha from "../../components/campanha/Campanha";
 import { Formik, Form, Field } from "formik";
-
 import { Button } from "@material-ui/core";
 import SearchIcon from '@mui/icons-material/Search';
+
+import styles from './ListaCampanha.module.css';
 
 const ListaCampanha = () => {
 
@@ -39,7 +37,6 @@ const ListaCampanha = () => {
         var campanhasBD = await getCampanhas();
         setListaCampanhas(campanhasBD);
         var categoriasBD = await getCampanhasCategorias();
-        console.log('categorias BD no useEffect', categoriasBD)
         let nomesDasCategorias = [];
         categoriasBD.map(categoria => nomesDasCategorias.push(categoria.nome))
         setListCategoriasNomes(nomesDasCategorias);
@@ -98,8 +95,6 @@ const ListaCampanha = () => {
               else{
                 retornoDoFiltro = listaDeCampanhas.filter(campanha => campanha.categorias.some(element => values.categorias.includes(element.nome) && listaMeta.includes(campanha.idCampanha)));
               }
-
-              console.log('valor do filtro final é: ', retornoDoFiltro)
               setListaCampanhas(retornoDoFiltro)
 
             }}
@@ -147,10 +142,7 @@ const ListaCampanha = () => {
                     </div>
                   ))}
                 </div>
-              {/* <div>
-                  <pre>{JSON.stringify(values, null, 2)}</pre>
-              </div> */}
-                <Button disabled={isSubmitting} type="submit">
+                <Button disabled={isSubmitting} type="submit" color='primary' fullWidth='true'>
                   Pesquisar
                   <SearchIcon/>
                 </Button>
