@@ -88,15 +88,21 @@ a:hover {
 
 .body-content {
   padding-bottom: 70px;
-  /* display: flex;
+  display: flex;
   align-items: center;
-  justify-content: center; */
+  justify-content: center;
   min-height: calc(100vh - 3rem);
   max-width: 1200px;
-  margin: 6rem auto 0 auto;
+  margin: 6rem 15px;
 }
 
-
+#root {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
 
 button {
   display: flex;

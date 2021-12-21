@@ -2,18 +2,19 @@ import styled from 'styled-components';
 
 export const Fundo = styled.div`
   width: 100vw;
-  height: 100vh;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
   background: var(--loading-color);
 
-  padding: 0;
-  margin: 0;
+  margin-top: 6rem;
+  top: 0;
 
   position: absolute;
-  top: 0;
-  left: 0;
 
-  z-index: 10;
+  z-index: 10000;
 
   div {
     width: 100%;

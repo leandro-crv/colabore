@@ -1,10 +1,9 @@
 import { useContext, useState } from "react";
-import moment from "moment";
 import { useEffect } from "react";
 import { CampanhaContext } from '../../context/CampanhaContext'
 import styles from './ListaCampanha.module.css';
-import { useNavigate } from "react-router-dom";
 import { useMenuContext } from "../../context/context";
+import NaoEstaLogado from "../../components/naoEstaLogado";
 
 
 import Campanha from "../../components/campanha/Campanha";
@@ -14,49 +13,53 @@ import { Button } from "@material-ui/core";
 import SearchIcon from '@mui/icons-material/Search';
 
 const ListaCampanha = () => {
-  
+
   const { getCampanhas,
     getMinhasCampanhas,
     getCampanhasCategorias,
     getMetaAtingida,
-    setIdDetalhe
   } = useContext(CampanhaContext);
 
-  const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
-
-  const { setNameLogo, user, redirecionamento } = useMenuContext();
+  const { setNameLogo, user, redirecionamento, setLoading } = useMenuContext();
   const [listaCampanhas, setListaCampanhas] = useState([]);
   const [listCategoriasNomes, setListCategoriasNomes] = useState([]);
-  
-
 
   useEffect(() => {
     setNameLogo("Lista Campanha");
     if (!user.nome) {
       redirecionamento("/", true)
     }
-  }, [user])
+  }, [])
 
 
   useEffect(() => {
-    (async () => {
-      var campanhasBD = await getCampanhas();
-      setListaCampanhas(campanhasBD);
-      var categoriasBD = await getCampanhasCategorias();
-      console.log('categorias BD no useEffect', categoriasBD)
-      let nomesDasCategorias = [];
-      categoriasBD.map(categoria => nomesDasCategorias.push(categoria.nome))
-      setListCategoriasNomes(nomesDasCategorias);
-      setNameLogo('Lista Campanha');
-      setLoading(false);
+    if(user.nome) {
+      (async () => {
+        setLoading(true);
+        var campanhasBD = await getCampanhas();
+        setListaCampanhas(campanhasBD);
+        var categoriasBD = await getCampanhasCategorias();
+        console.log('categorias BD no useEffect', categoriasBD)
+        let nomesDasCategorias = [];
+        categoriasBD.map(categoria => nomesDasCategorias.push(categoria.nome))
+        setListCategoriasNomes(nomesDasCategorias);
+        setNameLogo('Lista Campanha');
+        setTimeout(() => setLoading(false), 2000);
     })();
+    }
+
   }, [])
- 
+
 
   const irParaDetalheCampanha = (id) => {
     redirecionamento(`/detalhecampanha/${id}`)
   }
+
+  if(!user.nome) {
+    return <NaoEstaLogado />
+  } else {
+
+
 
   return (
     <div>
@@ -89,14 +92,14 @@ const ListaCampanha = () => {
               else if(values.metaAtingida==='nao'){
                 listaMeta = await getMetaAtingida(false);
               }
-              
+
               if(!temFiltroMeta){
                 retornoDoFiltro = listaDeCampanhas.filter(campanha => campanha.categorias.some(element => values.categorias.includes(element.nome)));
               }
               else{
                 retornoDoFiltro = listaDeCampanhas.filter(campanha => campanha.categorias.some(element => values.categorias.includes(element.nome) && listaMeta.includes(campanha.idCampanha)));
               }
-              
+
               console.log('valor do filtro final é: ', retornoDoFiltro)
               setListaCampanhas(retornoDoFiltro)
 
@@ -160,8 +163,8 @@ const ListaCampanha = () => {
           {!listaCampanhas.length ? (<h1>Sua pesquisa não retornou nenhuma campanha!</h1>): (
             <ul className={styles.listaCampanhas}>
             {listaCampanhas.map(campanha => (
-              <li key={campanha.idCampanha} 
-                  className={styles.campanha} 
+              <li key={campanha.idCampanha}
+                  className={styles.campanha}
                   onClick={() => irParaDetalheCampanha(campanha.idCampanha)}
               >
                 <Campanha campanha={campanha} />
@@ -172,7 +175,7 @@ const ListaCampanha = () => {
         </div>
       </div>
     </div>
-  );
+  )};
 }
 
 export default ListaCampanha;
