@@ -3,7 +3,7 @@ import { Formik, Field, ErrorMessage } from 'formik';
 import { CampanhaContext } from '../../context/CampanhaContext';
 import { useMenuContext } from '../../context/context';
 import InputMask from 'react-input-mask'
-import { FormCadastro, ContainerBotoes, BordaCadastro, Categorias } from './styles';
+import { FormCadastro, BordaCadastro, Categorias } from './styles';
 import NaoEstaLogado from '../../components/naoEstaLogado'
 
 
@@ -18,7 +18,7 @@ import  { useNavigate } from 'react-router-dom'
 
 
 const CadastroCampanha = () => {
-  const { 
+  const {
     cadastro,
     setCadastro,
     initialCadastro,
@@ -96,7 +96,7 @@ const CadastroCampanha = () => {
     setNameLogo("Cadastro Campanha")
   }, []);
 
-  
+
 
   if(!user.nome){
     return<NaoEstaLogado />
@@ -134,11 +134,11 @@ const CadastroCampanha = () => {
           values.metaArrecadacao = Number(values.metaArrecadacao)
           values.dataLimiteContribuicao = moment(values.dataLimiteContribuicao, 'DD/MM/YYYY').format('YYYY-MM-DD');
 
-          
+
           if (!edit) {
             let idDaCampanha = await postCampanha(values);
             if (idDaCampanha) {
-              
+
               let postFoto = await postFotoCampanha(idDaCampanha.idCampanha, foto);
               window.location.href = '/listacampanha';
             }
@@ -150,14 +150,14 @@ const CadastroCampanha = () => {
             if (editarCampanha) {
               if (foto==='') {
                 redirecionamento(`/detalhecampanha/${idEmEdicao}`);
-                
+
               }
               else {
                 await postFotoCampanha(idEmEdicao, foto);
                 redirecionamento(`/detalhecampanha/${idEmEdicao}`);
               }
             }
-            
+
           }
         }}
       >
@@ -256,9 +256,9 @@ const CadastroCampanha = () => {
               />
             </div>
             {!edit ? (
-              <ContainerBotoes>
+              <div>
                 <button type="submit" className='botao1'>Cadastrar</button>
-              </ContainerBotoes>
+              </div>
 
             ) : (
               <>
@@ -266,7 +266,7 @@ const CadastroCampanha = () => {
                 <button type='submit'>Salvar</button>
               </>
             )}
-           
+
           </BordaCadastro>
         </FormCadastro>
       )}

@@ -68,7 +68,7 @@ export const CadastroUsuario = () => {
     },
     validate: validacao,
     onSubmit: async (values) => {
-      
+
       delete values.confirmeSenha;
         try{
           const usuario = await postUsuario(values);
@@ -79,7 +79,7 @@ export const CadastroUsuario = () => {
           }
           else {
             alert("Ocorreu um erro com seu login!")
-          }          
+          }
         } catch{
           alert('Erro ao cadastrar usuário! E-mail já utilizado.')
         }
